@@ -21,6 +21,15 @@ class UserController extends Controller
     {
         $this->middleware('jwt.auth', []);
     }
+    /**
+     * Get the authenticated User
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function index()
+    {
+        return response()->json(Auth::guard()->user());
+    }
 
     /**
      * Get the authenticated User
