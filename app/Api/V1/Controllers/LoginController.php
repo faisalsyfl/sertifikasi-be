@@ -2,17 +2,18 @@
 
 namespace App\Api\V1\Controllers;
 
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Api\V1\Requests\LoginRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Auth;
 use App\User;
+use App\Traits\RestApi;
 
 class LoginController extends Controller
 {
+    use RestApi;
+
     /**
      * Log the user in
      *
@@ -22,34 +23,30 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request, JWTAuth $JWTAuth)
     {
-        $credentials = $request->only(['username','password']);
+        $credentials = $request->only(['username', 'password']);
         try {
 
-            $user   = User::where('username','=',$credentials['username'])->first();
+            $user   = User::where('username', '=', $credentials['username'])->first();
             //if user not exists
-            if(!$user){
-                return response()
-                ->json([
-                    'status' => 'failed',
-                    'message' => 'Username/Password not registered'
-                ]);
+            if (!$user) {
+                return $this->output([
+                    'status' => 'failed'
+                ], 'Username/Password not registered');
             }
+
             //if exists
             $token  = Auth::guard()->attempt($credentials);
-            if(!$token) {
-                throw new AccessDeniedHttpException();
+            if (!$token) {
+                return $this->errorRequest(403);
             }
         } catch (JWTException $e) {
-            throw new HttpException(500);
+            return $this->errorRequest(500);
         }
 
-        return response()
-            ->json([
-                'status' => 'ok',
-                'message' => 'Successfully logged in',
-                'role'    => $user->role,
-                'token' => $token,
-                'expires_in' => Auth::guard()->factory()->getTTL() * 60
-            ]);
+        return $this->output([
+            'role'    => $user->role,
+            'token' => $token,
+            'expires_in' => Auth::guard()->factory()->getTTL() * 60
+        ], 'Successfully logged in');
     }
 }
