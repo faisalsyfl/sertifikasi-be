@@ -29,9 +29,12 @@ class SignUpController extends Controller
             if (!Config::get('validation_rules.sign_up.release_token')) {
                 throw new HttpException(401);
             }
-    
             $token = $JWTAuth->fromUser($user);
+            if(!$token){
+                throw new HttpException(401);
+            }
             return $this->output([
+                'token' => $token,
                 'username' => $user->username,
                 'role'  => $user->role,
                 'insert_id' => $user->id
@@ -53,15 +56,14 @@ class SignUpController extends Controller
             $user = User::where('email','=',$request->input('email'))->exists();
         }
         if($user){
-            return response()->json([
-                'status' => true,
-                'message' => 'Username or Email already exists'
-            ], 200);
+            return $this->output([
+                'status' => false
+            ], 'Username or Email already exists',400);
+
         }else{
-            return response()->json([
-                'status' => false,
-                'message' => 'Username or Email available'
-            ], 200);
+            return $this->output([
+                'status' => true
+            ], 'Username or email are available',200);
         }
     }
 }
