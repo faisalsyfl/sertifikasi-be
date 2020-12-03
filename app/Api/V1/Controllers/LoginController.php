@@ -25,28 +25,33 @@ class LoginController extends Controller
     {
         $credentials = $request->only(['username', 'password']);
         try {
-
             $user   = User::where('username', '=', $credentials['username'])->first();
-            //if user not exists
             if (!$user) {
-                return $this->output([
-                    'status' => 'failed'
-                ], 'Username/Password not registered');
-            }
-
-            //if exists
-            $token  = Auth::guard()->attempt($credentials);
-            if (!$token) {
-                return $this->errorRequest(403);
+                //if user not exists
+                $message = 'Username/Password not registered';
+            }else{
+                //if user exists
+                $token  = Auth::guard()->attempt($credentials);
+                if (!$token) {
+                    //if password doesn't match
+                    $message = 'Username or password doesn\'t match';
+                }
             }
         } catch (JWTException $e) {
             return $this->errorRequest(500);
         }
 
-        return $this->output([
-            'role'    => $user->role,
-            'token' => $token,
-            'expires_in' => Auth::guard()->factory()->getTTL() * 60 * 60
-        ], 'Successfully logged in');
+        if(!$token){
+            return $this->output([
+                'status' => 0
+            ], $message,400);
+        }else{
+            return $this->output([
+                'role'      => $user->role,
+                'token'     => $token,
+                'expires_in' => Auth::guard()->factory()->getTTL() * 60 * 60
+            ], 'Successfully logged in');
+        }
+
     }
 }

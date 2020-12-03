@@ -12,9 +12,12 @@ use App\Api\V1\Requests\SignUpRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Hash;
 use Illuminate\Support\Str;
+use App\Traits\RestApi;
 
 class SignUpController extends Controller
 {
+    use RestApi;
+
     public function signUp(SignUpRequest $request, JWTAuth $JWTAuth)
     {
         $user = new User($request->all());
@@ -24,22 +27,20 @@ class SignUpController extends Controller
             }
             
             if (!Config::get('validation_rules.sign_up.release_token')) {
-                return response()->json([
-                    'status' => 'ok'
-                ], 201);
+                throw new HttpException(401);
             }
     
             $token = $JWTAuth->fromUser($user);
-            return response()->json([
-                'status' => 'ok',
-                'message' => 'Sucessfully register',
-                'token' => $token
-            ], 201);
+            return $this->output([
+                'username' => $user->username,
+                'role'  => $user->role,
+                'insert_id' => $user->id
+            ], 'Sucessfully register');
         }else{
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'User already exists'
-            ], 200);
+            return $this->output([
+                'role'  => $request->input('role'),
+                'username' => $request->input('username')
+            ], 'User Already Exists');
         }
     }
     public function checkUser(Request $request, JWTAuth $JWTAuth)
