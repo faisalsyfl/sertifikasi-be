@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
@@ -21,6 +22,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        app('Dingo\Api\Exception\Handler')->register(function (FatalErrorException $exception) {
+            return $this->errorRequest(500, $exception->getMessage());
+        });
+
         app('Dingo\Api\Exception\Handler')->register(function (UnauthorizedHttpException $exception) {
             return $this->errorRequest(401, $exception->getMessage());
         });
