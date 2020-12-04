@@ -26,7 +26,7 @@ class taskModel extends Model
      * @var array
      */
     protected $hidden = [
-        'id_programs'
+        'id_program'
     ];
 
     /**
@@ -37,7 +37,7 @@ class taskModel extends Model
 
     public function program()
     {
-        return $this->belongsTo('App\Models\programModel');
+        return $this->hasOne('App\Models\programModel', 'id', 'id_program');
     }
 
     public function task_type()

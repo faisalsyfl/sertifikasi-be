@@ -28,6 +28,6 @@ class taskTypeModel extends Model
 
     public function task()
     {
-        return $this->belongsTo('App\Models\taskModel', 'id_programs', 'id');
+        return $this->belongsTo('App\Models\taskModel', 'id_program', 'id');
     }
 }

@@ -25,7 +25,7 @@ class initialTaskSeeder extends Seeder
             'order' => 1,
             'status' => 1,
             'id_task_type' => 1,
-            'id_programs' => 1,
+            'id_program' => 1,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -40,7 +40,7 @@ class initialTaskSeeder extends Seeder
             'order' => 2,
             'status' => 1,
             'id_task_type' => 2,
-            'id_programs' => 1,
+            'id_program' => 1,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -55,7 +55,7 @@ class initialTaskSeeder extends Seeder
             'order' => 3,
             'status' => 1,
             'id_task_type' => 1,
-            'id_programs' => 1,
+            'id_program' => 1,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -70,7 +70,7 @@ class initialTaskSeeder extends Seeder
             'order' => 1,
             'status' => 1,
             'id_task_type' => 2,
-            'id_programs' => 2,
+            'id_program' => 2,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -85,7 +85,7 @@ class initialTaskSeeder extends Seeder
             'order' => 1,
             'status' => 1,
             'id_task_type' => 2,
-            'id_programs' => 2,
+            'id_program' => 2,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
 
@@ -100,7 +100,7 @@ class initialTaskSeeder extends Seeder
             'order' => 1,
             'status' => 1,
             'id_task_type' => 2,
-            'id_programs' => 2,
+            'id_program' => 2,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
         ]);
     }

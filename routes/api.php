@@ -26,6 +26,12 @@ $api->version('v1', function (Router $api) {
         $api->get('list', 'App\\Api\\V1\\Controllers\\ProgramController@list');
     });
 
+    #task endpoint
+    $api->group(['middleware' => 'jwt.auth', 'prefix' => 'task'], function (Router $api) {
+        $api->post('list', 'App\\Api\\V1\\Controllers\\TaskController@list');
+        $api->post('detail', 'App\\Api\\V1\\Controllers\\TaskController@detail');
+    });
+
     #protect with Jwt Auth
     $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
         $api->get('protected', function () {

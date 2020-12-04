@@ -31,6 +31,6 @@ class programModel extends Model
 
     public function task()
     {
-        return $this->hasMany('App\Models\taskModel', 'id_programs', 'id');
+        return $this->hasMany('App\Models\taskModel', 'id_program', 'id');
     }
 }
