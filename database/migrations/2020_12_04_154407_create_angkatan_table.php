@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTaskType extends Migration
+class CreateAngkatanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTableTaskType extends Migration
      */
     public function up()
     {
-        Schema::create('task_type', function (Blueprint $table) {
+        Schema::create('angkatan', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('type');
+            $table->string('name');
             $table->string('description')->nullable();
-            $table->integer('status');
+            $table->year('tahun');
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateTableTaskType extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('task_type');
+        Schema::dropIfExists('angkatan');
     }
 }

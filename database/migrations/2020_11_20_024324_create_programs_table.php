@@ -16,8 +16,8 @@ class CreateProgramsTable extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->string('order');
-            $table->string('status');
+            $table->integer('order');
+            $table->integer('status');
             $table->text('description');
             $table->timestamps();
             $table->softDeletes();

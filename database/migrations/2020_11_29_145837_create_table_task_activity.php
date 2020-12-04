@@ -15,11 +15,17 @@ class CreateTableTaskActivity extends Migration
     {
         Schema::create('task_activity', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('point');
-            $table->integer('status');
-            $table->integer('like');
-            $table->integer('id_task')->nullable(true);
-            $table->integer('id_user')->nullable(true);
+            $table->text('review');
+            $table->integer('status')->nullable();
+            $table->text('document')->nullable();
+            $table->text('image')->nullable();
+            $table->text('video')->nullable();
+            $table->integer('id_task');
+            $table->integer('id_user');
+            $table->integer('id_comment');
+            $table->integer('id_like');
+            $table->integer('id_hashtag');
+            $table->integer('id_angkatan');
             $table->timestamps();
         });
     }

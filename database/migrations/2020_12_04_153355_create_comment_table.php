@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateTableTaskType extends Migration
+class CreateCommentTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateTableTaskType extends Migration
      */
     public function up()
     {
-        Schema::create('task_type', function (Blueprint $table) {
+        Schema::create('comment', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('type');
-            $table->string('description')->nullable();
-            $table->integer('status');
+            $table->text('comment');
+            $table->integer('id_user');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -29,6 +29,6 @@ class CreateTableTaskType extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('task_type');
+        Schema::dropIfExists('comment');
     }
 }

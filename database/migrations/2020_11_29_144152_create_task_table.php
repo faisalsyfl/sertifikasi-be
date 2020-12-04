@@ -16,11 +16,17 @@ class CreateTaskTable extends Migration
         Schema::create('task', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
-            $table->text('description');
-            $table->integer('role');
+            $table->string('title');
+            $table->bigInteger('point');
+            $table->text('icon');
+            $table->text('description')->nullable();
+            $table->text('url')->nullable();
+            $table->text('image')->nullable();
+            $table->text('document')->nullable();
+            $table->integer('order');
             $table->integer('status');
-            $table->string('image');
-            $table->integer('id_programs')->nullable(false)->change();
+            $table->integer('id_programs');
+            $table->integer('id_task_type');
             $table->timestamps();
             $table->softDeletes();
         });
