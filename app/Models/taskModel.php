@@ -21,6 +21,15 @@ class taskModel extends Model
     ];
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'id_programs'
+    ];
+
+    /**
      * Primary Key
      * @var string
      */
@@ -31,8 +40,8 @@ class taskModel extends Model
         return $this->belongsTo('App\Models\programModel');
     }
 
-    // public function task()
-    // {
-    //     return $this->hasMany('App\Models\taskActivityModel');
-    // }
+    public function task_type()
+    {
+        return $this->hasOne('App\Models\taskTypeModel', 'id', 'id_task_type');
+    }
 }

@@ -3,16 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class programModel extends Model
+class taskTypeModel extends Model
 {
-    use SoftDeletes;
-
     /**
      * Table database
      */
-    protected $table = 'programs';
+    protected $table = 'task_type';
 
     /**
      * The attributes that are mass assignable.
@@ -20,7 +17,7 @@ class programModel extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'order', 'status', 'description'
+        'type', 'description', 'status'
     ];
 
     /**
@@ -31,6 +28,6 @@ class programModel extends Model
 
     public function task()
     {
-        return $this->hasMany('App\Models\taskModel', 'id_programs', 'id');
+        return $this->belongsTo('App\Models\taskModel', 'id_programs', 'id');
     }
 }
