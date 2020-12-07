@@ -165,4 +165,15 @@ trait RestApi
 
         return response()->json($output, 422);
     }
+
+    function hash_filename($filename = '')
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < 10; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString . date('Y-m-d-H-i-s') . random_int(10, 99);
+    }
 }

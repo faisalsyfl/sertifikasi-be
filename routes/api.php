@@ -30,6 +30,7 @@ $api->version('v1', function (Router $api) {
     $api->group(['middleware' => 'jwt.auth', 'prefix' => 'task'], function (Router $api) {
         $api->post('list', 'App\\Api\\V1\\Controllers\\TaskController@list');
         $api->post('detail', 'App\\Api\\V1\\Controllers\\TaskController@detail');
+        $api->post('update_status', 'App\\Api\\V1\\Controllers\\TaskController@updateStatusTask');
     });
 
     #protect with Jwt Auth

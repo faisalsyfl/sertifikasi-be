@@ -17,7 +17,7 @@ class taskActivityModel extends Model
      * @var array
      */
     protected $fillable = [
-        'point', 'status', 'like', 'id_task', 'id_user'
+        'point', 'status', 'like', 'id_task', 'id_user', 'id_angkatan'
     ];
 
     /**
@@ -26,8 +26,38 @@ class taskActivityModel extends Model
      */
     protected $primaryKey = 'id';
 
-    // public function task()
+    public function task()
+    {
+        return $this->hasOne('App\Models\taskModel', 'id', 'id_task');
+    }
+
+    public function user()
+    {
+        return $this->hasOne('App\User', 'id', 'id_user');
+    }
+
+    public function attachment()
+    {
+        return $this->hasOne('App\Models\attachmentModel', 'id', 'id_attachment');
+    }
+
+    // public function angkatan()
     // {
-    //     return $this->belongsTo('App\Models\taskModel');
+    //     return $this->hasOne('App\User', 'id', 'id_user');
+    // }
+
+    // public function comment()
+    // {
+    //     return $this->hasOne('App\User', 'id', 'id_user');
+    // }
+
+    // public function like()
+    // {
+    //     return $this->hasOne('App\User', 'id', 'id_user');
+    // }
+
+    // public function hashtag()
+    // {
+    //     return $this->hasOne('App\User', 'id', 'id_user');
     // }
 }

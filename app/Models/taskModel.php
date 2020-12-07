@@ -44,4 +44,9 @@ class taskModel extends Model
     {
         return $this->hasOne('App\Models\taskTypeModel', 'id', 'id_task_type');
     }
+
+    public function task_activity()
+    {
+        return $this->belongsTo('App\Models\taskActivityModel', 'id', 'id_task');
+    }
 }

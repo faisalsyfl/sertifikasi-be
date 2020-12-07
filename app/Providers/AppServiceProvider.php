@@ -9,6 +9,7 @@ use Symfony\Component\Debug\Exception\FatalErrorException;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Dingo\Api\Exception\ValidationHttpException;
 
 use App\Traits\RestApi;
 
@@ -22,6 +23,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        app('Dingo\Api\Exception\Handler')->register(function (ValidationHttpException $exception) {
+            return $this->errorRequest(422, 'Validation Error', $exception->getErrors()->getMessages());
+        });
+
         app('Dingo\Api\Exception\Handler')->register(function (FatalErrorException $exception) {
             return $this->errorRequest(500, $exception->getMessage());
         });
