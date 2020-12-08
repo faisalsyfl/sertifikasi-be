@@ -41,32 +41,31 @@ class TaskController extends Controller
         return $this->errorRequest(422, 'Task Not Found');
     }
 
+    public function progressTask(Request $request)
+    {
+        #belom validasi
+        $id_task = $request->id_task;
+        $id_program = $this->getTask($id_task) ? $this->getTask($id_task)->id_program : '';
+        $this->createTaskActivity($id_task, $id_program);
+    }
+
     public function updateStatusTask(RuleTaskFinish $request)
     {
         $review = $request->review ? $request->review : '';
         $id_task = $request->id_task;
-
         $id_program = $this->getTask($id_task) ? $this->getTask($id_task)->id_program : '';
 
         if (!$id_program)
             return $this->errorRequest(422, 'Task Not Found');
 
         $taskActivity = taskActivityModel::where('id_task', $request->id_task);
-        if ($taskActivity->count() == 0) {
-            $user = Auth::user();
-            $data = [
-                'id_user' => $user->id,
-                'id_task' => $id_task,
-                'id_angkatan' => $user->id_angkatan,
-                'id_program' =>  $id_program,
-                'status' => 1
-            ];
-            $taskActivity = taskActivityModel::create($data);
 
+        if ($taskActivity->count() == 0) {
+
+            $this->createTaskActivity($id_task, $id_program);
             $this->saveReviewAttachment($request, $id_task, $review);
 
             $taskActivityGet = taskActivityModel::with(['task', 'user', 'attachment', 'angkatan', 'program'])->where('id', $taskActivity->id)->first();
-
             return $this->output($taskActivityGet);
         } else {
 
@@ -76,6 +75,19 @@ class TaskController extends Controller
             return $this->output($taskActivityGet);
         }
         return $this->errorRequest(422, 'Task Not Found');
+    }
+
+    private function createTaskActivity($id_task, $id_program)
+    {
+        $user = Auth::user();
+        $data = [
+            'id_user' => $user->id,
+            'id_task' => $id_task,
+            'id_angkatan' => $user->id_angkatan,
+            'id_program' =>  $id_program,
+            'status' => 1
+        ];
+        return taskActivityModel::create($data);
     }
 
     private function saveAttachment($request, $id_task)
@@ -104,10 +116,7 @@ class TaskController extends Controller
                 $this->getTaskActivity((int) $id_task, $id_attachment);
             } else {
                 $retAttach = attachmentModel::create($file_info);
-
-                $saveTask = taskActivityModel::where('id_task', $id_task)->first();
-                $saveTask->id_attachment = $retAttach->id;
-                $saveTask->save();
+                $this->getTaskActivity((int) $id_task, $retAttach->id);
             }
 
             return true;
@@ -136,11 +145,5 @@ class TaskController extends Controller
     public function getTask($id_task)
     {
         return taskModel::with(['task_type', 'program'])->where('id', $id_task)->first();
-    }
-
-    private function updateRespone($task)
-    {
-        return $task ?
-            $this->output($task, 'Status Updated', 200) : $this->output($task, 'Status Update Fail', 422);
     }
 }
