@@ -17,7 +17,7 @@ class taskActivityModel extends Model
      * @var array
      */
     protected $fillable = [
-        'point', 'status', 'like', 'id_task', 'id_user', 'id_angkatan'
+        'point', 'status', 'like', 'id_task', 'id_user', 'id_angkatan', 'id_program'
     ];
 
     /**
@@ -41,15 +41,15 @@ class taskActivityModel extends Model
         return $this->hasOne('App\Models\attachmentModel', 'id', 'id_attachment');
     }
 
-    // public function angkatan()
-    // {
-    //     return $this->hasOne('App\User', 'id', 'id_user');
-    // }
+    public function angkatan()
+    {
+        return $this->hasOne('App\Models\angkatanModel', 'id', 'id_angkatan');
+    }
 
-    // public function comment()
-    // {
-    //     return $this->hasOne('App\User', 'id', 'id_user');
-    // }
+    public function program()
+    {
+        return $this->hasOne('App\Models\programModel', 'id', 'id_program');
+    }
 
     // public function like()
     // {
