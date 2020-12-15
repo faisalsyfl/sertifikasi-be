@@ -17,5 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call(initialTaskTypeSeeder::class);
         $this->call(initialProgramsSeeder::class);
         $this->call(initialTaskSeeder::class);
+        $this->call(dummyCommersMate::class);
     }
 }

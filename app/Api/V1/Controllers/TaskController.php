@@ -41,14 +41,6 @@ class TaskController extends Controller
         return $this->errorRequest(422, 'Task Not Found');
     }
 
-    public function progressTask(Request $request)
-    {
-        #belom validasi
-        $id_task = $request->id_task;
-        $id_program = $this->getTask($id_task) ? $this->getTask($id_task)->id_program : '';
-        $this->createTaskActivity($id_task, $id_program);
-    }
-
     public function updateStatusTask(RuleTaskFinish $request)
     {
         $review = $request->review ? $request->review : '';
@@ -58,28 +50,26 @@ class TaskController extends Controller
         if (!$id_program)
             return $this->errorRequest(422, 'Task Not Found');
 
-        $taskActivity = taskActivityModel::where('id_task', $request->id_task);
-
+        $user = Auth::user();
+        $taskActivity = taskActivityModel::where('id_task', $request->id_task)->where('id_user', $user->id);
         if ($taskActivity->count() == 0) {
+            $taskActivityRes = $this->createTaskActivity($id_task, $id_program, $user);
+            $this->saveReviewAttachment($request, $id_task, $review, $user);
 
-            $this->createTaskActivity($id_task, $id_program);
-            $this->saveReviewAttachment($request, $id_task, $review);
-
-            $taskActivityGet = taskActivityModel::with(['task', 'user', 'attachment', 'angkatan', 'program'])->where('id', $taskActivity->id)->first();
+            $taskActivityGet = $this->getListTaskActivity($taskActivityRes->id);
             return $this->output($taskActivityGet);
         } else {
 
-            $this->saveReviewAttachment($request, $id_task, $review);
+            $this->saveReviewAttachment($request, $id_task, $review, $user);
 
-            $taskActivityGet = taskActivityModel::with(['task', 'user', 'attachment', 'angkatan', 'program'])->where('id_task', $id_task)->first();
+            $taskActivityGet = $this->getListTaskActivity($taskActivity->first()->id);
             return $this->output($taskActivityGet);
         }
         return $this->errorRequest(422, 'Task Not Found');
     }
 
-    private function createTaskActivity($id_task, $id_program)
+    private function createTaskActivity($id_task, $id_program, $user)
     {
-        $user = Auth::user();
         $data = [
             'id_user' => $user->id,
             'id_task' => $id_task,
@@ -125,9 +115,9 @@ class TaskController extends Controller
         return false;
     }
 
-    private function saveReviewAttachment($request, $id_task, $review)
+    private function saveReviewAttachment($request, $id_task, $review, $user)
     {
-        $activity = taskActivityModel::with(['task'])->where('id_task', $id_task)->first();
+        $activity = taskActivityModel::with(['task'])->where('id_task', $id_task)->where('id_user', $user->id)->first();
         $activity->review = $review;
         $activity->save();
 
@@ -145,5 +135,10 @@ class TaskController extends Controller
     public function getTask($id_task)
     {
         return taskModel::with(['task_type', 'program'])->where('id', $id_task)->first();
+    }
+
+    public function getListTaskActivity($id)
+    {
+        return taskActivityModel::with(['task', 'user', 'attachment', 'angkatan', 'program'])->where('id', $id)->first();
     }
 }

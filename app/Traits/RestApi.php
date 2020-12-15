@@ -68,19 +68,22 @@ trait RestApi
      */
     function validateRequest($request, $config, $message = '')
     {
-        if (is_null($request)) {
-            header('HTTP/1.0 400 Bad Request');
-            header('Cache-Control: no-cache');
-            header('Content-Type:  application/json');
+        // if (is_null($request)) {
+        //     header('HTTP/1.0 400 Bad Request');
+        //     header('Cache-Control: no-cache');
+        //     header('Content-Type:  application/json');
 
-            exit($this->errorRequest(400, 'Please check all input', [], true));
-        }
+        //     exit($this->errorRequest(400, 'Please check all input', [], true));
+        // }
 
         $request = is_array($request) ? $request : (array) $request;
         $validate = Validator::make($request, $config);
 
         if ($validate->fails()) {
-            exit($this->errorValidation($validate->errors()->toArray()));
+            // exit($this->errorRequest(422, 'User Not Found'));
+            return $validate->errors()->toArray();
+            // $this->errorValidation($validate->errors()->toArray());
+            // die();
         }
     }
 
@@ -175,5 +178,12 @@ trait RestApi
             $randomString .= $characters[random_int(0, $charactersLength - 1)];
         }
         return $randomString . date('Y-m-d-H-i-s') . random_int(10, 99);
+    }
+
+    function clean($string)
+    {
+        // $string = str_replace(' ', '-', $string); // Replaces all spaces with hyphens.
+
+        return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
 }

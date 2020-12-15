@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateHashtagTable extends Migration
+class CreateCommersHasMateTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateHashtagTable extends Migration
      */
     public function up()
     {
-        Schema::create('hashtag', function (Blueprint $table) {
+        Schema::create('commers_has_mate', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('hashtag');
+            $table->integer('id_commers');
+            $table->integer('id_mate');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateHashtagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hashtag');
+        Schema::dropIfExists('commers_has_mate');
     }
 }

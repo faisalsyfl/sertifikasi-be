@@ -26,7 +26,7 @@ class taskModel extends Model
      * @var array
      */
     protected $hidden = [
-        'id_program'
+        'id_program', 'id_task_type', 'order', 'document'
     ];
 
     /**
