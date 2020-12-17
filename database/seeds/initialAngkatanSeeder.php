@@ -16,8 +16,8 @@ class initialAngkatanSeeder extends Seeder
         DB::table($this->tableName)->truncate();
 
         DB::table($this->tableName)->insert([
-            'name' => 'angkatan 2021',
-            'description' => 'angkatan 2021 BJB',
+            'name' => 'Batch #1 2021',
+            'description' => 'Batch #1 2021 BJB',
             'tahun' => 2021,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);

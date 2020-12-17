@@ -13,25 +13,37 @@ class initialUserSeeder extends Seeder
      */
     public function run()
     {
-        DB::table($this->tableName)->insert([
-            'name' => 'user1',
-            'nik' => 'user1',
-            'username' => 'user1',
-            'email' => 'user1@bjb',
-            'phone' => '1234567890',
-            'password' => Hash::make('user1'),
-            'role' => 1,
-            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
-            'id_angkatan' => 1
-        ]);
+        for ($i = 1; $i <= 10; $i++) {
+            DB::table($this->tableName)->insert([
+                'name' => 'commers' . $i,
+                'nik' => 'commers' . $i,
+                'username' => 'commers' . $i,
+                'email' => 'commers' . $i . '@bjb',
+                'phone' => '1234567890',
+                'password' => Hash::make('commers'),
+                'role' => 1,
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'id_angkatan' => 1
+            ]);
+        }
 
         DB::table($this->tableName)->insert([
-            'name' => 'user2',
-            'nik' => 'user2',
-            'username' => 'user2',
-            'email' => 'user2@bjb',
+            'name' => 'mate1',
+            'nik' => 'mate1',
+            'username' => 'mate1',
+            'email' => 'mate1@bjb',
             'phone' => '1234567890',
-            'password' => Hash::make('user2'),
+            'password' => Hash::make('mate'),
+            'role' => 2,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'id_angkatan' => 1
+        ], [
+            'name' => 'mate2',
+            'nik' => 'mate2',
+            'username' => 'mate2',
+            'email' => 'mate2@bjb',
+            'phone' => '1234567890',
+            'password' => Hash::make('mate'),
             'role' => 2,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'id_angkatan' => 1

@@ -33,4 +33,16 @@ class programModel extends Model
     {
         return $this->hasMany('App\Models\taskModel', 'id_program', 'id');
     }
+
+    public function getResponseAttribute()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'status' => $this->status ? 'Active' : 'Not Active',
+            'description' => $this->description,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
 }

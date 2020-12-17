@@ -26,7 +26,7 @@ class taskModel extends Model
      * @var array
      */
     protected $hidden = [
-        'id_program'
+        'id_program', 'id_task_type', 'order', 'document'
     ];
 
     /**
@@ -48,5 +48,24 @@ class taskModel extends Model
     public function task_activity()
     {
         return $this->belongsTo('App\Models\taskActivityModel', 'id', 'id_task');
+    }
+
+    public function getResponseAttribute()
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'title' => $this->title,
+            'point' => $this->point,
+            'icon' => $this->icon,
+            'description' => $this->description,
+            'image' => $this->image,
+            'status' => $this->status ? 'Active' : 'Not Active',
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'deleted_at' => $this->deleted_at,
+            'program' => $this->program->getResponseAttribute(),
+            'task_type' => $this->task_type,
+        ];
     }
 }

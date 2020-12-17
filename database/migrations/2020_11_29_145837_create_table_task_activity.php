@@ -21,7 +21,6 @@ class CreateTableTaskActivity extends Migration
             $table->integer('id_user');
             $table->integer('id_comment')->nullable();
             $table->integer('id_like')->nullable();
-            $table->integer('id_hashtag')->nullable();
             $table->integer('id_attachment')->nullable();
             $table->integer('id_angkatan');
             $table->timestamps();
