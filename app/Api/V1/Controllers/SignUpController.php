@@ -38,12 +38,12 @@ class SignUpController extends Controller
                 'username' => $user->username,
                 'role'  => $user->role,
                 'insert_id' => $user->id
-            ], 'Sucessfully register');
+            ], 'Sucessfully register',200);
         }else{
             return $this->output([
                 'role'  => $request->input('role'),
                 'username' => $request->input('username')
-            ], 'User Already Exists');
+            ], 'User Already Exists',422);
         }
     }
     public function checkUser(Request $request, JWTAuth $JWTAuth)
@@ -58,7 +58,7 @@ class SignUpController extends Controller
         if($user){
             return $this->output([
                 'status' => false
-            ], 'Username or Email already exists',400);
+            ], 'Username or Email already exists',422);
 
         }else{
             return $this->output([

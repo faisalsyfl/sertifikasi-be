@@ -34,6 +34,14 @@ return [
         ]
     ],
 
+    'update_profile' => [
+        'validation_rules' => [
+            'name' => 'required',
+            'email' => 'required|email',
+            'gender' => 'required'
+        ]
+    ],
+
     // these options are related to the password recovery procedure
     'reset_password' => [
         'validation_rules' => [

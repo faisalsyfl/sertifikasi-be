@@ -24,6 +24,7 @@ class LoginController extends Controller
     public function login(LoginRequest $request, JWTAuth $JWTAuth)
     {
         $credentials = $request->only(['username', 'password']);
+        $token = null;
         try {
             $user   = User::where('username', '=', $credentials['username'])->first();
             if (!$user) {
@@ -44,7 +45,7 @@ class LoginController extends Controller
         if(!$token){
             return $this->output([
                 'status' => 0
-            ], $message,400);
+            ], $message,422);
         }else{
             return $this->output([
                 'role'      => $user->role,
