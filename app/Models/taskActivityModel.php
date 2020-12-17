@@ -73,9 +73,7 @@ class taskActivityModel extends Model
             'tag_program' => '#' . $this->clean($this->program->name),
             'tag_task' => '#' . $this->clean($this->task->name),
             'approve' => $this->approve,
-            'approve' => $this->approve,
-            'task' => $this->task,
-            'program' => $this->program
+            'task' => $this->task->getResponseAttribute()
         ];
     }
 

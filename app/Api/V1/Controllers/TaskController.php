@@ -25,7 +25,7 @@ class TaskController extends Controller
     {
         if (isset($request->id_program) && $request->id_program) {
             if (programModel::where('id', $request->id_program)->count() != 0) {
-                $taskModel = taskModel::with(['task_type'])->where('id_program', $request->id_program)->get();
+                $taskModel = taskModel::where('id_program', $request->id_program)->get()->pluck('Response');
                 return $this->output($taskModel);
             }
             return $this->errorRequest(422, 'Id Program Not Found');
@@ -35,7 +35,7 @@ class TaskController extends Controller
     public function detail(Request $request)
     {
         if (isset($request->id_task) && $request->id_task) {
-            $taskModel = taskModel::with(['task_type', 'program'])->where('id', $request->id_task)->first();
+            $taskModel = taskModel::where('id', $request->id_task)->first()->getResponseAttribute();
             return $this->output($taskModel);
         }
         return $this->errorRequest(422, 'Task Not Found');
