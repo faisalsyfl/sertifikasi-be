@@ -21,26 +21,34 @@ class SignUpController extends Controller
     public function signUp(SignUpRequest $request, JWTAuth $JWTAuth)
     {
         $user = new User($request->all());
-        if(!User::where('email','=',$request->input('email'))->exists() && !User::where('username','=',$request->input('username'))){
-            if (!$user->save()) {
-                throw new HttpException(500);
-            }
-            
-            $token = $JWTAuth->fromUser($user);
-            if(!$token){
-                throw new HttpException(401);
-            }
-            return $this->output([
-                'token' => $token,
-                'username' => $user->username,
-                'role'  => $user->role,
-                'insert_id' => $user->id
-            ], 'Pendaftaran Berhasil',200);
+        if(!User::where('username','=',$request->input('username'))->exists()){
+            if(!User::where('email','=',$request->input('email'))->exists()){
+
+                if (!$user->save()) {
+                    throw new HttpException(500);
+                }
+                
+                $token = $JWTAuth->fromUser($user);
+                if(!$token){
+                    throw new HttpException(401);
+                }
+                return $this->output([
+                    'token' => $token,
+                    'username' => $user->username,
+                    'role'  => $user->role,
+                    'insert_id' => $user->id
+                ], 'Pendaftaran Berhasil',200);
+            }else{
+                return $this->output([
+                    'role'  => $request->input('role'),
+                    'username' => $request->input('username')
+                ], 'Email telah terdaftar',422);
+                }
         }else{
             return $this->output([
                 'role'  => $request->input('role'),
                 'username' => $request->input('username')
-            ], 'Username/Email telah terdaftar',422);
+            ], 'Username telah terdaftar',422);
         }
     }
     public function checkUser(Request $request, JWTAuth $JWTAuth)
