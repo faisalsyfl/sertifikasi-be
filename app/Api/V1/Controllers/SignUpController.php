@@ -21,14 +21,11 @@ class SignUpController extends Controller
     public function signUp(SignUpRequest $request, JWTAuth $JWTAuth)
     {
         $user = new User($request->all());
-        if(!User::where('email','=',$request->input('email'))->exists()){
+        if(!User::where('email','=',$request->input('email'))->exists() && !User::where('username','=',$request->input('username'))){
             if (!$user->save()) {
                 throw new HttpException(500);
             }
             
-            if (!Config::get('validation_rules.sign_up.release_token')) {
-                throw new HttpException(401);
-            }
             $token = $JWTAuth->fromUser($user);
             if(!$token){
                 throw new HttpException(401);
@@ -38,12 +35,12 @@ class SignUpController extends Controller
                 'username' => $user->username,
                 'role'  => $user->role,
                 'insert_id' => $user->id
-            ], 'Sucessfully register',200);
+            ], 'Pendaftaran Berhasil',200);
         }else{
             return $this->output([
                 'role'  => $request->input('role'),
                 'username' => $request->input('username')
-            ], 'User Already Exists',422);
+            ], 'Username/Email telah terdaftar',422);
         }
     }
     public function checkUser(Request $request, JWTAuth $JWTAuth)
@@ -58,12 +55,12 @@ class SignUpController extends Controller
         if($user){
             return $this->output([
                 'status' => false
-            ], 'Username or Email already exists',422);
+            ], 'Username atau email telah terdaftar',422);
 
         }else{
             return $this->output([
                 'status' => true
-            ], 'Username or email are available',200);
+            ], 'Username or email tersedia',200);
         }
     }
 }
