@@ -34,23 +34,46 @@ class TaskActivityController extends Controller
 
     public function approveTaskActivity(Request $request)
     {
-        $res = taskActivityModel::with(['task'])->where('id', $request->id)->first();
+        #status 1 = Approve
+        $res = $this->getTaskActivity($request->id)->first();
         if ($res->task->point) {
 
             $validate = $this->validateRequest($request->all(), $this->rules($res->task->point));
-
             if ($validate)
                 return $this->errorRequest(422, 'Validation Error', $validate);
 
-            $res = taskActivityModel::with(['task', 'program'])->where('id', $request->id)->first();
             $res->approve = 1;
             $res->save();
 
-            $res = taskActivityModel::skip($request->start)->take($request->length)->orderBy('created_at', 'ASC')->get();
-            return $this->output($res->pluck('Response'), 'Activity Approved');
+            $res = $this->getTaskActivity($request->id)->orderBy('created_at', 'ASC')->first();
+            return $this->output($res->getResponseAttribute(), 'Activity Approved');
         }
 
-        return $this->errorRequest(422, 'Task Point Not Found');
+        return $this->errorRequest(422, 'Task Activity Not Found');
+    }
+
+    public function rejectTaskActivity(Request $request)
+    {
+        #status 2 = Reject
+        $validate = $this->validateRequest($request->all(), ['id' => 'required|numeric|exists:task_activity,id']);
+        if ($validate)
+            return $this->errorRequest(422, 'Validation Error', $validate);
+
+        $res = $this->getTaskActivity($request->id)->first();
+        if ($res) {
+            $res->approve = 2;
+            $res->save();
+
+            $res = $this->getTaskActivity($request->id)->orderBy('created_at', 'ASC')->get();
+            return $this->output($res->pluck('Response')[0], 'Activity Rejected');
+        }
+
+        return $this->errorRequest(422, 'Task Activity Not Found');
+    }
+
+    private function getTaskActivity($id)
+    {
+        return taskActivityModel::with(['task', 'program'])->where('id', $id);
     }
 
     /**
@@ -61,9 +84,7 @@ class TaskActivityController extends Controller
     {
         return [
             'id' => 'required|numeric|exists:task_activity,id',
-            'point' => 'required|numeric|max:' . $max,
-            'start' => 'required|numeric',
-            'length' => 'required|numeric'
+            'point' => 'required|numeric|max:' . $max
         ];
     }
 }
