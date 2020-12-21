@@ -27,6 +27,9 @@ class CreateTaskTable extends Migration
             $table->integer('status');
             $table->integer('id_program');
             $table->integer('id_task_type');
+            $table->string('tag_task')->nullable();
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

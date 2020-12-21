@@ -15,7 +15,7 @@ class dummyCommersMate extends Seeder
         for ($i = 1; $i <= 10; $i++) {
             DB::table($this->tableName)->insert([
                 'id_commers' => $i,
-                'id_mate' => 1,
+                'id_mate' => 12,
             ]);
         }
     }

@@ -19,6 +19,7 @@ class CreateProgramsTable extends Migration
             $table->integer('order');
             $table->integer('status');
             $table->text('description');
+            $table->string('tag_program')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

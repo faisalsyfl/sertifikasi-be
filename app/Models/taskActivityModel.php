@@ -18,7 +18,7 @@ class taskActivityModel extends Model
      * @var array
      */
     protected $fillable = [
-        'point', 'status', 'like', 'id_task', 'id_user', 'id_angkatan', 'id_program'
+        'point', 'status', 'like', 'id_task', 'id_user', 'id_angkatan', 'id_program', 'point'
     ];
 
     /**
@@ -70,9 +70,10 @@ class taskActivityModel extends Model
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'tag_program' => '#' . $this->clean($this->program->name),
-            'tag_task' => '#' . $this->clean($this->task->name),
+            'tag_program' => $this->program->tag_program,
+            'tag_task' => $this->task->tag_task,
             'approve' => $this->approve,
+            'point' => $this->point,
             'task' => $this->task->getResponseAttribute()
         ];
     }

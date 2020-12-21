@@ -43,6 +43,7 @@ class TaskActivityController extends Controller
                 return $this->errorRequest(422, 'Validation Error', $validate);
 
             $res->approve = 1;
+            $res->point = $request->point;
             $res->save();
 
             $res = $this->getTaskActivity($request->id)->orderBy('created_at', 'ASC')->first();

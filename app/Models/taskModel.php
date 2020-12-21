@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class taskModel extends Model
 {
@@ -61,6 +62,9 @@ class taskModel extends Model
             'description' => $this->description,
             'image' => $this->image,
             'status' => $this->status ? 'Active' : 'Not Active',
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'created_at' => $this->created_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'deleted_at' => $this->deleted_at,
