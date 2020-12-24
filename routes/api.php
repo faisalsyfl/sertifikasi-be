@@ -68,4 +68,20 @@ $api->version('v1', function (Router $api) {
             'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.'
         ]);
     });
+
+    #admin endpoint
+    $api->group(['prefix' => 'admin'], function (Router $api) {
+        $api->post('login', 'App\\Api\\V1\\Controllers\\Admin\\AuthController@login');
+        
+        $api->group(['middleware' => 'jwt.auth'],function (Router $api){
+            #admin - comers
+            $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
+            $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
+    
+            #admin - mate
+            $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
+            $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
+        });
+
+    });
 });
