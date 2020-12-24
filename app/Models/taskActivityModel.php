@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Vinkla\Hashids\Facades\Hashids;
+use Carbon\Carbon;
 
 class taskActivityModel extends Model
 {
@@ -68,8 +68,8 @@ class taskActivityModel extends Model
             'id' => $this->id,
             'review' => $this->review,
             'status' => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => Carbon::parse($this->created_at)->toISOString(),
+            'updated_at' => Carbon::parse($this->updated_at)->toISOString(),
             'tag_program' => $this->program->tag_program,
             'tag_task' => $this->task->tag_task,
             'approve' => $this->approve,

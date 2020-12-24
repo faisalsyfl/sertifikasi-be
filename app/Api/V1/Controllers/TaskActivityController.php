@@ -7,6 +7,7 @@ use App\Models\taskActivityModel;
 use App\Traits\RestApi;
 use Illuminate\Http\Request;
 use Auth;
+use Carbon\Carbon;
 
 class TaskActivityController extends Controller
 {
@@ -34,15 +35,21 @@ class TaskActivityController extends Controller
 
     public function approveTaskActivity(Request $request)
     {
-        #status 1 = Approve
+        #status 2 = Approve
         $res = $this->getTaskActivity($request->id)->first();
-        if ($res->task->point) {
+        if ($res && $res->task->point) {
+            $point = $res->task->point;
 
-            $validate = $this->validateRequest($request->all(), $this->rules($res->task->point));
+            if (Carbon::now()->greaterThan(Carbon::create($res->task->end_date))) {
+                #late task date
+                $point = round($point / 2);
+            }
+
+            $validate = $this->validateRequest($request->all(), $this->rules($point));
             if ($validate)
                 return $this->errorRequest(422, 'Validation Error', $validate);
 
-            $res->approve = 1;
+            $res->approve = 2;
             $res->point = $request->point;
             $res->save();
 
@@ -55,14 +62,14 @@ class TaskActivityController extends Controller
 
     public function rejectTaskActivity(Request $request)
     {
-        #status 2 = Reject
+        #status 3 = Reject
         $validate = $this->validateRequest($request->all(), ['id' => 'required|numeric|exists:task_activity,id']);
         if ($validate)
             return $this->errorRequest(422, 'Validation Error', $validate);
 
         $res = $this->getTaskActivity($request->id)->first();
         if ($res) {
-            $res->approve = 2;
+            $res->approve = 3;
             $res->save();
 
             $res = $this->getTaskActivity($request->id)->orderBy('created_at', 'ASC')->get();
