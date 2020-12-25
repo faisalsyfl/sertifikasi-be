@@ -9,60 +9,28 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Password;
 use App\Api\V1\Requests\ResetPasswordRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-
+use App\Traits\RestApi;
 class ResetPasswordController extends Controller
 {
+    use RestApi;
+
     public function resetPassword(ResetPasswordRequest $request, JWTAuth $JWTAuth)
     {
-        $response = $this->broker()->reset(
-            $this->credentials($request),
-            function ($user, $password) {
-                $this->reset($user, $password);
-            }
-        );
+        
+        $user = User::where('email', '=', $request->email)->first();
+        if($user){
+            if($request->password === $request->password_confirmation)
+                $this->reset($user,$request->password);
+            else
+                return $this->errorRequest(422,'Password konfirmasi tidak sama');
 
-        if ($response !== Password::PASSWORD_RESET) {
-            throw new HttpException(500);
+        }else{
+            return $this->errorRequest(422, 'Data user tidak ditemukan berdasarkan email');
         }
 
-        if (!Config::get('validation_rules.reset_password.release_token')) {
-            return response()->json([
-                'status' => 'ok',
-            ]);
-        }
-
-        $user = User::where('email', '=', $request->get('email'))->first();
-
-        return response()->json([
+        return $this->output([
             'status' => 'ok',
-            'token' => $JWTAuth->fromUser($user)
         ]);
-    }
-
-    /**
-     * Get the broker to be used during password reset.
-     *
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    public function broker()
-    {
-        return Password::broker();
-    }
-
-    /**
-     * Get the password reset credentials from the request.
-     *
-     * @param  ResetPasswordRequest  $request
-     * @return array
-     */
-    protected function credentials(ResetPasswordRequest $request)
-    {
-        return $request->only(
-            'email',
-            'password',
-            'password_confirmation',
-            'token'
-        );
     }
 
     /**

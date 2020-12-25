@@ -11,6 +11,7 @@ $api->version('v1', function (Router $api) {
         $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
 
         $api->post('recovery', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@sendResetEmail');
+        $api->post('verify_token', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@verifyToken');
         $api->post('reset', 'App\\Api\\V1\\Controllers\\ResetPasswordController@resetPassword');
 
         $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
@@ -81,6 +82,10 @@ $api->version('v1', function (Router $api) {
             #admin - mate
             $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
             $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
+            
+            #admin - angkatan
+            $api->get('angkatan', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@index');
+            // $api->get('angkatan/{id}', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@show');
         });
 
     });
