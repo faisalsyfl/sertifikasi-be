@@ -29,10 +29,12 @@ class ForgotPasswordController extends Controller
             throw new NotFoundHttpException();
         }
         //Inactive current token
-        $current = mailTokenModel::where('email','=',$request->input('email'))->first();
+        $current = mailTokenModel::where('email','=',$request->input('email'))->where('active_token',1)->get();
         if($current){
-            $current->active_token = 0;
-            $current->save();
+            foreach($current as $curr){
+                $curr->active_token = 0;
+                $curr->save();
+            }
         }
 
         // Manual Mail
