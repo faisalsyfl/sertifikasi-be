@@ -25,7 +25,7 @@ class TaskController extends Controller
     {
         if (isset($request->id_program) && $request->id_program) {
             if (programModel::where('id', $request->id_program)->count() != 0) {
-                $taskModel = taskModel::where('id_program', $request->id_program)->get()->pluck('Response');
+                $taskModel = taskModel::where('id_program', $request->id_program)->orderBy('id', 'ASC')->get()->pluck('Response');
                 return $this->output($taskModel);
             }
             return $this->errorRequest(422, 'Id Program Not Found');

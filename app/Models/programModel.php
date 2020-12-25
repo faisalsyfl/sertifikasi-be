@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Carbon\Carbon;
 
 class programModel extends Model
 {
@@ -39,10 +40,11 @@ class programModel extends Model
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'status' => $this->status ? 'Active' : 'Not Active',
+            'status' => $this->status ? 'ACTIVE' : 'NOT_ACTIVE',
             'description' => $this->description,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'created_at' => Carbon::parse($this->created_at)->toISOString(),
+            'updated_at' => Carbon::parse($this->updated_at)->toISOString(),
+            'task' => $this->task->pluck('response'),
         ];
     }
 }

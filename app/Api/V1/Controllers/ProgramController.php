@@ -15,7 +15,8 @@ class ProgramController extends Controller
 
     public function list()
     {
-        $programModel = programModel::with(['task', 'task.task_type'])->get();
-        return $this->output($programModel->toArray());
+        $programModel = programModel::get();
+        // return $this->output($programModel->toArray());
+        return $this->output($programModel->pluck('response'));
     }
 }
