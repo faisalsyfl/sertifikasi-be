@@ -30,7 +30,7 @@ class ResetPasswordController extends Controller
 
         return $this->output([
             'status' => 'ok',
-        ]);
+        ],'Reset Password Berhasil');
     }
 
     /**
