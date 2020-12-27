@@ -45,7 +45,6 @@ return [
     // these options are related to the password recovery procedure
     'reset_password' => [
         'validation_rules' => [
-            'token' => 'required',
             'email' => 'required|email',
             'password' => 'required|confirmed'
         ]

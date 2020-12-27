@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class angkatanModel extends Model
+class mailTokenModel extends Model
 {
     /**
      * Table database
      */
-    protected $table = 'angkatan';
+    protected $table = 'mail_token';
 
     /**
      * The attributes that are mass assignable.
@@ -17,10 +17,10 @@ class angkatanModel extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'description', 'tahun'
+        'token', 'email','active_token','wrong'
     ];
     protected $hidden = [
-        'created_at','updated_at',
+        'created_at','updated_at','id'
     ];
 
 

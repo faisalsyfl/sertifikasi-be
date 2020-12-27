@@ -1,12 +1,15 @@
 @component('mail::message')
-# Introduction
+![alt text]({{url('/img/bjbfs.png')}} "BJB FS Logo")
 
-The body of your message.
+Halo! 
+Anda telah mengirim permintaan untuk mengatur ulang password anda.
 
-@component('mail::button', ['url' => ''])
-Button Text
-@endcomponent
+Masukan kode konfirmasi berikut:
 
-Thanks,<br>
-{{ config('app.name') }}
+## {{$token}}
+
+Jika anda tidak merasa mengirimkan permintaan ini, mohon untuk mengabaikan pesan ini.
+
+Terima kasih!
+bjb MyFirstStep Support.
 @endcomponent

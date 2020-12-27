@@ -17,10 +17,10 @@ class SendMail extends Mailable
      *
      * @return void
      */
-    public function __construct($username,$message)
+    public function __construct($username,$token)
     {
         $this->username = $username;
-        $this->message  = $message;
+        $this->token  = $token;
     }
 
     /**
@@ -30,6 +30,8 @@ class SendMail extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.tests.testing');
+        return $this->subject('[bjbMFS] Kode Perubahan Kata Sandi')->markdown('emails.tests.testing', [
+            'token' => $this->token,
+        ]);
     }
 }
