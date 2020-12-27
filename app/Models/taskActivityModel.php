@@ -77,9 +77,4 @@ class taskActivityModel extends Model
             'task' => $this->task->getResponseAttribute()
         ];
     }
-
-    private function clean($string)
-    {
-        return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
-    }
 }

@@ -28,7 +28,7 @@ $api->version('v1', function (Router $api) {
     });
     #program endpoint
     $api->group(['middleware' => 'jwt.auth', 'prefix' => 'program'], function (Router $api) {
-        $api->get('list', 'App\\Api\\V1\\Controllers\\ProgramController@list');
+        $api->get('list', 'App\\Api\\V1\\Controllers\\ProgramController@listProgramTask');
     });
 
     #task endpoint
@@ -72,16 +72,15 @@ $api->version('v1', function (Router $api) {
     #admin endpoint
     $api->group(['prefix' => 'admin'], function (Router $api) {
         $api->post('login', 'App\\Api\\V1\\Controllers\\Admin\\AuthController@login');
-        
-        $api->group(['middleware' => 'jwt.auth'],function (Router $api){
+
+        $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
             #admin - comers
             $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
             $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
-    
+
             #admin - mate
             $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
             $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
         });
-
     });
 });

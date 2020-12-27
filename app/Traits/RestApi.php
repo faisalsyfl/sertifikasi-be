@@ -30,7 +30,7 @@ trait RestApi
             'code' => 200,
             'message' => 'No data available',
             'response_time' => microtime(true) - LARAVEL_START,
-            'response_date' => date('Y-m-d H:i:s')
+            'response_date' => Carbon::parse(date('Y-m-d H:i:s'))->toISOString()
         ];
 
         $output['data'] = isset($data['data']) ? $data['data'] : $emptyResponse;
@@ -43,7 +43,7 @@ trait RestApi
                 'code' => $success_code,
                 'message' => $success_response,
                 'response_time' => microtime(true) - LARAVEL_START,
-                'response_date' => date('Y-m-d H:i:s')
+                'response_date' => Carbon::parse(date('Y-m-d H:i:s'))->toISOString()
             ];
 
             $output['data'] = isset($data['data']) ? $data['data'] : $data;
@@ -163,7 +163,7 @@ trait RestApi
             'message' => array_first($errorFlatten),
             'message_array' => $errorArray,
             'response_time' => microtime(true) - LARAVEL_START,
-            'response_date' => date('Y-m-d H:i:s')
+            'response_date' => Carbon::parse(date('Y-m-d H:i:s'))->toISOString()
         ];
 
         return response()->json($output, 422);
