@@ -46,6 +46,11 @@ $api->version('v1', function (Router $api) {
         $api->post('reject_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@rejectTaskActivity');
     });
 
+    #activity endpoint
+    $api->group(['middleware' => 'jwt.auth', 'prefix' => 'activity'], function (Router $api) {
+        $api->post('list', 'App\\Api\\V1\\Controllers\\TaskActivityController@list');
+    });
+
     #protect with Jwt Auth
     $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
         $api->get('protected', function () {
@@ -82,7 +87,7 @@ $api->version('v1', function (Router $api) {
             #admin - mate
             $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
             $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
-            
+
             #admin - angkatan
             $api->get('angkatan', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@index');
             // $api->get('angkatan/{id}', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@show');

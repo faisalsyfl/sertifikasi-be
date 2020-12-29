@@ -85,7 +85,7 @@ class taskModel extends Model
         return Carbon::now()->between($first, $second);
     }
 
-    private function checkProgress($taskId)
+    public function checkProgress($taskId)
     {
         $user = Auth::user();
         // $a = taskActivityModel::where('id_task', $taskId)->where('id_user', $user->id)->first();

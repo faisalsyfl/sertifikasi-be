@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+// use App\Models\taskModel;
 
 class taskActivityModel extends Model
 {
@@ -74,6 +75,21 @@ class taskActivityModel extends Model
             'tag_task' => $this->task->tag_task,
             'approve' => $this->approve,
             'point' => $this->point,
+            'task' => $this->task->getResponseAttribute()
+        ];
+    }
+
+    public function getListAttribute()
+    {
+        return [
+            'id' => $this->id,
+            'review' => $this->review,
+            'created_at' => Carbon::parse($this->created_at)->toISOString(),
+            'updated_at' => Carbon::parse($this->updated_at)->toISOString(),
+            'task_status_progress' => app('App\Models\taskModel')->checkProgress($this->id_task),
+            'tag_program' => $this->program->tag_program,
+            'tag_task' => $this->task->tag_task,
+            'attachment' => $this->attachment,
             'task' => $this->task->getResponseAttribute()
         ];
     }

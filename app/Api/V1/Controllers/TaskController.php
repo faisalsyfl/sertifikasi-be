@@ -119,6 +119,8 @@ class TaskController extends Controller
     {
         $activity = taskActivityModel::with(['task'])->where('id_task', $id_task)->where('id_user', $user->id)->first();
         $activity->review = $review;
+        $activity->approve = 1;
+        $activity->point = 0;
         $activity->save();
 
         #save attachment

@@ -16,6 +16,12 @@ class TaskActivityController extends Controller
     public function __construct()
     { }
 
+    public function list()
+    {
+        $result = taskActivityModel::where('id_angkatan', 1)->where('approve', 2)->orderBy('id', 'DESC')->get();
+        return $this->output($result->pluck('List'));
+    }
+
     public function mateTaskList(Request $request)
     {
         $user = Auth::user();
@@ -42,7 +48,7 @@ class TaskActivityController extends Controller
 
             if (Carbon::now()->greaterThan(Carbon::create($res->task->end_date))) {
                 #late task date
-                $point = round($point / 2);
+                $point = $point / 2;
             }
 
             $validate = $this->validateRequest($request->all(), $this->rules($point));
