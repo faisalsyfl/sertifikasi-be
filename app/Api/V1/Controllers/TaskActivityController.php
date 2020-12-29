@@ -16,22 +16,36 @@ class TaskActivityController extends Controller
     public function __construct()
     { }
 
-    public function list()
+    public function list(Request $request)
     {
-        $result = taskActivityModel::where('id_angkatan', 1)->where('approve', 2)->orderBy('id', 'DESC')->get();
+        $keyword = $request->q;
+        $start = $request->start ? $request->start : 0;
+        $length = $request->length ? $request->length : 5;
+
+        $result = taskActivityModel::where('id_angkatan', 1)
+            ->where('approve', 2)
+            ->findQuery($keyword)
+            ->skip($start)->take($length)
+            ->orderBy('id', 'DESC')->get();
+
         return $this->output($result->pluck('List'));
     }
 
     public function mateTaskList(Request $request)
     {
         $user = Auth::user();
+        $start = $request->start ? $request->start : 0;
+        $length = $request->length ? $request->length : 5;
+
         if ($user->id) {
 
             $res = taskActivityModel::whereIn('id_user', function ($q) use ($user) {
                 $q->from('commers_has_mate')
                     ->selectRaw('id_user')
                     ->where('id_mate', $user->id);
-            })->where('status', 1)->skip($request->start)->take($request->length)->orderBy('created_at', 'ASC')->get();
+            })->where('status', 1)
+                ->skip($start)->take($length)
+                ->orderBy('created_at', 'ASC')->get();
 
             return $this->output($res->pluck('Response'));
         }

@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Auth;
 use App\Models\taskActivityModel;
-use Illuminate\Support\Facades\DB;
 
 class taskModel extends Model
 {
@@ -64,6 +63,7 @@ class taskModel extends Model
             'icon' => $this->icon,
             'description' => $this->description,
             'image' => $this->image,
+            'tag_task' => $this->tag_task,
             'status' => $this->status ? 'ACTIVE' : 'NOT_ACTIVE',
             'start_date' => Carbon::parse($this->start_date)->toISOString(),
             'end_date' => Carbon::parse($this->end_date)->toISOString(),
@@ -88,8 +88,6 @@ class taskModel extends Model
     public function checkProgress($taskId)
     {
         $user = Auth::user();
-        // $a = taskActivityModel::where('id_task', $taskId)->where('id_user', $user->id)->first();
-        // $a = DB::table('task_activity')->where('id_task', $taskId)->first();
         $res = taskActivityModel::where('id_task', $taskId)->where('id_user', $user->id)->first();
 
         $status = 'MISSION_ON_PROGRESS';

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 // use App\Models\taskModel;
+use Illuminate\Support\Facades\DB;
 
 class taskActivityModel extends Model
 {
@@ -53,16 +54,6 @@ class taskActivityModel extends Model
         return $this->hasOne('App\Models\programModel', 'id', 'id_program');
     }
 
-    // public function like()
-    // {
-    //     return $this->hasOne('App\User', 'id', 'id_user');
-    // }
-
-    // public function hashtag()
-    // {
-    //     return $this->hasOne('App\User', 'id', 'id_user');
-    // }
-
     public function getResponseAttribute()
     {
         return [
@@ -92,5 +83,22 @@ class taskActivityModel extends Model
             'attachment' => $this->attachment,
             'task' => $this->task->getResponseAttribute()
         ];
+    }
+
+    public function scopeFindQuery($query, $keyword = null)
+    {
+        if (isset($keyword) && $keyword) {
+            $query->where(function ($q) use ($keyword) {
+                $q->orWhereHas('program', function ($qr) use ($keyword) {
+                    $qr->where('tag_program', 'like', '%' . $keyword . '%');
+                });
+                $q->orWhereHas('task', function ($qr) use ($keyword) {
+                    $qr->where('tag_task', 'like', '%' . $keyword . '%');
+                });
+                $q->orWhereHas('task', function ($qr) use ($keyword) {
+                    $qr->Where('description', 'like', '%' . $keyword . '%');
+                });
+            });
+        }
     }
 }
