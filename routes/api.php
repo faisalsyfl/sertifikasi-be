@@ -41,7 +41,7 @@ $api->version('v1', function (Router $api) {
 
     #mate endpoint
     $api->group(['middleware' => 'jwt.auth', 'prefix' => 'mate'], function (Router $api) {
-        $api->post('list_commers_task', 'App\\Api\\V1\\Controllers\\TaskActivityController@mateTaskList');
+        $api->post('list_commers_task', 'App\\Api\\V1\\Controllers\\MateController@mateTaskList');
         $api->post('approve_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@approveTaskActivity');
         $api->post('reject_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@rejectTaskActivity');
     });

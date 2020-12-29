@@ -58,4 +58,10 @@ return [
         ]
     ],
 
+    'mate_list_commers' => [
+        'validation_rules' => [
+            'status' => 'in:MISSION_IN_REVIEW,MISSION_ON_PROGRESS,MISSION_APPROVED,MISSION_REJECTED',
+        ]
+    ],
+
 ];
