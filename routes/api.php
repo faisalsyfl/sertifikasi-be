@@ -79,10 +79,11 @@ $api->version('v1', function (Router $api) {
     $api->group(['prefix' => 'admin'], function (Router $api) {
         $api->post('login', 'App\\Api\\V1\\Controllers\\Admin\\AuthController@login');
 
-        $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
+        // $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
             #admin - comers
             $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
             $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
+            $api->get('comers/{id}/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
 
             #admin - mate
             $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
@@ -91,6 +92,6 @@ $api->version('v1', function (Router $api) {
             #admin - angkatan
             $api->get('angkatan', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@index');
             // $api->get('angkatan/{id}', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@show');
-        });
+        // });
     });
 });

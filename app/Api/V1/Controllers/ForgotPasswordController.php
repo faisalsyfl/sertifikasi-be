@@ -26,7 +26,7 @@ class ForgotPasswordController extends Controller
     {
         $user = User::where('email', '=', $request->input('email'))->first();
         if(!$user) {
-            throw new NotFoundHttpException();
+            return $this->errorRequest(422,'User tidak ditemukan');
         }
         //Inactive current token
         $current = mailTokenModel::where('email','=',$request->input('email'))->where('active_token',1)->get();

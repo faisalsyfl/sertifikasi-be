@@ -45,10 +45,10 @@ class ComersController extends Controller
             if($user){
                 return $this->output($user);
             }else{
-                return $this->errorRequest(422, 'User Not Found');
+                return $this->errorRequest(422, 'User comers tidak ditemukan');
             }
         }
-        return $this->errorRequest(422, 'User Not Found');
+        return $this->errorRequest(422, 'User comers tidak ditemukan');
 
     }
     public function edit(Request $request)
@@ -60,8 +60,24 @@ class ComersController extends Controller
     public function destroy(Request $request)
     {
     }
-    public function activate(Request $request){
-        $validate = $this->validateRequest($request->all(), ['limit' => 'numeric','page' => 'numeric']);
+    public function activate($id){
+        if (isset($id)){        
+            $user   = User::where('role', '=', $this->role)->where('id',$id)->first();
+            if($user){
+                if($user->stats == 0){
+                    $user->stats = 1;
+                    $msg = 'User comers berhasil diaktifkan';
+                }else{
+                    $user->stats = 0;
+                    $msg = 'User comers berhasil dinonaktifkan';
+                }
+                $user->save();
+                return $this->output($user,$msg);
+            }else{
+                return $this->errorRequest(422, 'User comers tidak ditemukan');
+            }
+        }
+        return $this->errorRequest(422, 'User comers tidak ditemukan');
         
     }
 
