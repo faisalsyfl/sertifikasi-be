@@ -27,9 +27,9 @@ class ComersController extends Controller
         if($validate)
             return $this->errorRequest(422, 'Validation Error',$validate);
             
-        $limit  = $request->limit ? $request->limit : 10;
+        $limit  = $request->limit ? $request->limit : 20;
         $page   = $request->page ? $request->page : 1;
-        $user   = User::where('role', '=', $this->role)->offset(($page - 1 ) * $limit)->limit($limit)->get();
+        $user   = User::where('role', '=', $this->role)->offset(($page - 1 ) * $limit)->orderBy('created_at','DESC')->limit($limit)->get();
         return $this->output($user);
     }
     public function create(Request $request)
