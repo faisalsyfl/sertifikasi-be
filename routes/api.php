@@ -83,7 +83,7 @@ $api->version('v1', function (Router $api) {
             #admin - comers
             $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
             $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
-            $api->get('comers/{id}/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
+            $api->post('comers/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
 
             #admin - mate
             $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
