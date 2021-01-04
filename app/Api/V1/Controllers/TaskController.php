@@ -101,7 +101,7 @@ class TaskController extends Controller
             $file_info['id_parent']     = $id_task;
             $file_info['type']          = 'task';
 
-            Storage::disk('s3')->put('attachment/' . $file_hash, file_get_contents($file));
+            Storage::disk('local')->put('attachment/' . $file_hash, file_get_contents($file));
             $attach = attachmentModel::where('id_parent', $id_task);
 
             if ($attach->count() > 0) {
