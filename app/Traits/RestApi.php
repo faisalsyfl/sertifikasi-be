@@ -48,8 +48,8 @@ trait RestApi
 
             $output['data'] = isset($data['data']) ? $data['data'] : $data;
 
-            if (isset($data['data']) && $this->pagination)
-                $output['pagination'] = array_except($data, 'data');
+            // if (isset($data['data']) && $this->pagination)
+            //     $output['pagination'] = array_except($data, 'data');
 
             if (!empty($this->pagination))
                 $output['pagination'] = $this->pagination;

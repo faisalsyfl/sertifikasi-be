@@ -19,38 +19,20 @@ class TaskActivityController extends Controller
     public function list(Request $request)
     {
         $keyword = $request->q;
-        $start = $request->start ? $request->start : 0;
-        $length = $request->length ? $request->length : 5;
+        $limit = isset($request->limit) ? $request->limit : 10;
 
         $result = taskActivityModel::where('id_angkatan', 1)
             ->where('approve', 2)
             ->findQuery($keyword)
-            ->skip($start)->take($length)
-            ->orderBy('id', 'DESC')->get();
+            ->orderBy('id', 'DESC');
+
+        $result = $result->paginate($limit);
+        $taskArray = $result->toArray();
+
+        //get only Pagination Param
+        $this->pagination = array_except($taskArray, 'data');
 
         return $this->output($result->pluck('List'));
-    }
-
-    public function mateTaskList(Request $request)
-    {
-        $user = Auth::user();
-        $start = $request->start ? $request->start : 0;
-        $length = $request->length ? $request->length : 5;
-
-        if ($user->id) {
-
-            $res = taskActivityModel::whereIn('id_user', function ($q) use ($user) {
-                $q->from('commers_has_mate')
-                    ->selectRaw('id_user')
-                    ->where('id_mate', $user->id);
-            })->where('status', 1)
-                ->skip($start)->take($length)
-                ->orderBy('created_at', 'ASC')->get();
-
-            return $this->output($res->pluck('Response'));
-        }
-
-        return $this->errorRequest(422, 'User Not Found');
     }
 
     public function approveTaskActivity(Request $request)
