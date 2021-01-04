@@ -84,6 +84,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
                 #admin - comers
                 $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
                 $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
+                $api->post('comers/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
 
                 #admin - mate
                 $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');

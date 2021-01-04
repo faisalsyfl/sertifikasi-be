@@ -42,13 +42,13 @@ class SignUpController extends Controller
                 return $this->output([
                     'role'  => $request->input('role'),
                     'username' => $request->input('username')
-                ], 'Email telah terdaftar',422);
+                ], 'Email yang anda masukan telah terdaftar',422);
                 }
         }else{
             return $this->output([
                 'role'  => $request->input('role'),
                 'username' => $request->input('username')
-            ], 'Username telah terdaftar',422);
+            ], 'Username yang anda masukan telah terdaftar',422);
         }
     }
     public function checkUser(Request $request, JWTAuth $JWTAuth)
@@ -63,12 +63,12 @@ class SignUpController extends Controller
         if($user){
             return $this->output([
                 'status' => false
-            ], 'Username atau email telah terdaftar',422);
+            ], 'Username atau email yang anda masukan telah terdaftar',422);
 
         }else{
             return $this->output([
                 'status' => true
-            ], 'Username or email tersedia',200);
+            ], 'Username atau email tersedia',200);
         }
     }
 }

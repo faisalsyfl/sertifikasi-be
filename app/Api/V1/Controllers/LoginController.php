@@ -29,13 +29,13 @@ class LoginController extends Controller
             $user   = User::where('username', '=', $credentials['username'])->first();
             if (!$user) {
                 //if user not exists
-                $message = 'Username/Password not registered';
+                $message = 'Username anda tidak terdaftar';
             }else{
                 //if user exists
                 $token  = Auth::guard()->attempt($credentials);
                 if (!$token) {
                     //if password doesn't match
-                    $message = 'Username or password doesn\'t match';
+                    $message = 'Username / Kata Sandi yang anda masukan salah!';
                 }
             }
         } catch (JWTException $e) {

@@ -27,9 +27,9 @@ class ComersController extends Controller
         if($validate)
             return $this->errorRequest(422, 'Validation Error',$validate);
             
-        $limit  = $request->limit ? $request->limit : 10;
+        $limit  = $request->limit ? $request->limit : 20;
         $page   = $request->page ? $request->page : 1;
-        $user   = User::where('role', '=', $this->role)->offset(($page - 1 ) * $limit)->limit($limit)->get();
+        $user   = User::where('role', '=', $this->role)->offset(($page - 1 ) * $limit)->orderBy('created_at','DESC')->limit($limit)->get();
         return $this->output($user);
     }
     public function create(Request $request)
@@ -45,10 +45,10 @@ class ComersController extends Controller
             if($user){
                 return $this->output($user);
             }else{
-                return $this->errorRequest(422, 'User Not Found');
+                return $this->errorRequest(422, 'User comers tidak ditemukan');
             }
         }
-        return $this->errorRequest(422, 'User Not Found');
+        return $this->errorRequest(422, 'User comers tidak ditemukan');
 
     }
     public function edit(Request $request)
@@ -61,7 +61,25 @@ class ComersController extends Controller
     {
     }
     public function activate(Request $request){
-        $validate = $this->validateRequest($request->all(), ['limit' => 'numeric','page' => 'numeric']);
+        $validate = $this->validateRequest($request->all(), ['id' => 'numeric','status' => 'numeric','id_angkatan' => 'numeric']);
+        if($validate)
+            return $this->errorRequest(422, 'Validation Error',$validate);
+
+        $user   = User::where('role', '=', $this->role)->where('id',$request->id)->first();
+        if($user){
+            if($request->stats == 1){
+                $user->stats = 1;
+                $msg = 'User comers berhasil diaktifkan';
+            }else{
+                $user->stats = 0;
+                $msg = 'User comers berhasil dinonaktifkan';
+            }
+            $user->id_angkatan = $request->id_angkatan;
+            $user->save();
+            return $this->output($user,$msg);
+        }else{
+            return $this->errorRequest(422, 'User comers tidak ditemukan');
+        }
         
     }
 

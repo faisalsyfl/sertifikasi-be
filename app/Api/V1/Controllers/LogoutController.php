@@ -4,9 +4,11 @@ namespace App\Api\V1\Controllers;
 
 use App\Http\Controllers\Controller;
 use Auth;
+use App\Traits\RestApi;
 
 class LogoutController extends Controller
 {
+    use RestApi;
     /**
      * Create a new AuthController instance.
      *
@@ -26,7 +28,8 @@ class LogoutController extends Controller
     {
         Auth::guard()->logout();
 
-        return response()
-            ->json(['message' => 'Successfully logged out']);
+        return $this->output([
+            'success' => true 
+        ],'Anda berhasil keluar');
     }
 }

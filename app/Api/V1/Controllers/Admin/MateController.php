@@ -60,5 +60,27 @@ class MateController extends Controller
     public function destroy(Request $request)
     {
     }
+    public function activate(Request $request){
+        $validate = $this->validateRequest($request->all(), ['id' => 'numeric','status' => 'numeric','id_angkatan' => 'numeric']);
+        if($validate)
+            return $this->errorRequest(422, 'Validation Error',$validate);
+
+        $user   = User::where('role', '=', $this->role)->where('id',$request->id)->first();
+        if($user){
+            if($request->stats == 1){
+                $user->stats = 1;
+                $msg = 'User mate berhasil diaktifkan';
+            }else{
+                $user->stats = 0;
+                $msg = 'User mate berhasil dinonaktifkan';
+            }
+            $user->id_angkatan = $request->id_angkatan;
+            $user->save();
+            return $this->output($user,$msg);
+        }else{
+            return $this->errorRequest(422, 'User mate tidak ditemukan');
+        }
+        
+    }
 
 }
