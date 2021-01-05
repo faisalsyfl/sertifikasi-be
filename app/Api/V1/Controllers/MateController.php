@@ -41,4 +41,30 @@ class MateController extends Controller
 
         return $this->errorRequest(422, 'User Not Found');
     }
+
+    public function listComers(Request $request){
+        $user = Auth::user();
+        $start = $request->start ? $request->start : 0;
+        $length = $request->length ? $request->length : 5;
+
+        if ($user->id) {
+            $validate = $this->validateRequest($request->all(), ['limit' => 'numeric']);
+            if ($validate)
+                return $this->errorRequest(422, 'Validation Error', $validate);
+            
+            $res = taskActivityModel::whereIn('id_user', function ($q) use ($user) {
+            $q->from('commers_has_mate')
+                ->selectRaw('id_user')
+                ->where('id_mate', $user->id);
+            })->where('status', statusConvert($request->status))
+                ->skip($start)->take($length)
+                ->orderBy('created_at', 'ASC')->get();
+
+            return $this->output($res->pluck('Response'));
+        }
+
+        return $this->errorRequest(422, 'User Not Found');
+
+
+    }
 }

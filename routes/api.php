@@ -88,6 +88,7 @@ $api->version('v1', function (Router $api) {
             #admin - mate
             $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
             $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
+            $api->post('mate/activate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@activate');
 
             #admin - angkatan
             $api->get('angkatan', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@index');
