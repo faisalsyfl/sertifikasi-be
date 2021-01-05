@@ -19,8 +19,7 @@ class MateController extends Controller
     public function mateTaskList(Request $request)
     {
         $user = Auth::user();
-        $start = $request->start ? $request->start : 0;
-        $length = $request->length ? $request->length : 5;
+        $limit = $request->limit ? $request->limit : 10;
 
         if ($user->id) {
 
@@ -28,15 +27,20 @@ class MateController extends Controller
             if ($validate)
                 return $this->errorRequest(422, 'Validation Error', $validate);
 
-            $res = taskActivityModel::whereIn('id_user', function ($q) use ($user) {
+            $activityModel = taskActivityModel::whereIn('id_user', function ($q) use ($user) {
                 $q->from('commers_has_mate')
                     ->selectRaw('id_user')
                     ->where('id_mate', $user->id);
             })->where('status', statusConvert($request->status))
-                ->skip($start)->take($length)
-                ->orderBy('created_at', 'ASC')->get();
+                ->orderBy('created_at', 'ASC');
 
-            return $this->output($res->pluck('Response'));
+            $activityModel = $activityModel->paginate($limit);
+            $taskArray = $activityModel->toArray();
+
+            //get only Pagination Param
+            $this->pagination = array_except($taskArray, 'data');
+
+            return $this->output($activityModel->pluck('Response'));
         }
 
         return $this->errorRequest(422, 'User Not Found');

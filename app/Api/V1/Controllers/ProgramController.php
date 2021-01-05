@@ -7,6 +7,7 @@ use App\Models\programModel;
 use App\Models\taskActivityModel;
 use App\Traits\RestApi;
 use Auth;
+use Illuminate\Http\Request;
 
 class ProgramController extends Controller
 {
@@ -15,9 +16,16 @@ class ProgramController extends Controller
     public function __construct()
     { }
 
-    public function listProgramTask()
+    public function listProgramTask(Request $request)
     {
-        $programModel = programModel::where('status', 1)->get();
+        $limit = isset($request->limit) ? $request->limit : 10;
+        $programModel = programModel::where('status', 1);
+        $programModel = $programModel->paginate($limit);
+        $programArray = $programModel->toArray();
+
+        //get only Pagination Param
+        $this->pagination = array_except($programArray, 'data');
+
         $ret = $programModel->pluck('program')->toArray();
 
         $array = [

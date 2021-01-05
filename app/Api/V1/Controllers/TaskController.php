@@ -23,13 +23,20 @@ class TaskController extends Controller
 
     public function list(Request $request)
     {
+        $limit = isset($request->limit) ? $request->limit : 10;
         if (isset($request->id_program) && $request->id_program) {
             if (programModel::where('id', $request->id_program)->count() != 0) {
-                $taskModel = taskModel::where('id_program', $request->id_program)->orderBy('id', 'ASC')->get()->pluck('Response');
-                return $this->output($taskModel);
+                $taskModel = taskModel::with(['program'])->where('id_program', $request->id_program)->orderBy('id', 'ASC');
+
+                $taskModel = $taskModel->paginate($limit);
+                $taskArray = $taskModel->toArray();
+
+                //get only Pagination Param
+                $this->pagination = array_except($taskArray, 'data');
+                return $this->output($taskModel->pluck('response'), "Data Found");
             }
-            return $this->errorRequest(422, 'Id Program Not Found');
         }
+        return $this->errorRequest(422, 'ID Program Not Found');
     }
 
     public function detail(Request $request)
@@ -94,7 +101,7 @@ class TaskController extends Controller
             $file_info['id_parent']     = $id_task;
             $file_info['type']          = 'task';
 
-            Storage::disk('s3')->put('attachment/' . $file_hash, file_get_contents($file));
+            Storage::disk('local')->put('attachment/' . $file_hash, file_get_contents($file));
             $attach = attachmentModel::where('id_parent', $id_task);
 
             if ($attach->count() > 0) {
