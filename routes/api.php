@@ -103,10 +103,10 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         $api->get('/', function () {
             return 'Look v2!';
         });
-            #admin - mate
-            $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
-            $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
-            $api->post('mate/activate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@activate');
+        #admin - mate
+        $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
+        $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
+        $api->post('mate/activate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@activate');
 
         $api->get('hello', function () {
             return response()->json([
