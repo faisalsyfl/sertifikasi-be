@@ -9,9 +9,12 @@ use App\Api\V1\Requests\LoginRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Auth;
+use App\Traits\RestApi;
 
 class UserController extends Controller
 {
+
+    use RestApi;
     /**
      * Create a new AuthController instance.
      *
@@ -38,6 +41,8 @@ class UserController extends Controller
      */
     public function me()
     {
-        return response()->json(Auth::guard()->user());
+        return $this->output([
+            'user' => Auth::guard()->user()
+        ], 'Berhasil mendapatkan profile');
     }
 }

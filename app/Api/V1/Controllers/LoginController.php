@@ -30,7 +30,7 @@ class LoginController extends Controller
             if (!$user) {
                 //if user not exists
                 $message = 'Username anda tidak terdaftar';
-            }else{
+            } else {
                 //if user exists
                 $token  = Auth::guard()->attempt($credentials);
                 if (!$token) {
@@ -42,17 +42,16 @@ class LoginController extends Controller
             return $this->errorRequest(500);
         }
 
-        if(!$token){
+        if (!$token) {
             return $this->output([
                 'status' => 0
-            ], $message,422);
-        }else{
+            ], $message, 422);
+        } else {
             return $this->output([
                 'role'      => $user->role,
                 'token'     => $token,
                 'expires_in' => Auth::guard()->factory()->getTTL() * 60 * 60
             ], 'Successfully logged in');
         }
-
     }
 }

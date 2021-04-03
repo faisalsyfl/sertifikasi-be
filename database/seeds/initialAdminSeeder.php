@@ -22,8 +22,18 @@ class initialAdminSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@admin',
             'phone' => '1234567890',
-            'password' => Hash::make('adminXbjb'),
+            'password' => Hash::make('b4t'),
             'role' => 99,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ]);
+        DB::table($this->tableName)->insert([
+            'name' => 'Galih Ginanjar',
+            'nik' => '090021878',
+            'username' => 'galih',
+            'email' => 'galih@kemenperin.go.id',
+            'phone' => '1234567890',
+            'password' => Hash::make('b4t'),
+            'role' => 1,
             'created_at' => Carbon::now()->format('Y-m-d H:i:s')
         ]);
     }

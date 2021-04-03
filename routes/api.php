@@ -25,31 +25,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
 
         #profile endpoint
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'profile'], function (Router $api) {
-            $api->post('me', 'App\\Api\\V1\\Controllers\\ProfileController@me');
-            $api->post('edit', 'App\\Api\\V1\\Controllers\\ProfileController@edit');
-        });
-        #program endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'program'], function (Router $api) {
-            $api->get('list', 'App\\Api\\V1\\Controllers\\ProgramController@listProgramTask');
-        });
-
-        #task endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'task'], function (Router $api) {
-            $api->post('list', 'App\\Api\\V1\\Controllers\\TaskController@list');
-            $api->post('detail', 'App\\Api\\V1\\Controllers\\TaskController@detail');
-            $api->post('update_status', 'App\\Api\\V1\\Controllers\\TaskController@updateStatusTask');
-        });
-
-        #mate endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'mate'], function (Router $api) {
-            $api->post('list_commers_task', 'App\\Api\\V1\\Controllers\\MateController@mateTaskList');
-            $api->post('approve_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@approveTaskActivity');
-            $api->post('reject_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@rejectTaskActivity');
-        });
-
-        #activity endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'activity'], function (Router $api) {
-            $api->post('list', 'App\\Api\\V1\\Controllers\\TaskActivityController@list');
+            $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
         });
 
         #protect with Jwt Auth
@@ -103,11 +79,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         $api->get('/', function () {
             return 'Look v2!';
         });
-        #admin - mate
-        $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
-        $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
-        $api->post('mate/activate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@activate');
-
         $api->get('hello', function () {
             return response()->json([
                 'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.22'

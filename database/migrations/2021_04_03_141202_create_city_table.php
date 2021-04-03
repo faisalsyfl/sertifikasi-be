@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMailTokenTable extends Migration
+class CreateCityTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateMailTokenTable extends Migration
      */
     public function up()
     {
-        Schema::create('mail_token', function (Blueprint $table) {
+        Schema::create('city', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('email');
-            $table->string('token');
-            $table->integer('active_token')->default('1');
-            $table->integer('wrong')->nullable();
+            $table->string('name');
+            $table->string('province_id');
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ class CreateMailTokenTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('mail_token');
+        Schema::dropIfExists('city');
     }
 }

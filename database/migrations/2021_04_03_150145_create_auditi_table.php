@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAttachmentTable extends Migration
+class CreateAuditiTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateAttachmentTable extends Migration
      */
     public function up()
     {
-        Schema::create('attachment', function (Blueprint $table) {
+        Schema::create('auditi', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('name');
             $table->string('type');
-            $table->string('file_name');
-            $table->string('file_hash');
-            $table->string('file_ori');
-            $table->string('file_type');
-            $table->string('file_size');
-            $table->integer('id_parent');
+            $table->string('website');
+            $table->string('email');
+            $table->string('telp');
+            $table->string('address');
+            $table->integer('city_id');
+            $table->integer('province_id');
+            $table->integer('postcode');
             $table->timestamps();
         });
     }
@@ -33,6 +35,6 @@ class CreateAttachmentTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('attachment');
+        Schema::dropIfExists('auditi');
     }
 }
