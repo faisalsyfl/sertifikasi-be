@@ -86,8 +86,9 @@
             </div>
 
             <div class="links">
+                <a href="{{url('/api/v1/hello')}}">api/V1</a>
+                <a href="{{url('/api/v2/hello')}}">api/V2</a>
                 <a href="https://b4t.go.id/">MAIN SITE</a>
-                <a href="Dev Server">Laracasts</a>
             </div>
         </div>
     </div>

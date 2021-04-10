@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('avatar')->nullable(); //https://intranet.kemenperin.go.id/thumbnail.php?file=/files/sipegi/foto/090021872.jpg&max_width=150&max_height=150
             $table->integer('role')->nullable();
+            $table->integer('stats')->default(1);
             $table->timestamps();
         });
     }

@@ -29,7 +29,7 @@ class LogoutController extends Controller
         Auth::guard()->logout();
 
         return $this->output([
-            'success' => true 
-        ],'Anda berhasil keluar');
+            'success' => true
+        ], 'Anda berhasil keluar');
     }
 }

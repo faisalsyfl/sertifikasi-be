@@ -11,10 +11,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->post('signup', 'App\\Api\\V1\\Controllers\\SignUpController@signUp');
             $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
 
-            $api->post('recovery', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@sendResetEmail');
-            $api->post('verify_token', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@verifyToken');
-            $api->post('reset', 'App\\Api\\V1\\Controllers\\ResetPasswordController@resetPassword');
-
             $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
             $api->post('refresh', 'App\\Api\\V1\\Controllers\\RefreshController@refresh');
 
@@ -26,6 +22,24 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         #profile endpoint
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'profile'], function (Router $api) {
             $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
+        });
+
+
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->post('step1', 'App\\Api\\V1\\Controllers\\TransactionController@qsc1');
+            $api->post('step2', 'App\\Api\\V1\\Controllers\\TransactionController@qsc2');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'organization'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
+            $api->post('/', 'App\\Api\\V1\\Controllers\\OrganizationController@create');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@store');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@destroy');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditi'], function (Router $api) {
+            $api->post('/', 'App\\Api\\V1\\Controllers\\AuditiController@create');
         });
 
         #protect with Jwt Auth
@@ -81,7 +95,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         });
         $api->get('hello', function () {
             return response()->json([
-                'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.22'
+                'message' => 'This is a simple example of item returned by your V2 APIs.'
             ]);
         });
     });
