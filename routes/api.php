@@ -24,7 +24,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
         });
 
-
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
@@ -41,6 +40,16 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditi'], function (Router $api) {
             $api->post('/', 'App\\Api\\V1\\Controllers\\AuditiController@create');
         });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'country'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCountry');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'state'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showState');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'city'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCity');
+        });
+
 
         #protect with Jwt Auth
         $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
@@ -75,14 +84,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
                 $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
                 $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
                 $api->post('comers/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
-
-                #admin - mate
-                $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
-                $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
-
-                #admin - angkatan
-                $api->get('angkatan', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@index');
-                // $api->get('angkatan/{id}', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@show');
             });
         });
     });
