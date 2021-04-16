@@ -54,9 +54,10 @@ class MasterLocation extends Controller
 
     public function showCity(Request $request)
     {
+        // dd($request->all());
         $limit  = $request->has('limit') ? $request->limit : 10;
         $page   = $request->has('page') ? $request->page : 1;
-        if (isset($request->id) && $request->q) {
+        if (isset($request->q) && $request->q) {
             $city = Cities::with(['state', 'state.country'])->findQuery($request->q);
         } else if (isset($request->id) && $request->id) {
             $city = Cities::with(['state', 'state.country'])->where('id', $request->id);
