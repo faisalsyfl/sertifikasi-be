@@ -47,17 +47,25 @@ class TransactionController extends Controller
         $transaction->code   = 'SC';
         $transaction->save();
 
+        $form = new Form(['transaction_id' => $transaction->id]);
+        $form->save();
+
         return $this->output($transaction);
     }
     public function qsc2(Request $request)
     {
-        $validate = $this->validateRequest($request->all(), ['A1' => 'required', 'B1' => 'required']);
+        $validate = $this->validateRequest($request->all(), ['transaction_id' => 'required']);
         if ($validate)
             return $this->errorRequest(422, 'Validation Error', $validate);
 
-        $form = new Form($request->all());
-        $form->save();
+        // dd($request->exists('Cname'));
+        $form = Form::where('transaction_id', $request->transaction_id);
+        $input = $request->all();
+        $form->update($input);
 
+        $form = Form::where('transaction_id', $request->transaction_id)->first();
+        // $form->save();
+        // $form->get();
         return $this->output($form);
     }
 }
