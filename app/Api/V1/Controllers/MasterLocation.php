@@ -16,6 +16,62 @@ use App\Traits\RestApi;
 class MasterLocation extends Controller
 {
     use RestApi;
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/country",
+     *  summary="Get the list of Country",
+     *  tags={"Master"},
+     *  @OA\Parameter(
+     *      name="q",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="limit",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="page",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
     public function showCountry(Request $request)
     {
         $limit  = $request->has('limit') ? $request->limit : 10;
@@ -34,6 +90,60 @@ class MasterLocation extends Controller
         return $this->output($country);
     }
 
+    /**
+     * @OA\Get(
+     *  path="/api/v1/state",
+     *  summary="Get the list of State",
+     *  tags={"Master"},
+     *  @OA\Parameter(
+     *      name="q",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="limit",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="page",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
     public function showState(Request $request)
     {
         $limit  = $request->has('limit') ? $request->limit : 10;
@@ -52,6 +162,60 @@ class MasterLocation extends Controller
         return $this->output($state);
     }
 
+    /**
+     * @OA\Get(
+     *  path="/api/v1/city",
+     *  summary="Get the list of City",
+     *  tags={"Master"},
+     *  @OA\Parameter(
+     *      name="q",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="limit",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="page",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
     public function showCity(Request $request)
     {
         // dd($request->all());
