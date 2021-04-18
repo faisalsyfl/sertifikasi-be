@@ -11,8 +11,16 @@ class Controller extends BaseController
 {
     /**
      * @OA\Info(
-     *    title="Your super  ApplicationAPI",
-     *    version="1.0.0",
+     *      version="1.0.0",
+     *      title="B4T Sertifikasi API",
+     *      description="Swagger OpenApi description",
+     *      @OA\Contact(
+     *          email="admin@admin.com"
+     *      ),
+     *      @OA\License(
+     *          name="Apache 2.0",
+     *          url="http://www.apache.org/licenses/LICENSE-2.0.html"
+     *      )
      * ),
      *  @OA\SecurityScheme(
      *     type="http",
@@ -22,6 +30,14 @@ class Controller extends BaseController
      *     scheme="bearer",
      *     bearerFormat="JWT",
      *     securityScheme="apiAuth",
+     * )
+     * @OA\Tag(
+     *     name="Auth",
+     *     description="Auth Endpoints"
+     * )
+     * @OA\Tag(
+     *     name="Master",
+     *     description="Master Endpoints"
      * )
      */
 
