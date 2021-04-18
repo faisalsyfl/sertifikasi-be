@@ -39,6 +39,10 @@ class Controller extends BaseController
      *     name="Master",
      *     description="Master Endpoints"
      * )
+     * @OA\Tag(
+     *     name="Form",
+     *     description="Form proses pendaftaran sertifikasi"
+     * )
      */
 
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

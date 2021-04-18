@@ -34,27 +34,16 @@ return [
         ]
     ],
 
-    'update_profile' => [
+    'form_location' => [
         'validation_rules' => [
-            'name' => 'required',
-            'email' => 'required|email',
-            'gender' => 'required'
-        ]
-    ],
-
-    // these options are related to the password recovery procedure
-    'reset_password' => [
-        'validation_rules' => [
-            'email' => 'required|email',
-            'password' => 'required|confirmed'
-        ]
-    ],
-
-    'task_finish' => [
-        'validation_rules' => [
-            'id_task' => 'required',
-            'review' => 'required',
-            'file' => 'mimes:jpg,jpeg,png,bmp,tiff,pdf,doc,docx,xls,xlsx,ppt,pptx |max:10240'
+            'location_type' => 'required|in:KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN',
+            'address' => 'required',
+            'location' => 'required',
+            'form_id' => 'required',
+            'country_id' => 'required',
+            'state_id' => 'required',
+            'city_id' => 'required',
+            'postcode' => 'required|min:5|max:5'
         ]
     ],
 
