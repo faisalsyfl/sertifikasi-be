@@ -18,4 +18,4 @@ jobs:
           username: "api-sertifikasi"
           host: "api-sertifikasi.b4t.go.id"
           password: "api-sertifikasi"
-          script: 'cd /home/api-sertifikasi/sertifikasi-be && pwd'
+          script: 'sh /home/api-sertifikasi/sertifikasi-be/deploy.sh'
