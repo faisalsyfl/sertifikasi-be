@@ -27,7 +27,7 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token','created_at','updated_at','email_verified_at'
+        'password', 'remember_token', 'created_at', 'updated_at', 'email_verified_at'
     ];
 
     /**
@@ -50,7 +50,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->getKey();
     }
-
+    public function getAvatarAttribute($value)
+    {
+        $avatar = 'https://intranet.kemenperin.go.id/thumbnail.php?file=/files/sipegi/foto/' . $this->nik . '.jpg&max_width=150&max_height=150';
+        return $avatar;
+    }
     /**
      * Return a key value array, containing any custom claims to be added to the JWT.
      *

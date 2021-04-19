@@ -9,9 +9,12 @@ use App\Api\V1\Requests\LoginRequest;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Auth;
+use App\Traits\RestApi;
 
 class RefreshController extends Controller
 {
+    use RestApi;
+
     /**
      * Refresh a token.
      *
@@ -21,8 +24,8 @@ class RefreshController extends Controller
     {
         $token = Auth::guard()->refresh();
 
-        return response()->json([
-            'status' => 'ok',
+        return $this->output([
+            'status' => 'Successfully Refresh the token',
             'token' => $token,
             'expires_in' => Auth::guard()->factory()->getTTL() * 60
         ]);

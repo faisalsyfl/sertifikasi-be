@@ -61,16 +61,25 @@ function generateRandomString($length = 10)
 
 function statusConvert($status = null)
 {
-    $code = 0;
+    $code = 'REGISTRATION';
     switch ($status) {
-        case 'MISSION_IN_REVIEW':
-            $code = 1;
+        case 1:
+            $code = 'REGISTRATION';
             break;
-        case 'MISSION_APPROVED':
-            $code = 2;
+        case 2:
+            $code = 'APPLICATION';
             break;
-        case 'MISSION_REJECTED':
-            $code = 3;
+        case 3:
+            $code = 'COST';
+            break;
+        case 4:
+            $code = 'AUDIT';
+            break;
+        case 5:
+            $code = 'CERTIFICATE';
+            break;
+        case 6:
+            $code = 'DONE';
             break;
     }
 

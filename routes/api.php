@@ -11,10 +11,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->post('signup', 'App\\Api\\V1\\Controllers\\SignUpController@signUp');
             $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
 
-            $api->post('recovery', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@sendResetEmail');
-            $api->post('verify_token', 'App\\Api\\V1\\Controllers\\ForgotPasswordController@verifyToken');
-            $api->post('reset', 'App\\Api\\V1\\Controllers\\ResetPasswordController@resetPassword');
-
             $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
             $api->post('refresh', 'App\\Api\\V1\\Controllers\\RefreshController@refresh');
 
@@ -25,32 +21,39 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
 
         #profile endpoint
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'profile'], function (Router $api) {
-            $api->post('me', 'App\\Api\\V1\\Controllers\\ProfileController@me');
-            $api->post('edit', 'App\\Api\\V1\\Controllers\\ProfileController@edit');
-        });
-        #program endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'program'], function (Router $api) {
-            $api->get('list', 'App\\Api\\V1\\Controllers\\ProgramController@listProgramTask');
+            $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
         });
 
-        #task endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'task'], function (Router $api) {
-            $api->post('list', 'App\\Api\\V1\\Controllers\\TaskController@list');
-            $api->post('detail', 'App\\Api\\V1\\Controllers\\TaskController@detail');
-            $api->post('update_status', 'App\\Api\\V1\\Controllers\\TaskController@updateStatusTask');
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->post('step1', 'App\\Api\\V1\\Controllers\\TransactionController@qsc1');
+            $api->post('step2', 'App\\Api\\V1\\Controllers\\TransactionController@qsc2');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'organization'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
+            $api->post('/', 'App\\Api\\V1\\Controllers\\OrganizationController@create');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@store');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@destroy');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditi'], function (Router $api) {
+            $api->post('/', 'App\\Api\\V1\\Controllers\\AuditiController@create');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'country'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCountry');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'state'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showState');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'city'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCity');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'form'], function (Router $api) {
+            $api->post('location', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@storeFormLocation');
+            $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@destroy');
         });
 
-        #mate endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'mate'], function (Router $api) {
-            $api->post('list_commers_task', 'App\\Api\\V1\\Controllers\\MateController@mateTaskList');
-            $api->post('approve_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@approveTaskActivity');
-            $api->post('reject_activity', 'App\\Api\\V1\\Controllers\\TaskActivityController@rejectTaskActivity');
-        });
-
-        #activity endpoint
-        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'activity'], function (Router $api) {
-            $api->post('list', 'App\\Api\\V1\\Controllers\\TaskActivityController@list');
-        });
 
         #protect with Jwt Auth
         $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
@@ -85,14 +88,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
                 $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
                 $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
                 $api->post('comers/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
-
-                #admin - mate
-                $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
-                $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
-
-                #admin - angkatan
-                $api->get('angkatan', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@index');
-                // $api->get('angkatan/{id}', 'App\\Api\\V1\\Controllers\\Admin\\AngkatanController@show');
             });
         });
     });
@@ -103,14 +98,9 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         $api->get('/', function () {
             return 'Look v2!';
         });
-            #admin - mate
-            $api->get('mate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@index');
-            $api->get('mate/{id}', 'App\\Api\\V1\\Controllers\\Admin\\MateController@show');
-            $api->post('mate/activate', 'App\\Api\\V1\\Controllers\\Admin\\MateController@activate');
-
         $api->get('hello', function () {
             return response()->json([
-                'message' => 'This is a simple example of item returned by your APIs. Everyone can see it.22'
+                'message' => 'This is a simple example of item returned by your V2 APIs.'
             ]);
         });
     });

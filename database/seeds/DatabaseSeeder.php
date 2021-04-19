@@ -12,11 +12,5 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(initialAdminSeeder::class);
-        $this->call(initialAngkatanSeeder::class);
-        $this->call(initialUserSeeder::class);
-        $this->call(initialTaskTypeSeeder::class);
-        $this->call(initialProgramsSeeder::class);
-        $this->call(initialTaskSeeder::class);
-        $this->call(dummyCommersMate::class);
     }
 }
