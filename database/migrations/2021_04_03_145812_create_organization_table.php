@@ -36,7 +36,8 @@ class CreateOrganizationTable extends Migration
             $table->string('telp');
             $table->string('address');
             $table->integer('city_id')->nullable();
-            $table->integer('province_id')->nullable();
+            $table->integer('state_id')->nullable();
+            $table->integer('country_id')->nullable();
             $table->integer('postcode')->nullable();
             $table->integer('stats')->default(1);
             $table->timestamps();
