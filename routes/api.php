@@ -51,6 +51,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'form'], function (Router $api) {
             $api->post('location', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@storeFormLocation');
+            $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@destroy');
         });
 
 

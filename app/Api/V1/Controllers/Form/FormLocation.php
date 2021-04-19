@@ -102,12 +102,67 @@ class FormLocation extends Controller
 
     public function storeFormLocation(RuleFormLocation $request)
     {
-        $location = new locationModel($request->all());
-        $location->save();
+        try {
+            $location = new locationModel($request->all());
+            $location->save();
 
-        return $this->output([
-            'id' => $location->id,
-            'data' => $location
-        ], 'Success Created', 200);
+            return $this->output([
+                'id' => $location->id,
+                'data' => $location
+            ], 'Success Created', 200);
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
+    }
+
+    /**
+     * @OA\Delete(
+     *  path="/api/v1/form/location/{id}",
+     *  summary="Delete Form Location",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      description="",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function destroy($id)
+    {
+        try {
+            if (isset($id) && $id) {
+                $loc = locationModel::find($id);
+                if ($loc) {
+                    $loc->delete();
+                } else {
+                    return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+                }
+                return $this->output('Berhasil menghapus data');
+            }
+
+            return $this->output('ID Kosong');
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
     }
 }
