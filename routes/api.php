@@ -34,7 +34,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
             $api->post('/', 'App\\Api\\V1\\Controllers\\OrganizationController@create');
-            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@store');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@update');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@destroy');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'account'], function (Router $api) {

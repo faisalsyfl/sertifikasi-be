@@ -2,14 +2,9 @@
 
 namespace App\Api\V1\Controllers;
 
-use Config;
-use App\User;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Models\Auditi;
-use Dingo\Api\Http\FormRequest;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestApi;
 
 class AuditiController extends Controller

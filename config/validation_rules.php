@@ -47,10 +47,39 @@ return [
         ]
     ],
 
-    'mate_list_commers' => [
+    'form_organization' => [
         'validation_rules' => [
-            'status' => 'in:MISSION_IN_REVIEW,MISSION_ON_PROGRESS,MISSION_APPROVED,MISSION_REJECTED',
+            'npwp' => 'required|unique:organization,npwp',
+            'name' => 'required',
+            'type' => 'required',
+            'website' => 'required',
+            'email' => 'required',
+            'telp' => 'required',
+            'address' => 'required',
+            'city_id' => 'required',
+            'state_id' => 'required',
+            'country_id' => 'required',
+            'postcode' => 'required|min:5|max:5'
         ]
     ],
+
+    'form_edit_organization' => [
+        'validation_rules' => [
+            'npwp' => 'required',
+            'name' => 'required',
+            'type' => 'required',
+            'website' => 'required',
+            'email' => 'required',
+            'telp' => 'required',
+            'address' => 'required',
+            'city_id' => 'required',
+            'state_id' => 'required',
+            'country_id' => 'required',
+            'postcode' => 'required|min:5|max:5'
+        ]
+    ],
+
+
+
 
 ];
