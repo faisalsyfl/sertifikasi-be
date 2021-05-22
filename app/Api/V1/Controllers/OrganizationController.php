@@ -106,6 +106,9 @@ class OrganizationController extends Controller
         $arr = $organization->toArray();
         $this->pagination = array_except($arr, 'data');
 
+        if (isset($id))
+            $organization = $organization->first();
+
         return $this->output($organization);
     }
 

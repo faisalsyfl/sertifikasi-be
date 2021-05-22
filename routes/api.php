@@ -45,7 +45,11 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\AccountController@destroy');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditi'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\AuditiController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\AuditiController@index');
             $api->post('/', 'App\\Api\\V1\\Controllers\\AuditiController@create');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\AuditiController@update');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\AuditiController@destroy');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'country'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCountry');

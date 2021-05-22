@@ -79,7 +79,36 @@ return [
         ]
     ],
 
+    'form_auditi' => [
+        'validation_rules' => [
+            'organization_id' => 'required|exists:organization,id',
+            'name' => 'required',
+            'type' => 'required',
+            'website' => 'required',
+            'email' => 'required',
+            'telp' => 'required',
+            'address' => 'required',
+            'city_id' => 'required',
+            'state_id' => 'required',
+            'country_id' => 'required',
+            'postcode' => 'required'
+        ]
+    ],
 
-
+    'form_edit_auditi' => [
+        'validation_rules' => [
+            'organization_id' => 'required|exists:organization,id',
+            'name' => 'required',
+            'type' => 'required',
+            'website' => 'required',
+            'email' => 'required',
+            'telp' => 'required',
+            'address' => 'required',
+            'city_id' => 'required',
+            'state_id' => 'required',
+            'country_id' => 'required',
+            'postcode' => 'required'
+        ]
+    ],
 
 ];
