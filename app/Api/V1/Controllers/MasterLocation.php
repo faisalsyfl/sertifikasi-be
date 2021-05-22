@@ -157,15 +157,18 @@ class MasterLocation extends Controller
         try {
             $limit  = $request->has('limit') ? $request->limit : 10;
             $page   = $request->has('page') ? $request->page : 1;
+
             if (isset($request->q) && $request->q) {
                 $state = States::with(['country'])->findQuery($request->q);
             } else {
                 $state = States::with(['country']);
-                if ($request->id)
-                    $state->where('id', $request->id);
-                if ($request->country_id)
-                    $state->where('country_id', $request->country_id);
             }
+
+            if ($request->id)
+                $state->where('id', $request->id);
+            if ($request->country_id)
+                $state->where('country_id', $request->country_id);
+
             $state = $state->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
             $arr = $state->toArray();
             $this->pagination = array_except($arr, 'data');
@@ -251,17 +254,20 @@ class MasterLocation extends Controller
         try {
             $limit  = $request->has('limit') ? $request->limit : 10;
             $page   = $request->has('page') ? $request->page : 1;
+
             if (isset($request->q) && $request->q) {
                 $city = Cities::with(['state', 'state.country'])->findQuery($request->q);
             } else {
                 $city = Cities::with(['state', 'state.country']);
-                if ($request->id)
-                    $city->where('id', $request->id);
-                if ($request->country_id)
-                    $city->where('country_id', $request->country_id);
-                if ($request->state_id)
-                    $city->where('state_id', $request->state_id);
             }
+
+            if ($request->id)
+                $city->where('id', $request->id);
+            if ($request->country_id)
+                $city->where('country_id', $request->country_id);
+            if ($request->state_id)
+                $city->where('state_id', $request->state_id);
+
             $city = $city->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
             $arr = $city->toArray();
             $this->pagination = array_except($arr, 'data');
