@@ -87,7 +87,7 @@
 
             <div class="links">
                 <a href="{{url('/api/v1/hello')}}">api/V1</a>
-                <a href="{{url('/api/v2/hello')}}">api/V2</a>
+                <a href="{{url('/api/docs')}}">Swagger</a>
                 <a href="https://b4t.go.id/">MAIN SITE</a>
             </div>
         </div>

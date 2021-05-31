@@ -32,7 +32,8 @@ class LoginController extends Controller
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="string"
+     *           type="string",
+     *           default="admin"
      *      )
      *   ),
      *  @OA\Parameter(
@@ -40,7 +41,8 @@ class LoginController extends Controller
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="string"
+     *           type="string",
+     *           default="b4t"
      *      )
      *   ),
      *   @OA\Response(

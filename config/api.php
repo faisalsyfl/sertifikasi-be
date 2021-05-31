@@ -137,14 +137,26 @@ return [
     |
     */
 
+    // 'errorFormat' => [
+    //     'error' => [
+    //         'message' => ':message',
+    //         'errors' => ':errors',
+    //         'code' => ':code',
+    //         'status_code' => ':status_code',
+    //         'debug' => ':debug'
+    //     ]
+    // ],
+
+    //custom errorFormat *Faisal 31/5/2021
     'errorFormat' => [
-        'error' => [
-            'message' => ':message',
-            'errors' => ':errors',
-            'code' => ':code',
-            'status_code' => ':status_code',
-            'debug' => ':debug'
-        ]
+        'meta' => [
+            'code' => ':status_code',
+            'message' => 'Internal Query Error',
+            'detail_message' => ':message'
+        ],
+        'data' => [
+
+        ],
     ],
 
     /*

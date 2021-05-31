@@ -18,7 +18,7 @@ class OrganizationController extends Controller
      * @OA\Get(
      *  path="/api/v1/organization",
      *  summary="Get the list of organization",
-     *  tags={"Master"},
+     *  tags={"Informasi - Organization"},
      *  @OA\Parameter(
      *      name="q",
      *      in="query",
@@ -65,7 +65,7 @@ class OrganizationController extends Controller
      * @OA\Get(
      *  path="/api/v1/organization/{id}",
      *  summary="Get detail of organization",
-     *  tags={"Master"},
+     *  tags={"Informasi - Organization"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -116,7 +116,7 @@ class OrganizationController extends Controller
      * @OA\Post(
      *  path="/api/v1/organization",
      *  summary="Store Data Organization",
-     *  tags={"Master"},
+     *  tags={"Informasi - Organization"},
      *  @OA\Parameter(
      *      name="name",
      *      in="query",
@@ -247,7 +247,7 @@ class OrganizationController extends Controller
      * @OA\Put(
      *  path="/api/v1/organization/{id}",
      *  summary="Update Data Organization",
-     *  tags={"Master"},
+     *  tags={"Informasi - Organization"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -315,7 +315,7 @@ class OrganizationController extends Controller
      * @OA\Delete(
      *  path="/api/v1/organization/{id}",
      *  summary="Delete Organization",
-     *  tags={"Master"},
+     *  tags={"Informasi - Organization"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",

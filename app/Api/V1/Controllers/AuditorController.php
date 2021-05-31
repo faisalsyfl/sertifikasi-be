@@ -2,22 +2,26 @@
 
 namespace App\Api\V1\Controllers;
 
+use Config;
+use App\User;
+use App\Models\Auditor;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
-use App\Models\Auditi;
+use Dingo\Api\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestApi;
-use App\Api\V1\Requests\RuleAuditi;
 
-class AuditiController extends Controller
+class AuditorController extends Controller
 {
     use RestApi;
-    private $table = 'Auditi';
+    private $table = 'Auditor';
 
     /**
      * @OA\Get(
-     *  path="/api/v1/auditi",
-     *  summary="Get the list of auditi",
-     *  tags={"Informasi - Auditi"},
+     *  path="/api/v1/auditor",
+     *  summary="Get the list of auditor",
+     *  tags={"Informasi - Auditor"},
      *  @OA\Parameter(
      *      name="q",
      *      in="query",
@@ -62,9 +66,9 @@ class AuditiController extends Controller
 
     /**
      * @OA\Get(
-     *  path="/api/v1/auditi/{id}",
-     *  summary="Get detail of auditi",
-     *  tags={"Informasi - Auditi"},
+     *  path="/api/v1/auditor/{id}",
+     *  summary="Get detail of auditor",
+     *  tags={"Informasi - Auditor"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -95,114 +99,53 @@ class AuditiController extends Controller
         $limit  = $request->has('limit') ? $request->limit : 10;
         $page   = $request->has('page') ? $request->page : 1;
         if ($request->has('q')) {
-            $Auditi = Auditi::with(['organization', 'country', 'city', 'state'])->findQuery($request->q);
+            $user = Auditor::findQuery($request->q);
         } else if (isset($id)) {
-            $Auditi = Auditi::with(['organization', 'country', 'city', 'state'])->where('id', $id);
+            $user = Auditor::where('id', $id);
         } else {
-            $Auditi = Auditi::with(['organization', 'country', 'city', 'state']);
+            $user = Auditor::findQuery(null);
         }
-        $Auditi = $Auditi->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
-        $arr = $Auditi->toArray();
+        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $arr = $user->toArray();
         $this->pagination = array_except($arr, 'data');
 
-        if (isset($id))
-            $Auditi = $Auditi->first();
-        return $this->output($Auditi);
+        return $this->output($user);
     }
-
-    /**
+/**
      * @OA\Post(
-     *  path="/api/v1/auditi",
-     *  summary="Store Data Auditi",
-     *  tags={"Informasi - Auditi"},
+     *  path="/api/v1/auditor",
+     *  summary="Store Data auditor",
+     *  tags={"Informasi - Auditor"},
+     *  @OA\Parameter(
+     *      name="nip",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
      *  @OA\Parameter(
      *      name="name",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="organization_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="number"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="type",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
+     *           type="string",
      *      )
      *   ),
      * @OA\Parameter(
-     *      name="website",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
      *      name="email",
      *      in="query",
-     *      required=false,
+     *      required=true,
      *      @OA\Schema(
      *           type="string"
      *      )
      *   ),
      *  @OA\Parameter(
-     *      name="telp",
+     *      name="phone",
      *      in="query",
-     *      required=false,
+     *      required=true,
      *      @OA\Schema(
      *           type="string"
-     *      )
-     *   ),
-     * @OA\Parameter(
-     *      name="address",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="postcode",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="number",
-     *           minimum=5,
-     *           maximum=5,
-     *      )
-     *   ),
-     * @OA\Parameter(
-     *      name="country_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="number"
-     *      )
-     *   ),
-     * @OA\Parameter(
-     *      name="state_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="number"
-     *      )
-     *   ),
-     * @OA\Parameter(
-     *      name="city_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="number"
      *      )
      *   ),
      *  @OA\Response(response=200,description="Success",
@@ -222,22 +165,35 @@ class AuditiController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-    public function create(RuleAuditi $request)
+    public function create(Request $request)
     {
-        $auditi = new Auditi($request->all());
-        $auditi->save();
+        // dd($request->all());
+        $validate = $this->validateRequest(
+            $request->all(),
+            [
+                'nip' => 'required|unique:users,nik',
+                'name' => 'required',
+                'email' => 'required',
+                'phone' => 'required',
+            ]
+        );
+        if ($validate)
+            return $this->errorRequest(422, 'Validation Error', $validate);
+
+        $user = new Auditor($request->all());
+        $user->save();
 
         return $this->output([
-            'insert_id' => $auditi->id,
-            'data' => $auditi
+            'insert_id' => $user->id,
+            'data' => $user
         ], 'Success Created ' . $this->table, 200);
     }
 
     /**
      * @OA\Put(
-     *  path="/api/v1/auditi/{id}",
-     *  summary="Update Data Auditi",
-     *  tags={"Informasi - Auditi"},
+     *  path="/api/v1/auditor/{id}",
+     *  summary="Update Data auditor",
+     *  tags={"Informasi - Auditor"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -252,16 +208,10 @@ class AuditiController extends Controller
      * @OA\JsonContent(
      *   type="object",
      *   @OA\Property(property="name", type="string"),
-     *   @OA\Property(property="organization_id", type="number"),
-     *   @OA\Property(property="type", type="string"),
-     *   @OA\Property(property="website", type="string"),
+     *   @OA\Property(property="nip", type="string"),
      *   @OA\Property(property="email", type="string"),
-     *   @OA\Property(property="telp", type="string"),
-     *   @OA\Property(property="address", type="string"),
-     *   @OA\Property(property="postcode", type="number"),
-     *   @OA\Property(property="city_id", type="number"),
-     *   @OA\Property(property="state_id", type="number"),
-     *   @OA\Property(property="country_id", type="number"),
+     *   @OA\Property(property="phone", type="string"),
+
      * )
      * ),
      *  @OA\Response(response=200,description="Success",
@@ -281,20 +231,20 @@ class AuditiController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-    public function update(RuleAuditi $request, $id)
+    public function update(Request $request, $id)
     {
         try {
             if (isset($id) && $id) {
-                $org = Auditi::find($id);
-                if ($org) {
-                    $org->update($request->all());
+                $auditor = Auditor::find($id);
+                if ($auditor) {
+                    $auditor->update($request->all());
                 } else {
                     return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
                 }
                 return $this->output('Berhasil Merubah data');
             }
 
-            return $this->output('ID Kosong');
+            return $this->output('Id Kosong');
         } catch (\Throwable $th) {
             return $this->errorRequest(500, 'Unexpected error');
         }
@@ -302,9 +252,9 @@ class AuditiController extends Controller
 
     /**
      * @OA\Delete(
-     *  path="/api/v1/auditi/{id}",
-     *  summary="Delete Auditi",
-     *  tags={"Informasi - Auditi"},
+     *  path="/api/v1/auditor/{id}",
+     *  summary="Delete auditor",
+     *  tags={"Informasi - Auditor"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -336,7 +286,7 @@ class AuditiController extends Controller
     {
         try {
             if (isset($id) && $id) {
-                $res = Auditi::find($id);
+                $res = Auditor::find($id);
                 if ($res) {
                     $res->delete();
                 } else {
@@ -350,4 +300,5 @@ class AuditiController extends Controller
             return $this->errorRequest(500, 'Unexpected error');
         }
     }
+
 }
