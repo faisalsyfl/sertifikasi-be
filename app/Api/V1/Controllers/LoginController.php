@@ -90,6 +90,7 @@ class LoginController extends Controller
             return $this->output([
                 'role'      => $user->role,
                 'token'     => $token,
+                'username'     => $user->username,
                 'expires_in' => Auth::guard()->factory()->getTTL() * 60 * 60
             ], 'Successfully logged in');
         }
