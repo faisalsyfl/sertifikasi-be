@@ -2,6 +2,8 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\Auditor;
+use App\Models\AuditorCompetence;
 use App\Models\Competence;
 use Config;
 use App\User;
@@ -99,17 +101,17 @@ class CompetenceController extends Controller
         $limit  = $request->has('limit') ? $request->limit : 10;
         $page   = $request->has('page') ? $request->page : 1;
         if ($request->has('q')) {
-            $competency = Competence::findQuery($request->q);
+            $competence = Competence::findQuery($request->q);
         } else if (isset($id)) {
-            $competency = Competence::where('id', $id);
+            $competence = Competence::where('id', $id);
         } else {
-            $competency = Competence::findQuery(null);
+            $competence = Competence::findQuery(null);
         }
-        $competency = $competency->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
-        $arr = $competency->toArray();
+        $competence = $competence->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $arr = $competence->toArray();
         $this->pagination = array_except($arr, 'data');
 
-        return $this->output($competency);
+        return $this->output($competence);
     }
 
     /**
@@ -144,12 +146,94 @@ class CompetenceController extends Controller
         if ($validate)
             return $this->errorRequest(422, 'Validation Error', $validate);
 
-        $competency = new Competence($request->all());
-        $competency->save();
+        $competence = new Competence($request->all());
+        $competence->save();
 
         return $this->output([
-            'insert_id' => $competency->id,
-            'data' => $competency
+            'insert_id' => $competence->id,
+            'data' => $competence
+        ], 'Success Created ' . $this->table, 200);
+    }
+
+    /**
+     * @OA\Post(
+     *  path="/api/v1/competence/auditor",
+     *  summary="Set Data competency for Auditor",
+     *  tags={"Informasi - Competence"},
+     *  @OA\Parameter(
+     *      name="auditor_id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="1"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="competence_ids",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="1,2,3"
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function set_auditor_competence(Request $request)
+    {
+        // dd($request->all());
+        $validate = $this->validateRequest(
+            $request->all(),
+            [
+                'auditor_id' => 'required',
+                'competence_ids' => 'required',
+            ]
+        );
+        if ($validate)
+            return $this->errorRequest(422, 'Validation Error', $validate);
+
+        $auditor_id = $request->input('auditor_id');
+        $competence_ids = $request->input('competence_ids');
+        $competence_ids_array = explode(",",$competence_ids);
+        $insert_ids = [];
+        $data = [];
+
+        if($auditor_id and count($competence_ids_array) > 0){
+            $auditor = Auditor::find($auditor_id);
+
+            if($auditor){
+                foreach ($competence_ids_array as $competence_id) {
+                    $auditor_competence = AuditorCompetence::where("auditor_id", $auditor_id)
+                        ->where("competence_id",$competence_id)->first();
+
+                    if(!$auditor_competence){
+                        $auditor_competence = new AuditorCompetence();
+                        $auditor_competence->auditor_id = $auditor_id;
+                        $auditor_competence->competence_id = $competence_id;
+                        $auditor_competence->save();
+
+                        array_push($insert_ids, $auditor_competence->id);
+                        array_push($data, $auditor_competence->toArray());
+                    }else{
+                        return $this->errorRequest(422, 'Duplicate competence', $validate);
+                    }
+                }
+            }else{
+                return $this->errorRequest(404, 'Auditor not found', $validate);
+            }
+        }else{
+            return $this->errorRequest(422, 'Invalid parameter(s)', $validate);
+        }
+
+        return $this->output([
+            'insert_ids' => $insert_ids,
+            'data' => $data
         ], 'Success Created ' . $this->table, 200);
     }
 
@@ -199,9 +283,9 @@ class CompetenceController extends Controller
     {
         try {
             if (isset($id) && $id) {
-                $competency = Competence::find($id);
-                if ($competency) {
-                    $competency->update($request->all());
+                $competence = Competence::find($id);
+                if ($competence) {
+                    $competence->update($request->all());
                 } else {
                     return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
                 }
