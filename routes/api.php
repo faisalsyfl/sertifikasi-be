@@ -51,6 +51,13 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->put('/{id}', 'App\\Api\\V1\\Controllers\\AuditorController@update');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\AuditorController@destroy');
         });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'competence'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\CompetenceController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@index');
+            $api->post('/', 'App\\Api\\V1\\Controllers\\CompetenceController@create');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@update');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@destroy');
+        });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditi'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\AuditiController@index');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\AuditiController@index');
@@ -71,7 +78,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->post('location', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@storeFormLocation');
             $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@destroy');
         });
-
 
         #protect with Jwt Auth
         $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
