@@ -85,7 +85,7 @@ class LoginController extends Controller
         if (!$token) {
             return $this->output([
                 'status' => 0
-            ], $message, 422);
+            ], $message, 500);
         } else {
             return $this->output([
                 'role'      => $user->role,
