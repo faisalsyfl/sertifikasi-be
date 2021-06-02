@@ -110,7 +110,7 @@ class AccountController extends Controller
 
         return $this->output($user);
     }
-/**
+    /**
      * @OA\Post(
      *  path="/api/v1/account",
      *  summary="Store Data account",
@@ -214,19 +214,115 @@ class AccountController extends Controller
             'data' => $user
         ], 'Success Created ' . $this->table, 200);
     }
-    public function store(Request $request)
+    /**
+     * @OA\Put(
+     *  path="/api/v1/account/{id}",
+     *  summary="Update Data Account",
+     *  tags={"Informasi - Account"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      description="",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="name", type="string"),
+     *   @OA\Property(property="nip", type="string"),
+     *   @OA\Property(property="email", type="string"),
+     *   @OA\Property(property="phone", type="string"),
+
+     * )
+     * ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function update(Request $request, $id)
     {
+        try {
+            if (isset($id) && $id) {
+                $user = User::find($id);
+                if ($user) {
+                    $user->update($request->all());
+                } else {
+                    return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+                }
+                return $this->output('Berhasil Merubah data');
+            }
+
+            return $this->output('Id Kosong');
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
     }
-    public function show($id)
+
+    /**
+     * @OA\Delete(
+     *  path="/api/v1/account/{id}",
+     *  summary="Delete Account",
+     *  tags={"Informasi - Account"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      description="",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function destroy($id)
     {
-    }
-    public function edit(Request $request)
-    {
-    }
-    public function update(Request $request)
-    {
-    }
-    public function destroy(Request $request)
-    {
+        try {
+            if (isset($id) && $id) {
+                $res = User::find($id);
+                if ($res) {
+                    $res->delete();
+                } else {
+                    return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+                }
+                return $this->output('Berhasil menghapus data');
+            }
+
+            return $this->output('ID Kosong');
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
     }
 }
