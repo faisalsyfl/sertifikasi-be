@@ -95,19 +95,13 @@ return [
         ]
     ],
 
-    'form_edit_auditi' => [
+    'form_contact' => [
         'validation_rules' => [
-            'organization_id' => 'required|exists:organization,id',
+            'auditi_id' => 'required|exists:auditi,id',
             'name' => 'required',
-            'type' => 'required',
-            'website' => 'required',
             'email' => 'required',
             'telp' => 'required',
-            'address' => 'required',
-            'city_id' => 'required',
-            'state_id' => 'required',
-            'country_id' => 'required',
-            'postcode' => 'required'
+            'jabatan' => 'required',
         ]
     ],
 
