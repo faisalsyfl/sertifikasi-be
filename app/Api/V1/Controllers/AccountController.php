@@ -104,10 +104,14 @@ class AccountController extends Controller
         } else {
             $user = User::findQuery(null);
         }
-        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
-        $arr = $user->toArray();
-        $this->pagination = array_except($arr, 'data');
-
+        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit);
+        if($user->get()->count() == 0){
+            return $this->errorRequest(500,'ID tidak ditemukan');
+        }else{
+            $arr = $user->toArray();
+            $this->pagination = array_except($arr, 'data');
+        }
+        
         return $this->output($user);
     }
     /**
@@ -144,7 +148,7 @@ class AccountController extends Controller
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="email"
+     *           type="string"
      *      )
      *   ),
      *  @OA\Parameter(
@@ -152,7 +156,7 @@ class AccountController extends Controller
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="password"
+     *           type="string"
      *      )
      *   ),
      *  @OA\Parameter(
@@ -204,7 +208,7 @@ class AccountController extends Controller
             ]
         );
         if ($validate)
-            return $this->errorRequest(422, 'Validation Error', $validate);
+            return $this->quest(422, 'Validation Error', $validate);
 
         $user = new User($request->all());
         $user->save();
@@ -232,10 +236,13 @@ class AccountController extends Controller
      * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
+     *   @OA\Property(property="nik", type="string"),
      *   @OA\Property(property="name", type="string"),
-     *   @OA\Property(property="nip", type="string"),
+     *   @OA\Property(property="username", type="string"),
      *   @OA\Property(property="email", type="string"),
+     *   @OA\Property(property="password", type="string"),
      *   @OA\Property(property="phone", type="string"),
+     *   @OA\Property(property="role", type="string"),
 
      * )
      * ),
