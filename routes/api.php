@@ -41,7 +41,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/', 'App\\Api\\V1\\Controllers\\AccountController@index');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\AccountController@index');
             $api->post('/', 'App\\Api\\V1\\Controllers\\AccountController@create');
-            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\AccountController@store');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\AccountController@update');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\AccountController@destroy');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditor'], function (Router $api) {
@@ -65,6 +65,13 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->post('/', 'App\\Api\\V1\\Controllers\\AuditiController@create');
             $api->put('/{id}', 'App\\Api\\V1\\Controllers\\AuditiController@update');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\AuditiController@destroy');
+        });
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'contact'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\ContactController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\ContactController@index');
+            $api->post('/', 'App\\Api\\V1\\Controllers\\ContactController@create');
+            $api->put('/{id}', 'App\\Api\\V1\\Controllers\\ContactController@update');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\ContactController@destroy');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'country'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCountry');
@@ -102,18 +109,6 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             return response()->json([
                 'message' => 'This is a simple example of item returned by your APIs. Everyone can see it. v1'
             ]);
-        });
-
-        #admin endpoint
-        $api->group(['prefix' => 'admin'], function (Router $api) {
-            $api->post('login', 'App\\Api\\V1\\Controllers\\Admin\\AuthController@login');
-
-            $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
-                #admin - comers
-                $api->get('comers/', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@index');
-                $api->get('comers/{id}', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@show');
-                $api->post('comers/activate', 'App\\Api\\V1\\Controllers\\Admin\\ComersController@activate');
-            });
         });
     });
 

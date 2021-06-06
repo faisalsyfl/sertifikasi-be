@@ -2,25 +2,23 @@
 
 namespace App\Api\V1\Controllers;
 
-use Config;
-use App\User;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
-use Dingo\Api\Http\FormRequest;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use App\Models\Contact;
 use App\Traits\RestApi;
+use App\Api\V1\Requests\RuleContact;
+use App\Api\V1\Requests\RuleEditOrganization;
 
-class AccountController extends Controller
+class ContactController extends Controller
 {
     use RestApi;
-    private $table = 'Users';
+    private $table = 'contact';
 
     /**
      * @OA\Get(
-     *  path="/api/v1/account",
-     *  summary="Get the list of account",
-     *  tags={"Informasi - Account"},
+     *  path="/api/v1/contact",
+     *  summary="Get the list of contact",
+     *  tags={"Informasi - Contact"},
      *  @OA\Parameter(
      *      name="q",
      *      in="query",
@@ -65,9 +63,9 @@ class AccountController extends Controller
 
     /**
      * @OA\Get(
-     *  path="/api/v1/account/{id}",
-     *  summary="Get detail of account",
-     *  tags={"Informasi - Account"},
+     *  path="/api/v1/contact/{id}",
+     *  summary="Get detail of contact",
+     *  tags={"Informasi - Contact"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -95,84 +93,72 @@ class AccountController extends Controller
      */
     public function index(Request $request, $id = null)
     {
-        $limit  = $request->has('limit') ? $request->limit : 10;
-        $page   = $request->has('page') ? $request->page : 1;
-        if ($request->has('q')) {
-            $user = User::findQuery($request->q);
-        } else if (isset($id)) {
-            $user = User::where('id', $id);
-        } else {
-            $user = User::findQuery(null);
-        }
-        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit);
-        if($user->get()->count() == 0){
-            return $this->errorRequest(500,'ID tidak ditemukan');
-        }else{
-            $arr = $user->toArray();
+        try {
+            $limit  = $request->has('limit') ? $request->limit : 10;
+            $page   = $request->has('page') ? $request->page : 1;
+            if ($request->has('q')) {
+                $contact = Contact::with(['auditi'])->findQuery($request->q);
+            } else if (isset($id)) {
+                $contact = Contact::with(['auditi'])->where('id', $id);
+            } else {
+                $contact = Contact::with(['auditi']);
+            }
+            $contact = $contact->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+            $arr = $contact->toArray();
             $this->pagination = array_except($arr, 'data');
+
+            if (isset($id))
+                $contact = $contact->first();
+
+            return $this->output($contact);
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
         }
-        
-        return $this->output($user);
     }
+
     /**
      * @OA\Post(
-     *  path="/api/v1/account",
-     *  summary="Store Data account",
-     *  tags={"Informasi - Account"},
-     *  @OA\Parameter(
-     *      name="nik",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
+     *  path="/api/v1/contact",
+     *  summary="Store Data Contact",
+     *  tags={"Informasi - Contact"},
      *  @OA\Parameter(
      *      name="name",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="string",
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="username",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
      *           type="string"
      *      )
      *   ),
-     * @OA\Parameter(
+     *  @OA\Parameter(
      *      name="email",
      *      in="query",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
      *           type="string"
      *      )
      *   ),
      *  @OA\Parameter(
-     *      name="password",
+     *      name="telp",
      *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="phone",
-     *      in="query",
-     *      required=true,
+     *      required=false,
      *      @OA\Schema(
      *           type="string"
      *      )
      *   ),
      * @OA\Parameter(
-     *      name="role",
+     *      name="jabatan",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     * @OA\Parameter(
+     *      name="auditi_id",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="string"
+     *           type="number"
      *      )
      *   ),
      *  @OA\Response(response=200,description="Success",
@@ -192,37 +178,32 @@ class AccountController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-    public function create(Request $request)
+    public function create(RuleContact $request)
     {
-        // dd($request->all());
-        $validate = $this->validateRequest(
-            $request->all(),
-            [
-                'nik' => 'required|unique:users,nik',
-                'name' => 'required',
-                'username' => 'required',
-                'email' => 'required',
-                'password' => 'required',
-                'phone' => 'required',
-                'role' => 'required',
-            ]
-        );
-        if ($validate)
-            return $this->quest(422, 'Validation Error', $validate);
+        try {
+            $contact = new Contact($request->all());
+            $contact->save();
 
-        $user = new User($request->all());
-        $user->save();
-
-        return $this->output([
-            'insert_id' => $user->id,
-            'data' => $user
-        ], 'Success Created ' . $this->table, 200);
+            return $this->output([
+                'insert_id' => $contact->id,
+                'data' => $contact
+            ], 'Success Created ' . $this->table, 200);
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
     }
+    public function store(Request $request)
+    { }
+    public function show($id)
+    { }
+    public function edit(Request $request)
+    { }
+
     /**
      * @OA\Put(
-     *  path="/api/v1/account/{id}",
-     *  summary="Update Data Account",
-     *  tags={"Informasi - Account"},
+     *  path="/api/v1/contact/{id}",
+     *  summary="Update Data Contact",
+     *  tags={"Informasi - Contact"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -236,14 +217,11 @@ class AccountController extends Controller
      * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
-     *   @OA\Property(property="nik", type="string"),
      *   @OA\Property(property="name", type="string"),
-     *   @OA\Property(property="username", type="string"),
      *   @OA\Property(property="email", type="string"),
-     *   @OA\Property(property="password", type="string"),
-     *   @OA\Property(property="phone", type="string"),
-     *   @OA\Property(property="role", type="string"),
-
+     *   @OA\Property(property="telp", type="string"),
+     *   @OA\Property(property="jabatan", type="string"),
+     *   @OA\Property(property="auditi_id", type="number"),
      * )
      * ),
      *  @OA\Response(response=200,description="Success",
@@ -263,20 +241,20 @@ class AccountController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-    public function update(Request $request, $id)
+    public function update(RuleContact $request, $id)
     {
         try {
             if (isset($id) && $id) {
-                $user = User::find($id);
-                if ($user) {
-                    $user->update($request->all());
+                $org = Contact::find($id);
+                if ($org) {
+                    $org->update($request->all());
                 } else {
                     return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
                 }
                 return $this->output('Berhasil Merubah data');
             }
 
-            return $this->output('Id Kosong');
+            return $this->output('ID Kosong');
         } catch (\Throwable $th) {
             return $this->errorRequest(500, 'Unexpected error');
         }
@@ -284,9 +262,9 @@ class AccountController extends Controller
 
     /**
      * @OA\Delete(
-     *  path="/api/v1/account/{id}",
-     *  summary="Delete Account",
-     *  tags={"Informasi - Account"},
+     *  path="/api/v1/contact/{id}",
+     *  summary="Delete Contact",
+     *  tags={"Informasi - Contact"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -318,9 +296,9 @@ class AccountController extends Controller
     {
         try {
             if (isset($id) && $id) {
-                $res = User::find($id);
-                if ($res) {
-                    $res->delete();
+                $org = Contact::find($id);
+                if ($org) {
+                    $org->delete();
                 } else {
                     return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
                 }
