@@ -270,6 +270,30 @@ class CompetenceController extends Controller
      *           format="int64"
      *      )
      *   ),
+     *   @OA\Parameter(
+     *      name="name",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="type",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="code",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
      * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
