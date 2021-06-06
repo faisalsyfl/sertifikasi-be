@@ -104,13 +104,10 @@ class AccountController extends Controller
         } else {
             $user = User::findQuery(null);
         }
-        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit);
-        if($user->get()->count() == 0){
-            return $this->errorRequest(500,'ID tidak ditemukan');
-        }else{
-            $arr = $user->toArray();
-            $this->pagination = array_except($arr, 'data');
-        }
+        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $arr = $user->toArray();
+        $this->pagination = array_except($arr, 'data');
+    
         
         return $this->output($user);
     }
@@ -271,7 +268,7 @@ class AccountController extends Controller
                 if ($user) {
                     $user->update($request->all());
                 } else {
-                    return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+                    return $this->errorRequest(422, 'Gagal Merubah Data, Id tidak tersedia');
                 }
                 return $this->output('Berhasil Merubah data');
             }
@@ -327,7 +324,7 @@ class AccountController extends Controller
                 return $this->output('Berhasil menghapus data');
             }
 
-            return $this->output('ID Kosong');
+            return $this->output('ID tidak ditemukan');
         } catch (\Throwable $th) {
             return $this->errorRequest(500, 'Unexpected error');
         }

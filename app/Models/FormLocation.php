@@ -23,6 +23,21 @@ class FormLocation extends Model
         'created_at', 'updated_at'
     ];
 
+    public function state()
+    {
+        return $this->hasOne('App\Models\States', 'id', 'state_id');
+    }
+
+    public function country()
+    {
+        return $this->hasOne('App\Models\Countries', 'id', 'country_id');
+    }
+
+    public function city()
+    {
+        return $this->hasOne('App\Models\Cities', 'id', 'city_id');
+    }
+
 
     /**
      * Primary Key
