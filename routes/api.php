@@ -53,10 +53,13 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'competence'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\CompetenceController@index');
+            $api->get('/auditor', 'App\\Api\\V1\\Controllers\\CompetenceController@get_auditor_competence');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@index');
             $api->post('/auditor', 'App\\Api\\V1\\Controllers\\CompetenceController@set_auditor_competence');
             $api->post('/', 'App\\Api\\V1\\Controllers\\CompetenceController@create');
+            $api->put('/auditor/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@update_auditor_competence');
             $api->put('/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@update');
+            $api->delete('/auditor/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@destroy_auditor_competence');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\CompetenceController@destroy');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'auditi'], function (Router $api) {

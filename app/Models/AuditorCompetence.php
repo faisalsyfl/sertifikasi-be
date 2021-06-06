@@ -17,7 +17,7 @@ class AuditorCompetence extends Model
      * @var array
      */
     protected $fillable = [
-        'auditor_id', 'competence_id',
+        'auditor_id', 'competence_id', 'position'
     ];
     protected $hidden = [
         'created_at', 'updated_at',

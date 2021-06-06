@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterCompetenceTypeCode extends Migration
+class AlterCompetenceAuditorPosition extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,9 @@ class AlterCompetenceTypeCode extends Migration
      */
     public function up()
     {
-        if (
-            !Schema::hasColumn('competence', 'type')
-            and !Schema::hasColumn('competence', 'code')
-        ) {
-            Schema::table('competence', function (Blueprint $table) {
-                $table->string('type', 25);
-                $table->string('code', 10);
+        if (!Schema::hasColumn('auditor_competence', 'position')) {
+            Schema::table('auditor_competence', function (Blueprint $table) {
+                $table->string('position', 25);
             });
         }
     }
