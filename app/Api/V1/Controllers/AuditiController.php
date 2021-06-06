@@ -7,7 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Auditi;
 use App\Traits\RestApi;
 use App\Api\V1\Requests\RuleAuditi;
-
+use DB;
 class AuditiController extends Controller
 {
     use RestApi;
@@ -102,6 +102,9 @@ class AuditiController extends Controller
             $Auditi = Auditi::with(['organization', 'country', 'city', 'state']);
         }
         $Auditi = $Auditi->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        // DB::enableQueryLog(); // Enable query log
+        // dd(DB::getQueryLog()); // Show results of log            
+
         $arr = $Auditi->toArray();
         $this->pagination = array_except($arr, 'data');
 

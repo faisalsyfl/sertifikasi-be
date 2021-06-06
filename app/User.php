@@ -69,8 +69,8 @@ class User extends Authenticatable implements JWTSubject
         if (isset($keyword) && $keyword) {
             $query->where(function ($q) use ($keyword) {
                 $keyword = '%' . $keyword . '%';
-                $q->where('npwp', 'like', $keyword);
                 $q->orWhere('name', 'like', $keyword);
+                $q->orWhere('username', 'like', $keyword);
             });
         }
     }

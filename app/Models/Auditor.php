@@ -34,7 +34,7 @@ class Auditor extends Model
     {
         if (isset($keyword) && $keyword) {
             $query->where(function ($q) use ($keyword) {
-                $q->orWhere('name', 'ilike', "%${keyword}%");
+                $q->orWhere('name', 'like', "%${keyword}%");
             });
         }
     }
