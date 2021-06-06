@@ -387,7 +387,7 @@ class CompetenceController extends Controller
      *      required=true,
      *      @OA\Schema(
      *           type="string",
-     *           default="JSON_FORMAT"
+     *           default="{`1`:`A`}"
      *      )
      *   ),
      *  @OA\Response(response=401,description="Unauthenticated"),
