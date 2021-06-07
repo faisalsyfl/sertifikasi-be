@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Competence extends Model
+class SectionFormValue extends Model
 {
     /**
      * Table database
      */
-    protected $table = 'competence';
+    protected $table = 'section_form_value';
 
     /**
      * The attributes that are mass assignable.
@@ -17,7 +17,7 @@ class Competence extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'type', 'code'
+        'section_status_id', 'section_form_id', 'reference_table', 'reference_id', 'value', 'frozen_value'
     ];
     protected $hidden = [
         'created_at', 'updated_at',
@@ -33,9 +33,7 @@ class Competence extends Model
     {
         if (isset($keyword) && $keyword) {
             $query->where(function ($q) use ($keyword) {
-                $q->orWhere('type', 'like', "%${keyword}%")
-                    ->orWhere('code', 'like', "%${keyword}%")
-                    ->orWhere('name', 'like', "%${keyword}%");
+                $q->orWhere('key', 'like', "%${keyword}%");
             });
         }
     }
