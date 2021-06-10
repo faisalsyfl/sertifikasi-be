@@ -2,11 +2,12 @@
 
 namespace App\Api\V1\Controllers;
 
-use Config;
+use Validator;
 use App\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Api\V1\Controllers\Qsc2;
 use App\Models\Transaction;
 use App\Models\Form;
 use Dingo\Api\Http\FormRequest;
@@ -17,6 +18,12 @@ class TransactionController extends Controller
 {
     use RestApi;
     private $table = 'Transaction';
+
+    protected $Qsc2;
+    public function __construct(Qsc2 $Qsc2)
+    {
+        $this->Qsc2 = $Qsc2;
+    }
 
     public function index(Request $request, $id = null)
     {
@@ -34,6 +41,35 @@ class TransactionController extends Controller
         $this->pagination = array_except($arr, 'data');
 
         return $this->output($transaction);
+    }
+
+    public function store(Request $request)
+    {
+        // dd($request);
+        switch ($request->mode) {
+            case 'QSC1':
+                break;
+            case 'QSC2':
+                $res = $this->Qsc2->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+
+
+                break;
+            case 'QSC3':
+                break;
+            case 'QSC4':
+                break;
+            case 'QSC5':
+                break;
+            case 'QSC6':
+                break;
+            case 'QSC7':
+                break;
+            default:
+                return $this->errorRequest(422, 'Store Function Not Found');
+                break;
+        }
     }
 
     public function qsc1(Request $request)
