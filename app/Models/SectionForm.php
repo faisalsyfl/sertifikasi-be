@@ -17,7 +17,7 @@ class SectionForm extends Model
      * @var array
      */
     protected $fillable = [
-        'section_id', 'key'
+        'section_id', 'key', 'rule'
     ];
     protected $hidden = [
         'created_at', 'updated_at',

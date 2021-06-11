@@ -50,6 +50,8 @@ class TransactionController extends Controller
             case 'QSC1':
                 break;
             case 'QSC2':
+                #Section Aplikasi = 2
+                $request['section'] = 2;
                 $res = $this->Qsc2->store($request);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);

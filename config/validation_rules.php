@@ -107,7 +107,8 @@ return [
 
     'form_qsc_2' => [
         'validation_rules' => [
-            'mode' => 'required|in:QSC1,QSC2,QSC3,QSC4,QSC5,QSC6,QSC7'
+            'mode' => 'required|in:QSC1,QSC2,QSC3,QSC4,QSC5,QSC6,QSC7',
+            'auditi_id' => 'required|exists:auditi,id'
         ]
     ],
 
