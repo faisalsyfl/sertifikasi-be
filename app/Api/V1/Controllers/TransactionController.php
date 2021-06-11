@@ -55,8 +55,7 @@ class TransactionController extends Controller
                 $res = $this->Qsc2->store($request);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
-
-
+                return $this->output($res);
                 break;
             case 'QSC3':
                 break;

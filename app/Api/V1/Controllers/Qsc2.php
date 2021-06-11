@@ -2,10 +2,11 @@
 
 namespace App\Api\V1\Controllers;
 
-use Validator, Config;
+use Validator, Config, DB;
 use App\Http\Controllers\Controller;
 use App\Traits\RestApi;
 use App\Models\SectionForm;
+use App\Models\SectionFormValue;
 
 class Qsc2 extends Controller
 {
@@ -27,6 +28,28 @@ class Qsc2 extends Controller
             return ["status" => false, "error" => $validator->errors()->toArray()];
         }
 
-        dd($request->all());
+        if (is_array($request->all()) && (count($request->all()) > 0)) {
+            try {
+                DB::transaction(function () use ($request) {
+                    foreach ($request->all() as $key => $v) {
+                        $idFormValue = SectionForm::where('section_id', $request['section'])->where('key', $key)->first("id");
+                        if (isset($idFormValue->id) && $idFormValue->id) {
+                            $existing = SectionFormValue::where('section_form_id', $idFormValue->id)->where('section_status_id', $request['section_status_id'])->first();
+                            #combo save and edit
+                            $formValue = (isset($existing->id) && $existing->id) ? $existing : new SectionFormValue();
+                            $formValue->section_form_id = $idFormValue->id;
+                            $formValue->section_status_id =  $request['section_status_id'];
+                            $formValue->value =  is_array($v) ? json_encode($v) : $v;
+                            $formValue->save();
+                        }
+                    }
+                });
+                return ["status" => true, "data" => "Berhasil Menyimpan Data"];
+            } catch (\Throwable $th) {
+                #save to LOG
+            }
+        }
+
+        return ["status" => false, "error" => "No Data!"];
     }
 }
