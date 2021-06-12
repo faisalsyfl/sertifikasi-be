@@ -73,6 +73,37 @@ class TransactionController extends Controller
         }
     }
 
+    public function list(Request $request)
+    {
+        // dd($request->all());
+        switch ($request->mode) {
+            case 'QSC1':
+                break;
+            case 'QSC2':
+                // dd($request->all());
+                $request['transaction_id'] = 1;
+                $request['section_id'] = 2;
+                $res = $this->Qsc2->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
+                break;
+            case 'QSC3':
+                break;
+            case 'QSC4':
+                break;
+            case 'QSC5':
+                break;
+            case 'QSC6':
+                break;
+            case 'QSC7':
+                break;
+            default:
+                return $this->errorRequest(422, 'Store Function Not Found');
+                break;
+        }
+    }
+
     public function qsc1(Request $request)
     {
         $validate = $this->validateRequest($request->all(), ['organization_id' => 'required|exists:organization,id', 'auditi_id' => 'required|exists:auditi,id']);

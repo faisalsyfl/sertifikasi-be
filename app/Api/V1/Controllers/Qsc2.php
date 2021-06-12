@@ -12,6 +12,9 @@ class Qsc2 extends Controller
 {
     use RestApi;
 
+    public function index()
+    { }
+
     public function store($request)
     {
         # Merge Rule Validation
