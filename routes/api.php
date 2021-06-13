@@ -88,10 +88,10 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCity');
         });
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'form'], function (Router $api) {
-            $api->get('location/', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@index');
-            $api->get('location/{id}', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@index');
-            $api->post('location', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@storeFormLocation');
-            $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\Form\\FormLocation@destroy');
+            $api->get('location/', 'App\\Api\\V1\\Controllers\\FormLocation@index');
+            $api->get('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@index');
+            $api->post('location', 'App\\Api\\V1\\Controllers\\FormLocation@storeFormLocation');
+            $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@destroy');
         });
 
         #protect with Jwt Auth
