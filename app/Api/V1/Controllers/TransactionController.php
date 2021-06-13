@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
 use App\Api\V1\Controllers\Qsc2;
+use App\Api\V1\Controllers\Qsc1;
 use App\Models\Transaction;
 use App\Models\Form;
 use Dingo\Api\Http\FormRequest;
@@ -19,12 +20,59 @@ class TransactionController extends Controller
     use RestApi;
     private $table = 'Transaction';
 
+    protected $Qsc1;
     protected $Qsc2;
-    public function __construct(Qsc2 $Qsc2)
+    public function __construct(Qsc1 $Qsc1, Qsc2 $Qsc2)
     {
+        $this->Qsc1 = $Qsc1;
         $this->Qsc2 = $Qsc2;
     }
-
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc",
+     *  summary="Get the list of transaction",
+     *  tags={"Transaction - Form"},
+     *  @OA\Parameter(
+     *      name="q",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="limit",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="page",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
     public function index(Request $request, $id = null)
     {
         $limit  = $request->has('limit') ? $request->limit : 10;
@@ -45,9 +93,15 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        dd($request);
         switch ($request->mode) {
             case 'QSC1':
+                #Section Aplikasi = 1
+                $request['section'] = 1;
+                $res = $this->Qsc1->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
+
                 break;
             case 'QSC2':
                 #Section Aplikasi = 2
@@ -78,6 +132,7 @@ class TransactionController extends Controller
         // dd($request->all());
         switch ($request->mode) {
             case 'QSC1':
+
                 break;
             case 'QSC2':
                 // dd($request->all());

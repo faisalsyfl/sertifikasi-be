@@ -37,6 +37,7 @@ class Qsc2 extends Controller
         }
 
         if (is_array($request->all()) && (count($request->all()) > 0)) {
+            $this->genereateSectionStatus();
             try {
                 DB::transaction(function () use ($request) {
                     foreach ($request->all() as $key => $v) {

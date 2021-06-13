@@ -20,7 +20,7 @@ class Organization extends Model
         'name', 'npwp', 'type', 'website', 'email', 'telp', 'address', 'city_id', 'state_id', 'country_id', 'postcode'
     ];
     protected $hidden = [
-        'created_at', 'updated_at', 'city_id', 'state_id', 'country_id'
+        'created_at', 'updated_at'
     ];
 
 

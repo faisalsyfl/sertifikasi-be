@@ -17,7 +17,7 @@ class FormLocation extends Controller
      * @OA\Get(
      *  path="/api/v1/form/location",
      *  summary="Get the list of location",
-     *  tags={"Form"},
+     *  tags={"Informasi - Lokasi"},
      *  @OA\Parameter(
      *      name="q",
      *      in="query",
@@ -64,7 +64,7 @@ class FormLocation extends Controller
      * @OA\Get(
      *  path="/api/v1/form/location/{id}",
      *  summary="Get detail of location",
-     *  tags={"Form"},
+     *  tags={"Informasi - Lokasi"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -114,7 +114,7 @@ class FormLocation extends Controller
      * @OA\Post(
      *  path="/api/v1/form/location",
      *  summary="Store Location Endpoint",
-     *  tags={"Form"},
+     *  tags={"Informasi - Lokasi"},
      *  @OA\Parameter(
      *      name="location_type",
      *      in="query",
@@ -209,7 +209,7 @@ class FormLocation extends Controller
      * @OA\Delete(
      *  path="/api/v1/form/location/{id}",
      *  summary="Delete Form Location",
-     *  tags={"Form"},
+     *  tags={"Informasi - Lokasi"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
