@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Api\V1\Controllers\Form;
+namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -138,14 +138,6 @@ class FormLocation extends Controller
      *      required=true,
      *      @OA\Schema(
      *           type="string"
-     *      )
-     *   ), 
-     * @OA\Parameter(
-     *      name="form_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
      *      )
      *   ), 
      * @OA\Parameter(

@@ -1,6 +1,7 @@
 set -e
 echo "Deploying"
 
+git reset --hard
 git fetch
 git pull origin develop
 php artisan migrate

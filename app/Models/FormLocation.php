@@ -17,7 +17,7 @@ class FormLocation extends Model
      * @var array
      */
     protected $fillable = [
-        'location_type', 'address', 'location', 'form_id', 'country_id', 'state_id', 'city_id', 'postcode'
+        'location_type', 'address', 'location', 'country_id', 'state_id', 'city_id', 'postcode'
     ];
     protected $hidden = [
         'created_at', 'updated_at'
