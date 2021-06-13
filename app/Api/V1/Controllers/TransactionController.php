@@ -45,7 +45,7 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        // dd($request);
+        dd($request);
         switch ($request->mode) {
             case 'QSC1':
                 break;
