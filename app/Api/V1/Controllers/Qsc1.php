@@ -37,11 +37,12 @@ class Qsc1 extends Controller
 
         $insert = $request->all();
         if($request->has('organization_id')){
-            $org = Organization::find($request->organization_id)->with('city','state','country')->first();
+            $org = Organization::with('city','state','country')->where('id',$request->organization_id)->first();
             $map  = $this->mapOrg($org->toArray());
         }
         if($request->has('auditi_id')){
-            $Auditi = Auditi::find($request->auditi_id)->with('city','state','country')->first();
+            // dd($request->auditi_id);
+            $Auditi = Auditi::with('city','state','country')->where('id',$request->auditi_id)->first();
             $map2  = $this->mapAuditi($Auditi->toArray());
             $map = array_merge($map,$map2);
         }
@@ -54,8 +55,12 @@ class Qsc1 extends Controller
             $this->generateSectionStatus($transaction_id);
         }else{
             $transaction_id = $request->transaction_id;
+            $trans = Transaction::find($transaction_id);
+            $trans->update([
+                'auditi_id' => $request->auditi_id,
+                'organization_id' => $request->organization_id
+            ]);
         }
-
         if (is_array($map) && (count($map) > 0)) {
             $section_status_id = SectionStatus::where('transaction_id',$transaction_id)->where('section_id',$insert['section'])->first()->id;
             try {
