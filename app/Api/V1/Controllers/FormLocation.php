@@ -141,14 +141,6 @@ class FormLocation extends Controller
      *      )
      *   ), 
      * @OA\Parameter(
-     *      name="form_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ), 
-     * @OA\Parameter(
      *      name="country_id",
      *      in="query",
      *      required=true,
