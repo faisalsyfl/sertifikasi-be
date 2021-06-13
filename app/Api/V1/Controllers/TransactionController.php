@@ -83,7 +83,7 @@ class TransactionController extends Controller
                 // dd($request->all());
                 $request['transaction_id'] = 1;
                 $request['section_id'] = 2;
-                $res = $this->Qsc2->store($request);
+                $res = $this->Qsc2->list($request);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
                 return $this->output($res);

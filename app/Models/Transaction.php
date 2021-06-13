@@ -20,12 +20,6 @@ class Transaction extends Model
      *
      * @var array
      */
-    // $table->bigIncrements('id');
-    // $table->string('code');
-    // $table->integer('organization_id');
-    // $table->integer('auditi_id');
-    // $table->integer('kontak_id');
-    // $table->integer('status');
 
     protected $fillable = [
         'code', 'organization_id', 'auditi_id', 'contact_id', 'status', 'stats'
@@ -40,6 +34,16 @@ class Transaction extends Model
      * @var string
      */
     protected $primaryKey = 'id';
+
+    public function organization()
+    {
+        return $this->hasOne('App\Models\organization', 'id', 'organization_id');
+    }
+
+    public function section_status()
+    {
+        return $this->hasMany('App\Models\SectionStatus', 'id', 'transaction_id');
+    }
 
     public function setCodeAttribute($type)
     {
@@ -79,9 +83,5 @@ class Transaction extends Model
                 $qr->orWhere('email', 'like', $keyword);
             });
         }
-    }
-    public function organization()
-    {
-        return $this->hasOne('App\Models\organization', 'id', 'organization_id');
     }
 }
