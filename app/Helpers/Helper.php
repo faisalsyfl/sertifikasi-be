@@ -58,30 +58,3 @@ function generateRandomString($length = 10)
 
     return $randomString;
 }
-
-function statusConvert($status = null)
-{
-    $code = 'REGISTRATION';
-    switch ($status) {
-        case 1:
-            $code = 'REGISTRATION';
-            break;
-        case 2:
-            $code = 'APPLICATION';
-            break;
-        case 3:
-            $code = 'COST';
-            break;
-        case 4:
-            $code = 'AUDIT';
-            break;
-        case 5:
-            $code = 'CERTIFICATE';
-            break;
-        case 6:
-            $code = 'DONE';
-            break;
-    }
-
-    return $code;
-}

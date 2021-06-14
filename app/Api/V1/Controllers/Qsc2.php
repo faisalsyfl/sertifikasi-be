@@ -14,10 +14,7 @@ class Qsc2 extends Controller
 
     public function list($request)
     {
-        $validator = Validator::make($request->input(),  Config::get('validation_rules.form_qsc_2.validation_rules'));
-        if ($validator->fails()) {
-            return ["status" => false, "error" => $validator->errors()->toArray()];
-        }
+        
     }
 
     public function store($request)
