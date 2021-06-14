@@ -434,7 +434,7 @@ class CompetenceController extends Controller
                         array_push($insert_ids, $auditor_competence->id);
                         array_push($data, $auditor_competence->toArray());
                     }else{
-                        return $this->errorRequest(422, 'Duplicate competence', $validate);
+                        return $this->errorRequest(200, 'Duplicate competence', $validate);
                     }
                 }
             }else{
@@ -468,7 +468,8 @@ class CompetenceController extends Controller
      * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
-     *   @OA\Property(property="position", type="string"),
+     *   @OA\Property(property="position", type="string", default="Lead Auditor"),
+     *   @OA\Property(property="competence_id", type="int64", default=1),
      * )
      * ),
      *  @OA\Response(response=200,description="Success",
