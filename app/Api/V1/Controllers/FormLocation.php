@@ -206,6 +206,69 @@ class FormLocation extends Controller
     }
 
     /**
+     * @OA\Put(
+     *  path="/api/v1/form/location/{id}",
+     *  summary="Update Data Location",
+     *  tags={"Informasi - Lokasi"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      description="",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="location_type", type="string"),
+     *   @OA\Property(property="address", type="string"),
+     *   @OA\Property(property="location", type="string"),
+     *   @OA\Property(property="country_id", type="number"),
+     *   @OA\Property(property="state_id", type="number"),
+     *   @OA\Property(property="city_id", type="number"),
+     *   @OA\Property(property="postcode", type="number"),
+     * )
+     * ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function updateLocation(RuleFormLocation $request, $id)
+    {
+        try {
+            if (isset($id) && $id) {
+                $loc = locationModel::find($id);
+                if ($loc) {
+                    $loc->update($request->all());
+                } else {
+                    return $this->errorRequest(422, 'Gagal Merubah Data, Id tidak tersedia');
+                }
+                return $this->output('Berhasil Merubah data');
+            }
+
+            return $this->output('ID Kosong');
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
+    }
+
+    /**
      * @OA\Delete(
      *  path="/api/v1/form/location/{id}",
      *  summary="Delete Form Location",

@@ -39,7 +39,6 @@ return [
             'location_type' => 'required|in:KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN',
             'address' => 'required',
             'location' => 'required',
-            'form_id' => 'required',
             'country_id' => 'required',
             'state_id' => 'required',
             'city_id' => 'required',
