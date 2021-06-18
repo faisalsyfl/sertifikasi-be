@@ -13,7 +13,11 @@ class Transaction extends Model
      * Table database
      */
     protected $table = 'transaction';
-    protected $with = ['organization'];
+    protected $with = ['auditi:id,name','section_status:id,status,transaction_id,section_id'];
+    protected $appends = [
+        'sertifikasi',
+        'status_sertifikasi',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -22,12 +26,11 @@ class Transaction extends Model
      */
 
     protected $fillable = [
-        'code', 'organization_id', 'auditi_id', 'contact_id', 'stats'
+        'code', 'stats' , 'created_at', 'organization_id','auditi_id'
     ];
     protected $hidden = [
-        'created_at', 'updated_at'
+        'updated_at','contact_id',
     ];
-
 
     /**
      * Primary Key
@@ -35,26 +38,42 @@ class Transaction extends Model
      */
     protected $primaryKey = 'id';
 
-    public function organization()
+    public function auditi()
     {
-        return $this->hasOne('App\Models\organization', 'id', 'organization_id');
+        return $this->hasOne('App\Models\Auditi', 'id', 'auditi_id');
     }
 
     public function section_status()
     {
-        return $this->hasMany('App\Models\SectionStatus', 'id', 'transaction_id');
+        return $this->hasMany('App\Models\SectionStatus');
     }
 
+    public function getSertifikasiAttribute() {
+        return $this->attributes['sertifikasi'] = 'TBA';
+    }
+    public function getStatusSertifikasiAttribute() {
+        $progress = 0;
+        foreach($this->section_status as $temp){
+            if($temp['status'] >= 2 ){
+                $progress+=1;
+            }
+        }
+
+        return $this->attributes['status_sertifikasi'] = ''.$progress.' / 7';
+    }
     public function setCodeAttribute($type)
     {
         //Type : SC - LSPRO - PC
         $this->attributes['code'] = $this->generateCode($type);
     }
-    public function getStatusAttribute($value)
+    public function getStatsAttribute($value)
     {
-        return $this->status = statusConvert($value);
+        return ($value) == 1 ? 'ACTIVE' : 'INACTIVE';
     }
 
+    public function getListsAttribute(){
+        return $this->attributes['lists'] = '0/7';
+    }
     private function generateCode($type)
     {
         if ($type == 'SC') {

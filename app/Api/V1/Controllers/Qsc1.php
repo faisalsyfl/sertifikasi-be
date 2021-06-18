@@ -17,12 +17,17 @@ class Qsc1 extends Controller
 {
     use RestApi;
 
-    public function list($request)
+    public function list($request,$id)
     {
-        $validator = Validator::make($request->input(),  Config::get('validation_rules.form_qsc_2.validation_rules'));
-        if ($validator->fails()) {
-            return ["status" => false, "error" => $validator->errors()->toArray()];
+        //Static Section = 1
+        $section = 1;
+        $section_status_id = SectionStatus::where('transaction_id',$id)->where('section_id',$section)->first();
+        if($section_status_id){
+            $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
+        }else{
+            return ["status" => false, "data" => "Gagal Mendapatkan Detail Form Step 1"];
         }
+        return ["status" => true, "data" => $existing->toArray()];
     }
 
     public function store($request)
@@ -78,13 +83,13 @@ class Qsc1 extends Controller
                         }
                     }
                 });
-                return ["status" => true, "data" => "Berhasil Menyimpan Data"];
+                return ["status" => true, "data" => ['transaction_id' => $transaction_id]];
             } catch (\Throwable $th) {
                 #save to LOG
             }
         }
 
-        // return ["status" => false, "error" => "No Data!"];
+        return ["status" => false, "error" => "No Data!"];
     }
 
     private function mapOrg($arr){

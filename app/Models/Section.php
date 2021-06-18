@@ -29,6 +29,7 @@ class Section extends Model
      */
     protected $primaryKey = 'id';
 
+
     public function scopeFindQuery($query, $keyword = null)
     {
         if (isset($keyword) && $keyword) {

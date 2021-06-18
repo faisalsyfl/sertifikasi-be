@@ -10,6 +10,7 @@ class SectionStatus extends Model
      * Table database
      */
     protected $table = 'section_status';
+    protected $with = ['section:id,name'];
 
     /**
      * The attributes that are mass assignable.
@@ -29,6 +30,9 @@ class SectionStatus extends Model
      */
     protected $primaryKey = 'id';
 
+    public function section(){
+        return $this->hasOne('App\Models\Section','id','section_id');
+    }
     public function scopeFindQuery($query, $keyword = null)
     {
         if (isset($keyword) && $keyword) {

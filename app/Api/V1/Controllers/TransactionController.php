@@ -31,7 +31,7 @@ class TransactionController extends Controller
      * @OA\Get(
      *  path="/api/v1/qsc",
      *  summary="Get the list of transaction",
-     *  tags={"Transaction - Form"},
+     *  tags={"Transaction"},
      *  @OA\Parameter(
      *      name="q",
      *      in="query",
@@ -73,6 +73,37 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
+        /**
+     * @OA\Get(
+     *  path="/api/v1/qsc/{id}",
+     *  summary="Get detail of transaction",
+     *  tags={"Transaction"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
     public function index(Request $request, $id = null)
     {
         $limit  = $request->has('limit') ? $request->limit : 10;
@@ -84,12 +115,61 @@ class TransactionController extends Controller
         } else {
             $transaction = Transaction::findQuery(null);
         }
-        $transaction = $transaction->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $transaction = $transaction->where('stats',1)->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $transaction->toArray();
         $this->pagination = array_except($arr, 'data');
 
         return $this->output($transaction);
     }
+
+
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc/store",
+     *  summary="Save - Step 1",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC1"
+
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="organization_id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="auditi_id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
 
     public function store(Request $request)
     {
@@ -100,7 +180,7 @@ class TransactionController extends Controller
                 $res = $this->Qsc1->store($request);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
-                return $this->output($res);
+                return $this->output($res,'Berhasil Menyimpan Data');
 
                 break;
             case 'QSC2':
@@ -127,11 +207,57 @@ class TransactionController extends Controller
         }
     }
 
-    public function list(Request $request)
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc/list/{id}",
+     *  summary="Detail - Step 1",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC1"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function list(Request $request,$id)
     {
-        // dd($request->all());
         switch ($request->mode) {
             case 'QSC1':
+                $res = $this->Qsc1->list($request,$id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                
+                $transaction = Transaction::where('id',$id)->first();
+                $final = array_merge($transaction->toArray(),['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
 
                 break;
             case 'QSC2':
@@ -157,38 +283,5 @@ class TransactionController extends Controller
                 return $this->errorRequest(422, 'Store Function Not Found');
                 break;
         }
-    }
-
-    public function qsc1(Request $request)
-    {
-        $validate = $this->validateRequest($request->all(), ['organization_id' => 'required|exists:organization,id', 'auditi_id' => 'required|exists:auditi,id']);
-        if ($validate)
-            return $this->errorRequest(422, 'Validation Error', $validate);
-
-        $transaction = new Transaction($request->all());
-        $transaction->status = 1;
-        $transaction->code   = 'SC';
-        $transaction->save();
-
-        $form = new Form(['transaction_id' => $transaction->id]);
-        $form->save();
-
-        return $this->output($transaction);
-    }
-    public function qsc2(Request $request)
-    {
-        $validate = $this->validateRequest($request->all(), ['transaction_id' => 'required']);
-        if ($validate)
-            return $this->errorRequest(422, 'Validation Error', $validate);
-
-        // dd($request->exists('Cname'));
-        $form = Form::where('transaction_id', $request->transaction_id);
-        $input = $request->all();
-        $form->update($input);
-
-        $form = Form::where('transaction_id', $request->transaction_id)->first();
-        // $form->save();
-        // $form->get();
-        return $this->output($form);
     }
 }
