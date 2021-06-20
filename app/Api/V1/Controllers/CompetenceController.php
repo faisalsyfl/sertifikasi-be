@@ -34,6 +34,15 @@ class CompetenceController extends Controller
      *      )
      *   ),
      *  @OA\Parameter(
+     *      name="parent_code",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="1"
+     *      )
+     *   ),
+     *  @OA\Parameter(
      *      name="q",
      *      in="query",
      *      required=false,
@@ -112,6 +121,7 @@ class CompetenceController extends Controller
         $limit  = $request->has('limit') ? $request->limit : 10;
         $page   = $request->has('page') ? $request->page : 1;
         $type   = $request->has('type') ? $request->type : null;
+        $parent_code   = $request->has('parent_code') ? $request->parent_code : null;
 
         if ($request->has('q')) {
             $competence = Competence::findQuery($request->q);
@@ -122,10 +132,14 @@ class CompetenceController extends Controller
         }
 
         if($type){
-            $competence->where("type", $type);
+            $competence = $competence->where("type", $type);
         }
 
-        $competence = $competence->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        if($parent_code){
+            $competence = $competence->where("parent_code",$parent_code);
+        }
+
+        $competence = $competence->orderBy('updated_at', 'desc')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $competence->toArray();
         $this->pagination = array_except($arr, 'data');
 
