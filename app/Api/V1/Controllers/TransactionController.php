@@ -10,6 +10,10 @@ use App\Http\Controllers\Controller;
 use App\Api\V1\Controllers\Qsc2;
 use App\Api\V1\Controllers\Qsc1;
 use App\Models\Transaction;
+use App\Models\Organization;
+use App\Models\Auditi;
+use App\Models\Auditor;
+use App\Models\Competence;
 use App\Models\Form;
 use Dingo\Api\Http\FormRequest;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -283,5 +287,15 @@ class TransactionController extends Controller
                 return $this->errorRequest(422, 'Store Function Not Found');
                 break;
         }
+    }
+
+    public function dashboard(){
+        $org = Organization::all();
+        $klien = Auditi::all();
+        $auditor = Auditor::all();
+        $comp = Competence::all();
+        $transaction = Transaction::all();
+
+        return $this->output(['org' => count($org), 'client' => count($klien), 'auditor' => count($auditor), 'comp' => count($comp), 'transaction' => count($transaction)]);
     }
 }

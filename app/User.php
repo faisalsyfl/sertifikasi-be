@@ -52,6 +52,7 @@ class User extends Authenticatable implements JWTSubject
     }
     public function getAvatarAttribute($value)
     {
+        // https://intranet.kemenperin.go.id/thumbnail.php?file=/files/sipegi/foto/090021878.jpg&max_width=150&max_height=150
         $avatar = 'https://intranet.kemenperin.go.id/thumbnail.php?file=/files/sipegi/foto/' . $this->nik . '.jpg&max_width=150&max_height=150';
         return $avatar;
     }

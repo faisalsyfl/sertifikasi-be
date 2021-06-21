@@ -22,6 +22,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         #profile endpoint
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'profile'], function (Router $api) {
             $api->get('me', 'App\\Api\\V1\\Controllers\\UserController@me');
+            $api->get('/dashboard', 'App\\Api\\V1\\Controllers\\TransactionController@dashboard');
         });
 
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc'], function (Router $api) {
