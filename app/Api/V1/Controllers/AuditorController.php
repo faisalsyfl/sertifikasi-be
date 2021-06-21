@@ -105,7 +105,7 @@ class AuditorController extends Controller
         } else {
             $user = Auditor::findQuery(null);
         }
-        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $user = $user->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $user->toArray();
         $this->pagination = array_except($arr, 'data');
 

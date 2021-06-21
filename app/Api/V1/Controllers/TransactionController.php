@@ -115,7 +115,7 @@ class TransactionController extends Controller
         } else {
             $transaction = Transaction::findQuery(null);
         }
-        $transaction = $transaction->where('stats',1)->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $transaction = $transaction->where('stats',1)->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $transaction->toArray();
         $this->pagination = array_except($arr, 'data');
 

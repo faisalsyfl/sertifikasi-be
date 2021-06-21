@@ -139,7 +139,7 @@ class CompetenceController extends Controller
             $competence = $competence->where("parent_code",$parent_code);
         }
 
-        $competence = $competence->orderBy('updated_at', 'desc')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $competence = $competence->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $competence->toArray();
         $this->pagination = array_except($arr, 'data');
 

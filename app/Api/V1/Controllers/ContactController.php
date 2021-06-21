@@ -103,7 +103,7 @@ class ContactController extends Controller
             } else {
                 $contact = Contact::with(['auditi']);
             }
-            $contact = $contact->orderBy('updated_at', 'desc')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+            $contact = $contact->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
             $arr = $contact->toArray();
             $this->pagination = array_except($arr, 'data');
 
