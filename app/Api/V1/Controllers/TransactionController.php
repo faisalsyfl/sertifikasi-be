@@ -24,6 +24,83 @@ class TransactionController extends Controller
     {
         $this->Qsc2 = $Qsc2;
     }
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc",
+     *  summary="Get the list of transaction",
+     *  tags={"Transaction"},
+     *  @OA\Parameter(
+     *      name="q",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="limit",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="page",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc/{id}",
+     *  summary="Get detail of transaction",
+     *  tags={"Transaction"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
 
     public function index(Request $request, $id = null)
     {
@@ -36,7 +113,7 @@ class TransactionController extends Controller
         } else {
             $transaction = Transaction::findQuery(null);
         }
-        $transaction = $transaction->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $transaction = $transaction->where('stats', 1)->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $transaction->toArray();
         $this->pagination = array_except($arr, 'data');
 
@@ -48,6 +125,13 @@ class TransactionController extends Controller
         // dd($request);
         switch ($request->mode) {
             case 'QSC1':
+                #Section Aplikasi = 1
+                $request['section'] = 1;
+                $res = $this->Qsc1->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res, 'Berhasil Menyimpan Data');
+
                 break;
             case 'QSC2':
                 #Section Aplikasi = 2
@@ -73,20 +157,68 @@ class TransactionController extends Controller
         }
     }
 
-    public function list(Request $request)
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc/list/{id}",
+     *  summary="Detail - Step 1",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC1"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function list(Request $request, $id)
     {
         // dd($request->all());
         switch ($request->mode) {
             case 'QSC1':
-                break;
-            case 'QSC2':
-                // dd($request->all());
-                $request['transaction_id'] = 1;
-                $request['section_id'] = 2;
-                $res = $this->Qsc2->list($request);
+                $res = $this->Qsc1->list($request, $id);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
-                return $this->output($res);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
+
+                break;
+            case 'QSC2':
+                $res = $this->Qsc2->list($request, $id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             case 'QSC3':
                 break;
