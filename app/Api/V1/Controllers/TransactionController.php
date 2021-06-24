@@ -333,7 +333,7 @@ class TransactionController extends Controller
      *      required=false,
      *      @OA\Schema(
      *           type="string",
-     *           default="QSC1"
+     *           default="QSC2"
      *      )
      *   ),
      *  @OA\Response(response=200,description="Success",
