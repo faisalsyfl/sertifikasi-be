@@ -102,7 +102,7 @@ class OrganizationController extends Controller
         } else {
             $organization = Organization::with(['country', 'city', 'state']);
         }
-        $organization = $organization->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $organization = $organization->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $organization->toArray();
         $this->pagination = array_except($arr, 'data');
 

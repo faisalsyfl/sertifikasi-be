@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Section extends Model
+class Document extends Model
 {
     /**
      * Table database
      */
-    protected $table = 'section';
+    protected $table = 'document';
 
     /**
      * The attributes that are mass assignable.
@@ -17,11 +17,12 @@ class Section extends Model
      * @var array
      */
     protected $fillable = [
-        'category', 'order', 'name'
+        'name', 'title', 'code','type', 'file_hash','file_type','file_size','status','created_by'
     ];
     protected $hidden = [
-        'created_at', 'updated_at',
+        'created_at', 'updated_at'
     ];
+
 
     /**
      * Primary Key
@@ -29,13 +30,11 @@ class Section extends Model
      */
     protected $primaryKey = 'id';
 
-
     public function scopeFindQuery($query, $keyword = null)
     {
         if (isset($keyword) && $keyword) {
             $query->where(function ($q) use ($keyword) {
-                $q->orWhere('category', 'like', "%${keyword}%")
-                    ->orWhere('name', 'like', "%${keyword}%");
+                $q->orWhere('name', 'like', "%${keyword}%");
             });
         }
     }

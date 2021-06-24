@@ -36,8 +36,8 @@ class Controller extends BaseController
      *     description="Auth Endpoints"
      * )
      * @OA\Tag(
-     *     name="Master",
-     *     description="Master Endpoints"
+     *     name="Transaction",
+     *     description="All About Transaction"
      * )
      * @OA\Tag(
      *     name="Form",

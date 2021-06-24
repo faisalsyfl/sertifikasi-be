@@ -186,4 +186,12 @@ trait RestApi
 
         return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
+
+    function serializeForm($data){
+        $final = array();
+        foreach($data as $temp){
+            $final[$temp['section_form']['key']] = $temp['value'];
+        }
+        return $final;
+    }
 }

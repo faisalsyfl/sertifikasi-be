@@ -2,22 +2,28 @@
 
 namespace App\Api\V1\Controllers;
 
+use Config;
+use App\User;
+use App\Models\Document;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
-use App\Models\FormLocation as locationModel;
+use Dingo\Api\Http\FormRequest;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use App\Traits\RestApi;
-use App\Api\V1\Requests\RuleFormLocation;
-use DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
-class FormLocation extends Controller
+class DocumentController extends Controller
 {
     use RestApi;
+    private $table = 'document';
 
     /**
      * @OA\Get(
-     *  path="/api/v1/form/location",
-     *  summary="Get the list of location",
-     *  tags={"Informasi - Lokasi"},
+     *  path="/api/v1/document",
+     *  summary="Get the list of document",
+     *  tags={"Informasi - Document"},
      *  @OA\Parameter(
      *      name="q",
      *      in="query",
@@ -62,9 +68,9 @@ class FormLocation extends Controller
 
     /**
      * @OA\Get(
-     *  path="/api/v1/form/location/{id}",
-     *  summary="Get detail of location",
-     *  tags={"Informasi - Lokasi"},
+     *  path="/api/v1/document/{id}",
+     *  summary="Get detail of document",
+     *  tags={"Informasi - Document"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -95,81 +101,62 @@ class FormLocation extends Controller
         $limit  = $request->has('limit') ? $request->limit : 10;
         $page   = $request->has('page') ? $request->page : 1;
         if ($request->has('q')) {
-            $location = locationModel::with(['country', 'city', 'state'])->findQuery($request->q);
+            $user = Document::findQuery($request->q);
         } else if (isset($id)) {
-            $location = locationModel::with(['country', 'city', 'state'])->where('id', $id);
+            $user = Document::where('id', $id);
         } else {
-            $location = locationModel::with(['country', 'city', 'state']);
+            $user = Document::findQuery(null);
         }
-        $location = $location->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
-        $arr = $location->toArray();
+        $user = $user->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $arr = $user->toArray();
         $this->pagination = array_except($arr, 'data');
 
-        if (isset($id))
-            $location = $location->first();
-        return $this->output($location);
+        return $this->output($user);
     }
-
-    /**
+/**
      * @OA\Post(
-     *  path="/api/v1/form/location",
-     *  summary="Store Location Endpoint",
-     *  tags={"Informasi - Lokasi"},
+     *  path="/api/v1/document",
+     *  summary="Store Data document",
+     *  tags={"Informasi - Document"},
      *  @OA\Parameter(
-     *      name="location_type",
+     *      name="name",
      *      in="query",
      *      required=true,
-     *      description="[KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN]",
      *      @OA\Schema(
      *           type="string"
      *      )
      *   ),
      *  @OA\Parameter(
-     *      name="address",
+     *      name="title",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ), 
-     *  @OA\Parameter(
-     *      name="location",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ), 
-     * @OA\Parameter(
-     *      name="country_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),   
-     * @OA\Parameter(
-     *      name="state_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),   
-     *  @OA\Parameter(
-     *      name="city_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
+     *           type="string",
      *      )
      *   ),
      * @OA\Parameter(
-     *      name="postcode",
+     *      name="code",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
-     *           type="integer"
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="type",
+     *      in="query",
+     *      description="[INTERNAL,EXTERNAL]",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="file",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="file"
      *      )
      *   ),
      *  @OA\Response(response=200,description="Success",
@@ -189,27 +176,54 @@ class FormLocation extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-
-    public function storeFormLocation(RuleFormLocation $request)
+    public function create(Request $request)
     {
-        try {
-            $location = new locationModel($request->all());
-            $location->save();
-
-            return $this->output([
-                'id' => $location->id,
-                'data' => locationModel::with(['country', 'city', 'state'])->where('id', $location->id)->get()->toArray()
-            ], 'Success Created', 200);
-        } catch (\Throwable $th) {
-            return $this->errorRequest(500, 'Unexpected error');
+        $validate = $this->validateRequest(
+            $request->all(),
+            [
+                'name' => 'required',
+                'title' => 'required',
+                // 'code' => 'required',
+                'type' => 'required',
+                // 'file_type' => 'required',
+                // 'file_size' => 'required',
+            ]
+        );
+        if ($validate)
+            return $this->errorRequest(422, 'Validation Error', $validate);
+        
+        $insert = $request->all();
+        if ($request->file('file')->isValid()) {
+            $file = $request->file('file');
+            $file_hash                  = 'document_' . $this->hash_filename();
+            $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
+            $save = Storage::disk('local')->put('public/document/' . $file_info['file_hash'], file_get_contents($file));
+            if($save){
+                $insert['file_hash'] = $file_info['file_hash'];
+                $insert['file_type'] = $file->getClientOriginalExtension();
+                $insert['file_size'] = $file->getSize();
+                $insert['created_by'] = Auth::user()->id;
+                unset($insert['file']);
+            }
         }
+        if($save){
+            $doc = new Document($insert);
+            $doc->save();
+        }else{
+            $this->errorRequest(422, 'File Upload Error');
+        }
+
+        return $this->output([
+            'insert_id' => $doc->id,
+            'data' => $doc
+        ], 'Success Created ' . $this->table, 200);
     }
 
     /**
      * @OA\Put(
-     *  path="/api/v1/form/location/{id}",
-     *  summary="Update Data Location",
-     *  tags={"Informasi - Lokasi"},
+     *  path="/api/v1/document/{id}",
+     *  summary="Update Data document",
+     *  tags={"Informasi - Document"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -220,16 +234,23 @@ class FormLocation extends Controller
      *           format="int64"
      *      )
      *   ),
+     *  @OA\Parameter(
+     *      name="file",
+     *      in="path",
+     *      description="",
+     *      @OA\Schema(
+     *           type="file"
+     *      )
+     *   ),
      * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
-     *   @OA\Property(property="location_type", type="string"),
-     *   @OA\Property(property="address", type="string"),
-     *   @OA\Property(property="location", type="string"),
-     *   @OA\Property(property="country_id", type="number"),
-     *   @OA\Property(property="state_id", type="number"),
-     *   @OA\Property(property="city_id", type="number"),
-     *   @OA\Property(property="postcode", type="number"),
+     *   @OA\Property(property="name", type="string"),
+     *   @OA\Property(property="title", type="string"),
+     *   @OA\Property(property="code", type="string"),
+     *   @OA\Property(property="type", type="string"),
+     *   @OA\Property(property="status", type="string"),
+
      * )
      * ),
      *  @OA\Response(response=200,description="Success",
@@ -249,20 +270,34 @@ class FormLocation extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-    public function updateLocation(RuleFormLocation $request, $id)
+    public function update(Request $request, $id)
     {
         try {
             if (isset($id) && $id) {
-                $loc = locationModel::find($id);
-                if ($loc) {
-                    $loc->update($request->all());
+                $auditor = Document::find($id);
+                $insert = $request->all();
+                if ($request->file('file')->isValid()) {
+                    $file = $request->file('file');
+                    $file_hash                  = 'document_' . $this->hash_filename();
+                    $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
+                    $save = Storage::disk('local')->put('public/document/' . $file_info['file_hash'], file_get_contents($file));
+                    if($save){
+                        $insert['file_hash'] = $file_info['file_hash'];
+                        $insert['file_type'] = $file->getClientOriginalExtension();
+                        $insert['file_size'] = $file->getSize();
+                        $insert['created_by'] = Auth::user()->id;
+                        unset($insert['file']);
+                    }
+                }
+                if ($auditor) {
+                    $auditor->update($insert);
                 } else {
-                    return $this->errorRequest(422, 'Gagal Merubah Data, Id tidak tersedia');
+                    return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
                 }
                 return $this->output('Berhasil Merubah data');
             }
 
-            return $this->output('ID Kosong');
+            return $this->output('Id Kosong');
         } catch (\Throwable $th) {
             return $this->errorRequest(500, 'Unexpected error');
         }
@@ -270,9 +305,9 @@ class FormLocation extends Controller
 
     /**
      * @OA\Delete(
-     *  path="/api/v1/form/location/{id}",
-     *  summary="Delete Form Location",
-     *  tags={"Informasi - Lokasi"},
+     *  path="/api/v1/document/{id}",
+     *  summary="Delete document",
+     *  tags={"Informasi - Document"},
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
@@ -304,9 +339,9 @@ class FormLocation extends Controller
     {
         try {
             if (isset($id) && $id) {
-                $loc = locationModel::find($id);
-                if ($loc) {
-                    $loc->delete();
+                $res = Document::find($id);
+                if ($res) {
+                    $res->delete();
                 } else {
                     return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
                 }
@@ -318,4 +353,5 @@ class FormLocation extends Controller
             return $this->errorRequest(500, 'Unexpected error');
         }
     }
+
 }
