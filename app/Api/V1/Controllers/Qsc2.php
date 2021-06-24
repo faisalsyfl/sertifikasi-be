@@ -58,7 +58,7 @@ class Qsc2 extends Controller
 =======
   use RestApi;
 
-  public function list($id)
+  public function list($request, $id)
   {
     $arra = '[
             {

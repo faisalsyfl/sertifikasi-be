@@ -268,8 +268,7 @@ class TransactionController extends Controller
             case 'QSC2':
                 $res = $this->Qsc2->list($request, $id);
                 if (!$res["status"])
-                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
-
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
                 $transaction = Transaction::where('id', $id)->first();
                 $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
                 return $this->output($final);
