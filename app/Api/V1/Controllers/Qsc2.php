@@ -7,55 +7,62 @@ use App\Http\Controllers\Controller;
 use App\Traits\RestApi;
 use App\Models\SectionForm;
 use App\Models\SectionFormValue;
+use App\Models\SectionStatus;
 
 class Qsc2 extends Controller
 {
-    use RestApi;
+  use RestApi;
 
-    public function list($request)
-    {
-        
+  public function list($request, $id)
+  {
+    $section = 2;
+    $section_status_id = SectionStatus::where('transaction_id', $id)->where('section_id', $section)->first();
+    if ($section_status_id) {
+      $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
+    } else {
+      return ["status" => false, "data" => "Gagal Mendapatkan Detail Form Step 2"];
+    }
+    return ["status" => true, "data" => $existing->toArray()];
+  }
+
+  public function store($request)
+  {
+    # Merge Rule Validation
+    $field = SectionForm::where('section_id', $request['section'])->whereNotNull('rule')->get()->toArray();
+    $arrayRule = [];
+    foreach ($field as $v) {
+      $arrayRule[$v['key']] = $v['rule'];
     }
 
-    public function store($request)
-    {
-        # Merge Rule Validation
-        $field = SectionForm::where('section_id', $request['section'])->whereNotNull('rule')->get()->toArray();
-        $arrayRule = [];
-        foreach ($field as $v) {
-            $arrayRule[$v['key']] = $v['rule'];
-        }
+    $arrayRule = array_merge($arrayRule, Config::get('validation_rules.form_qsc_2.validation_rules'));
 
-        $arrayRule = array_merge($arrayRule, Config::get('validation_rules.form_qsc_2.validation_rules'));
+    $validator = Validator::make($request->input(), $arrayRule);
+    if ($validator->fails()) {
+      return ["status" => false, "error" => $validator->errors()->toArray()];
+    }
 
-        $validator = Validator::make($request->input(), $arrayRule);
-        if ($validator->fails()) {
-            return ["status" => false, "error" => $validator->errors()->toArray()];
-        }
-
-        if (is_array($request->all()) && (count($request->all()) > 0)) {
-            $this->genereateSectionStatus();
-            try {
-                DB::transaction(function () use ($request) {
-                    foreach ($request->all() as $key => $v) {
-                        $idFormValue = SectionForm::where('section_id', $request['section'])->where('key', $key)->first("id");
-                        if (isset($idFormValue->id) && $idFormValue->id) {
-                            $existing = SectionFormValue::where('section_form_id', $idFormValue->id)->where('section_status_id', $request['section_status_id'])->first();
-                            #combo save and edit
-                            $formValue = (isset($existing->id) && $existing->id) ? $existing : new SectionFormValue();
-                            $formValue->section_form_id = $idFormValue->id;
-                            $formValue->section_status_id =  $request['section_status_id'];
-                            $formValue->value =  is_array($v) ? json_encode($v) : $v;
-                            $formValue->save();
-                        }
-                    }
-                });
-                return ["status" => true, "data" => "Berhasil Menyimpan Data"];
-            } catch (\Throwable $th) {
-                #save to LOG
+    if (is_array($request->all()) && (count($request->all()) > 0)) {
+      try {
+        DB::transaction(function () use ($request) {
+          foreach ($request->all() as $key => $v) {
+            $idFormValue = SectionForm::where('section_id', $request['section'])->where('key', $key)->first("id");
+            if (isset($idFormValue->id) && $idFormValue->id) {
+              $existing = SectionFormValue::where('section_form_id', $idFormValue->id)->where('section_status_id', $request['section_status_id'])->first();
+              #combo save and edit
+              $formValue = (isset($existing->id) && $existing->id) ? $existing : new SectionFormValue();
+              $formValue->section_form_id = $idFormValue->id;
+              $formValue->section_status_id =  $request['section_status_id'];
+              $formValue->value =  is_array($v) ? json_encode($v) : $v;
+              $formValue->save();
             }
-        }
-
-        return ["status" => false, "error" => "No Data!"];
+          }
+        });
+        return ["status" => true, "data" => "Berhasil Menyimpan Data"];
+      } catch (\Throwable $th) {
+        #save to LOG
+      }
     }
+
+    return ["status" => false, "error" => "No Data!"];
+  }
 }

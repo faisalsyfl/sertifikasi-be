@@ -77,7 +77,7 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-        /**
+    /**
      * @OA\Get(
      *  path="/api/v1/qsc/{id}",
      *  summary="Get detail of transaction",
@@ -119,7 +119,7 @@ class TransactionController extends Controller
         } else {
             $transaction = Transaction::findQuery(null);
         }
-        $transaction = $transaction->where('stats',1)->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
+        $transaction = $transaction->where('stats', 1)->orderBy('updated_at')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $transaction->toArray();
         $this->pagination = array_except($arr, 'data');
 
@@ -184,7 +184,7 @@ class TransactionController extends Controller
                 $res = $this->Qsc1->store($request);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
-                return $this->output($res,'Berhasil Menyimpan Data');
+                return $this->output($res, 'Berhasil Menyimpan Data');
 
                 break;
             case 'QSC2':
@@ -251,27 +251,26 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-    public function list(Request $request,$id)
+    public function list(Request $request, $id)
     {
         switch ($request->mode) {
             case 'QSC1':
-                $res = $this->Qsc1->list($request,$id);
+                $res = $this->Qsc1->list($request, $id);
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
-                
-                $transaction = Transaction::where('id',$id)->first();
-                $final = array_merge($transaction->toArray(),['form' => $this->serializeForm($res['data'])]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
                 return $this->output($final);
 
                 break;
             case 'QSC2':
-                // dd($request->all());
-                $request['transaction_id'] = 1;
-                $request['section_id'] = 2;
-                $res = $this->Qsc2->list($request);
+                $res = $this->Qsc2->list($request, $id);
                 if (!$res["status"])
-                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
-                return $this->output($res);
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             case 'QSC3':
                 break;
@@ -289,7 +288,8 @@ class TransactionController extends Controller
         }
     }
 
-    public function dashboard(){
+    public function dashboard()
+    {
         $org = Organization::all();
         $klien = Auditi::all();
         $auditor = Auditor::all();
