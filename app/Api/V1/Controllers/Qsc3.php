@@ -2,6 +2,8 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\Auditor;
+use App\Models\SectionStatus;
 use Validator, Config, DB;
 use App\Http\Controllers\Controller;
 use App\Traits\RestApi;
@@ -12,9 +14,29 @@ class Qsc3 extends Controller
 {
     use RestApi;
 
-    public function list($request)
+    public function list($request, $id)
     {
+        $section = 3;
+        $section_status_id = SectionStatus::where('transaction_id', $id)->where('section_id', $section)->first();
+        if ($section_status_id) {
+            $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
+        } else {
+            return ["status" => false, "data" => "Gagal Mendapatkan Detail Form Step 3"];
+        }
 
+        $existing = $existing->toArray();
+        $data = array();
+        foreach($existing as $item){
+            if($item['section_form']['key'] == "location_id"){
+                $data[$item['section_form']['key']] = $this->get_location_object($item['value']);
+            }elseif ($item['section_form']['key'] == "auditor_ids"){
+                $data[$item['section_form']['key']] = $this->get_auditor_objects(explode(",", $item['value']));
+            }else{
+                $data[$item['section_form']['key']] = $item['value'];
+            }
+        }
+
+        return ["status" => true, "data" => $existing->toArray()];
     }
 
     public function store($request)
@@ -57,5 +79,24 @@ class Qsc3 extends Controller
         }
 
         return ["status" => false, "error" => "No Data!"];
+    }
+
+    public function get_auditor_objects($ids=[]){
+        $auditors = Auditor::whereIn("id",$ids)->get();
+        $auditor_objects = [];
+        foreach ($auditors as $auditor){
+            array_push($auditor_objects, $auditor->toArray());
+        }
+
+        return $auditor_objects;
+    }
+
+    public function get_location_object($id){
+        $location = \App\Models\FormLocation::find($id)->first();
+        if($location){
+            return $location->toArray();
+        }else{
+            return (object)[];
+        }
     }
 }

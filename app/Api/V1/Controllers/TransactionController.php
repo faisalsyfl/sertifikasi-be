@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Api\V1\Controllers\Qsc3;
 use App\Api\V1\Controllers\Qsc2;
 use App\Api\V1\Controllers\Qsc1;
 use App\Models\Transaction;
@@ -26,10 +27,12 @@ class TransactionController extends Controller
 
     protected $Qsc1;
     protected $Qsc2;
-    public function __construct(Qsc1 $Qsc1, Qsc2 $Qsc2)
+    protected $Qsc3;
+    public function __construct(Qsc1 $Qsc1, Qsc2 $Qsc2, Qsc3 $Qsc3)
     {
         $this->Qsc1 = $Qsc1;
         $this->Qsc2 = $Qsc2;
+        $this->Qsc3 = $Qsc3;
     }
     /**
      * @OA\Get(
@@ -182,6 +185,9 @@ class TransactionController extends Controller
      *  tags={"Form"},     * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
+     *   @OA\Property(property="mode", type="string"),
+     *   @OA\Property(property="section", type="integer"),
+     *   @OA\Property(property="section_status_id", type="string"),
      *   @OA\Property(property="manajemen_mutu", type="boolean"),
      *   @OA\Property(property="manajemen_lingkungan", type="boolean"),
      *   @OA\Property(property="manajemen_keselamatan", type="boolean"),
@@ -236,6 +242,130 @@ class TransactionController extends Controller
      * )
      */
 
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc3/store",
+     *  summary="Save and Edit - Step 3",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="mode", type="string"),
+     *   @OA\Property(property="section", type="integer"),
+     *   @OA\Property(property="section_status_id", type="string"),
+     *   @OA\Property(property="nama_klien", type="string"),
+     *   @OA\Property(property="status_aplikasi_sertifikasi", type="string"),
+     *   @OA\Property(property="manajemen_mutu", type="boolean"),
+     *   @OA\Property(property="manajemen_lingkungan", type="boolean"),
+     *   @OA\Property(property="manajemen_keselamatan", type="boolean"),
+     *   @OA\Property(property="industri_hijau", type="boolean"),
+     *   @OA\Property(property="audit_single", type="boolean"),
+     *   @OA\Property(property="audit_joint", type="boolean"),
+     *   @OA\Property(property="audit_combination", type="boolean"),
+     *   @OA\Property(property="audit_integration", type="boolean"),
+     *   @OA\Property(property="lingkup", type="string"),
+     *   @OA\Property(property="sektor_ea", type="string"),
+     *   @OA\Property(property="sektor_nace", type="string"),
+     *   @OA\Property(property="akreditasi_lingkup_kan", type="boolean"),
+     *   @OA\Property(property="personil_kompeten", type="boolean"),
+     *   @OA\Property(property="konflik_kepentingan", type="boolean"),
+     *   @OA\Property(property="penjelasan_solusi", type="string"),
+     *   @OA\Property(property="lokasi_id", type="string"),
+     *   @OA\Property(property="multi_site", type="boolean"),
+     *   @OA\Property(property="audit_shift_1", type="boolean"),
+     *   @OA\Property(property="audit_shift_2", type="boolean"),
+     *   @OA\Property(property="audit_shift_3", type="boolean"),
+     *   @OA\Property(property="risiko_iso_9001", type="string"),
+     *   @OA\Property(property="kompleksitas_iso_14001", type="string"),
+     *   @OA\Property(property="kompleksitas_iso_45001", type="string"),
+     *   @OA\Property(property="jumlah_personil_management", type="integer"),
+     *   @OA\Property(property="jumlah_personil_administrasi", type="integer"),
+     *   @OA\Property(property="jumlah_personil_part_time", type="integer"),
+     *   @OA\Property(property="jumlah_personil_non_permanen", type="integer"),
+     *   @OA\Property(property="jumlah_personil_shift_1", type="integer"),
+     *   @OA\Property(property="jumlah_personil_shift_2", type="integer"),
+     *   @OA\Property(property="jumlah_personil_shift_3", type="integer"),
+     *   @OA\Property(property="keterangan_shift", type="string"),
+     *   @OA\Property(property="waktu_audit_iso_9001", type="integer"),
+     *   @OA\Property(property="waktu_audit_iso_14001", type="integer"),
+     *   @OA\Property(property="waktu_audit_iso_45001", type="integer"),
+     *   @OA\Property(property="kompleksitas_rendah_iso_9001", type="boolean"),
+     *   @OA\Property(property="lokasi_kecil", type="boolean"),
+     *   @OA\Property(property="kematangan_sistem_manajemen", type="boolean"),
+     *   @OA\Property(property="pernah_diaudit_b4t", type="boolean"),
+     *   @OA\Property(property="tersertifikasi_pihak_ketiga", type="boolean"),
+     *   @OA\Property(property="proses_otomasi_tinggi", type="boolean"),
+     *   @OA\Property(property="staff_luar_kantor", type="boolean"),
+     *   @OA\Property(property="pengurangan_lainnya", type="string"),
+     *   @OA\Property(property="persentasi_pengurangan", type="integer"),
+     *   @OA\Property(property="resiko_tinggi_iso_9001", type="boolean"),
+     *   @OA\Property(property="kegiatan_sama_beda_lokasi", type="boolean"),
+     *   @OA\Property(property="bahasa_staf_lebih_dari_satu", type="boolean"),
+     *   @OA\Property(property="lokasi_luas", type="boolean"),
+     *   @OA\Property(property="peraturan_ketat", type="boolean"),
+     *   @OA\Property(property="proses_kompleks", type="boolean"),
+     *   @OA\Property(property="lokasi_non_permanen", type="boolean"),
+     *   @OA\Property(property="penambahan_lainnya", type="string"),
+     *   @OA\Property(property="persentasi_penambahan", type="integer"),
+     *   @OA\Property(property="total_penyesuaian", type="integer"),
+     *   @OA\Property(property="summary_waktu_audit_iso_9001", type="integer"),
+     *   @OA\Property(property="summary_waktu_audit_iso_14001", type="integer"),
+     *   @OA\Property(property="summary_waktu_audit_iso_45001", type="integer"),
+     *   @OA\Property(property="summary_total", type="integer"),
+     *   @OA\Property(property="resertifikasi_iso_9001", type="integer"),
+     *   @OA\Property(property="resertifikasi_iso_14001", type="integer"),
+     *   @OA\Property(property="resertifikasi_iso_45001", type="integer"),
+     *   @OA\Property(property="resertifikasi_total", type="integer"),
+     *   @OA\Property(property="menerapkan_integrasi", type="boolean"),
+     *   @OA\Property(property="sistem_diintegrasi", type="string"),
+     *   @OA\Property(property="jumlah_sistem", type="integer"),
+     *   @OA\Property(property="integrasi_dokumen", type="boolean"),
+     *   @OA\Property(property="integrasi_tinjauan_manajemen", type="boolean"),
+     *   @OA\Property(property="integrasi_internal_audit", type="boolean"),
+     *   @OA\Property(property="integrasi_kebijakan", type="boolean"),
+     *   @OA\Property(property="integrasi_sistem_proses", type="boolean"),
+     *   @OA\Property(property="persentase_tingkat_integrasi", type="integer"),
+     *   @OA\Property(property="jumlah_auditor", type="integer"),
+     *   @OA\Property(property="auditor_ids", type="string", default="1,2,3"),
+     *   @OA\Property(property="kemampuan_auditor", type="integer"),
+     *   @OA\Property(property="pengurangan_waktu_integrasi", type="integer"),
+     *   @OA\Property(property="final_total_waktu_audit", type="integer"),
+     *   @OA\Property(property="awal_tahap_1_perhitungan", type="integer"),
+     *   @OA\Property(property="awal_tahap_1_penyesuaian", type="integer"),
+     *   @OA\Property(property="awal_tahap_2_perhitungan", type="integer"),
+     *   @OA\Property(property="awal_tahap_2_penyesuaian", type="integer"),
+     *   @OA\Property(property="resertifikasi_tahap_1_perhitungan", type="integer"),
+     *   @OA\Property(property="resertifikasi_tahap_1_penyesuaian", type="integer"),
+     *   @OA\Property(property="resertifikasi_tahap_2_perhitungan", type="integer"),
+     *   @OA\Property(property="resertifikasi_tahap_2_penyesuaian", type="integer"),
+     *   @OA\Property(property="survailen_tahap_1_perhitungan", type="integer"),
+     *   @OA\Property(property="survailen_tahap_1_penyesuaian", type="integer"),
+     *   @OA\Property(property="survailen_tahap_2_perhitungan", type="integer"),
+     *   @OA\Property(property="survailen_tahap_2_penyesuaian", type="integer"),
+     *   @OA\Property(property="justifikasi_waktu_audit", type="integer"),
+     *   @OA\Property(property="aplikasi_sertifikasi", type="boolean"),
+     *   @OA\Property(property="nomor_sertifikasi", type="string"),
+     *   @OA\Property(property="dikaji_oleh_1", type="string"),
+     *   @OA\Property(property="dikaji_oleh_2", type="string"),
+     *   @OA\Property(property="disetujui_oleh", type="string"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
     public function store(Request $request)
     {
         switch ($request->mode) {
@@ -246,7 +376,6 @@ class TransactionController extends Controller
                 if (!$res["status"])
                     return $this->errorRequest(422, 'Validation Error', $res["error"]);
                 return $this->output($res, 'Berhasil Menyimpan Data');
-
                 break;
             case 'QSC2':
                 #Section Aplikasi = 2
@@ -257,6 +386,12 @@ class TransactionController extends Controller
                 return $this->output($res);
                 break;
             case 'QSC3':
+                #Section Aplikasi = 3
+                $request['section'] = 3;
+                $res = $this->Qsc3->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
                 break;
             case 'QSC4':
                 break;
@@ -353,6 +488,47 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc3/list/{id}",
+     *  summary="Detail - Step 3",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC3"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
     public function list(Request $request, $id)
     {
         switch ($request->mode) {
@@ -376,6 +552,13 @@ class TransactionController extends Controller
                 return $this->output($final);
                 break;
             case 'QSC3':
+                $res = $this->Qsc3->list($request, $id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             case 'QSC4':
                 break;

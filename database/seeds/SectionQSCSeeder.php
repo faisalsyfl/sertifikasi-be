@@ -337,10 +337,6 @@ class SectionQSCSeeder extends Seeder
                 "rule" => ""
             ],
             [
-                "key" => "audit_integration",
-                "rule" => ""
-            ],
-            [
                 "key" => "akreditasi_lingkup_kan",
                 "rule" => ""
             ],
@@ -438,10 +434,6 @@ class SectionQSCSeeder extends Seeder
             ],
             [
                 "key" => "waktu_audit_iso_45001",
-                "rule" => ""
-            ],
-            [
-                "key" => "waktu_audit_iso_9001",
                 "rule" => ""
             ],
             // -- justifikasi pengurangan
