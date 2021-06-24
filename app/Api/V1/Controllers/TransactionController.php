@@ -77,7 +77,6 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
-
     /**
      * @OA\Get(
      *  path="/api/v1/qsc/{id}",
