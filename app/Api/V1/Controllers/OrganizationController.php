@@ -131,8 +131,6 @@ class OrganizationController extends Controller
      *      required=true,
      *      @OA\Schema(
      *           type="number",
-     *           minimum=16,
-     *           maximum=16,
      *      )
      *   ),
      *   @OA\Parameter(
@@ -180,9 +178,7 @@ class OrganizationController extends Controller
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *           type="number",
-     *           minimum=5,
-     *           maximum=5,
+     *           type="number"
      *      )
      *   ),
      * @OA\Parameter(
