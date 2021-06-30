@@ -17,12 +17,16 @@ class Qsc2 extends Controller
   {
     $section = 2;
     $section_status_id = SectionStatus::where('transaction_id', $id)->where('section_id', $section)->first();
+    $existing = [];
     if ($section_status_id) {
       $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
+      if(count($existing) > 0){
+        $existing = $existing->toArray();
+      }
     } else {
       return ["status" => false, "data" => "Gagal Mendapatkan Detail Form Step 2"];
     }
-    return ["status" => true, "data" => $existing->toArray()];
+    return ["status" => true, "data" => $existing];
   }
 
   public function store($request)

@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Api\V1\Controllers\Qsc3;
 use Illuminate\Http\Response;
 
 use App\Http\Requests;
@@ -190,7 +191,13 @@ trait RestApi
     function serializeForm($data){
         $final = array();
         foreach($data as $temp){
-            $final[$temp['section_form']['key']] = $temp['value'];
+            if($temp['section_form']['key'] == "lokasi_id"){
+                $final[$temp['section_form']['key']] = Qsc3::get_location_object($temp['value']);
+            }elseif ($temp['section_form']['key'] == "auditor_ids"){
+                $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
+            }else{
+                $final[$temp['section_form']['key']] = $temp['value'];
+            }
         }
         return $final;
     }

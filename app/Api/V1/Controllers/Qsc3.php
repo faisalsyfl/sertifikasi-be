@@ -18,25 +18,17 @@ class Qsc3 extends Controller
     {
         $section = 3;
         $section_status_id = SectionStatus::where('transaction_id', $id)->where('section_id', $section)->first();
+        $existing = [];
         if ($section_status_id) {
             $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
+            if(count($existing) > 0){
+                $existing = $existing->toArray();
+            }
         } else {
             return ["status" => false, "data" => "Gagal Mendapatkan Detail Form Step 3"];
         }
 
-        $existing = $existing->toArray();
-        $data = array();
-        foreach($existing as $item){
-            if($item['section_form']['key'] == "location_id"){
-                $data[$item['section_form']['key']] = $this->get_location_object($item['value']);
-            }elseif ($item['section_form']['key'] == "auditor_ids"){
-                $data[$item['section_form']['key']] = $this->get_auditor_objects(explode(",", $item['value']));
-            }else{
-                $data[$item['section_form']['key']] = $item['value'];
-            }
-        }
-
-        return ["status" => true, "data" => $existing->toArray()];
+        return ["status" => true, "data" => $existing];
     }
 
     public function store($request)
@@ -56,7 +48,6 @@ class Qsc3 extends Controller
         }
 
         if (is_array($request->all()) && (count($request->all()) > 0)) {
-            $this->genereateSectionStatus();
             try {
                 DB::transaction(function () use ($request) {
                     foreach ($request->all() as $key => $v) {
@@ -81,7 +72,7 @@ class Qsc3 extends Controller
         return ["status" => false, "error" => "No Data!"];
     }
 
-    public function get_auditor_objects($ids=[]){
+    static function get_auditor_objects($ids=[]){
         $auditors = Auditor::whereIn("id",$ids)->get();
         $auditor_objects = [];
         foreach ($auditors as $auditor){
@@ -91,7 +82,7 @@ class Qsc3 extends Controller
         return $auditor_objects;
     }
 
-    public function get_location_object($id){
+    static function get_location_object($id){
         $location = \App\Models\FormLocation::find($id)->first();
         if($location){
             return $location->toArray();
