@@ -75,20 +75,21 @@ class SectionQSCSeeder extends Seeder
         $this->step3($table);
     }
 
-    private function step1($table){
+    private function step1($table)
+    {
         $organisasi = array();
-        $organisasi[0] = ['npwp','required'];
-        $organisasi[1] = ['nama','required'];
-        $organisasi[2] = ['tipe','required'];
-        $organisasi[3] = ['website',NULL];
-        $organisasi[4] = ['email',NULL];
-        $organisasi[5] = ['telp',NULL];
-        $organisasi[6] = ['alamat',NULL];
-        $organisasi[7] = ['negara',NULL];
-        $organisasi[8] = ['provinsi',NULL];
-        $organisasi[9] = ['kota',NULL];
-        $organisasi[10] = ['kode_pos',NULL];
-        foreach($organisasi as $o){
+        $organisasi[0] = ['npwp', 'required'];
+        $organisasi[1] = ['nama', 'required'];
+        $organisasi[2] = ['tipe', 'required'];
+        $organisasi[3] = ['website', NULL];
+        $organisasi[4] = ['email', NULL];
+        $organisasi[5] = ['telp', NULL];
+        $organisasi[6] = ['alamat', NULL];
+        $organisasi[7] = ['negara', NULL];
+        $organisasi[8] = ['provinsi', NULL];
+        $organisasi[9] = ['kota', NULL];
+        $organisasi[10] = ['kode_pos', NULL];
+        foreach ($organisasi as $o) {
             DB::table($table)->insert([
                 'section_id' => 1,
                 'key' => $o[0],
@@ -100,17 +101,17 @@ class SectionQSCSeeder extends Seeder
         }
 
         $klien = array();
-        $klien[1] = ['nama_klien','required'];
-        $klien[2] = ['tipe_klien','required'];
-        $klien[3] = ['website_klien',NULL];
-        $klien[4] = ['email_klien',NULL];
-        $klien[5] = ['telp_klien',NULL];
-        $klien[6] = ['alamat_klien',NULL];
-        $klien[7] = ['negara_klien',NULL];
-        $klien[8] = ['provinsi_klien',NULL];
-        $klien[9] = ['kota_klien',NULL];
-        $klien[10] = ['kode_pos_klien',NULL];
-        foreach($klien as $o){
+        $klien[1] = ['nama_klien', 'required'];
+        $klien[2] = ['tipe_klien', 'required'];
+        $klien[3] = ['website_klien', NULL];
+        $klien[4] = ['email_klien', NULL];
+        $klien[5] = ['telp_klien', NULL];
+        $klien[6] = ['alamat_klien', NULL];
+        $klien[7] = ['negara_klien', NULL];
+        $klien[8] = ['provinsi_klien', NULL];
+        $klien[9] = ['kota_klien', NULL];
+        $klien[10] = ['kode_pos_klien', NULL];
+        foreach ($klien as $o) {
             DB::table($table)->insert([
                 'section_id' => 1,
                 'key' => $o[0],
@@ -119,10 +120,10 @@ class SectionQSCSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ]);
         }
-
     }
 
-    private function step2($table){
+    private function step2($table)
+    {
         $forms = [
             [
                 "key" => "manajemen_mutu",
@@ -181,7 +182,15 @@ class SectionQSCSeeder extends Seeder
                 "rule" => ""
             ],
             [
-                "key" => "alamat_id",
+                "key" => "alamat",
+                "rule" => ""
+            ],
+            [
+                "key" => "lokasi_id",
+                "rule" => ""
+            ],
+            [
+                "key" => "multilokasi",
                 "rule" => ""
             ],
             [
@@ -266,7 +275,7 @@ class SectionQSCSeeder extends Seeder
             ]
         ];
 
-        foreach($forms as $item){
+        foreach ($forms as $item) {
             DB::table($table)->insert([
                 'section_id' => 2,
                 'key' => $item["key"],
@@ -277,7 +286,8 @@ class SectionQSCSeeder extends Seeder
         }
     }
 
-    private function step3($table){
+    private function step3($table)
+    {
         $forms = [
             // Nama auditi
             [
@@ -505,7 +515,7 @@ class SectionQSCSeeder extends Seeder
             ["key" => "disetujui_oleh", "rule" => ""],
         ];
 
-        foreach($forms as $item){
+        foreach ($forms as $item) {
             DB::table($table)->insert([
                 'section_id' => 3,
                 'key' => $item["key"],
