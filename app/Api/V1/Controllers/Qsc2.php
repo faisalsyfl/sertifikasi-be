@@ -20,7 +20,7 @@ class Qsc2 extends Controller
     $existing = [];
     if ($section_status_id) {
       $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
-      if(count($existing) > 0){
+      if (count($existing) > 0) {
         $existing = $existing->toArray();
       }
     } else {

@@ -188,14 +188,20 @@ trait RestApi
         return preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
     }
 
-    function serializeForm($data){
+    function serializeForm($data)
+    {
         $final = array();
-        foreach($data as $temp){
-            if($temp['section_form']['key'] == "lokasi_id"){
-                $final[$temp['section_form']['key']] = Qsc3::get_location_object($temp['value']);
-            }elseif ($temp['section_form']['key'] == "auditor_ids"){
+        foreach ($data as $temp) {
+            if ($temp['section_form']['key'] == "lokasi_id") {
+                $expld = explode(',', $temp['value']);
+                $val = [];
+                foreach ($expld as $v) {
+                    $val[] = Qsc3::get_location_object($v);
+                }
+                $final[$temp['section_form']['key']] = $val;
+            } elseif ($temp['section_form']['key'] == "auditor_ids") {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
-            }else{
+            } else {
                 $final[$temp['section_form']['key']] = $temp['value'];
             }
         }
