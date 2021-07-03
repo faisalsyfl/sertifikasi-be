@@ -39,6 +39,8 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+            $api->post('store/documents', 'App\\Api\\V1\\Controllers\\Qsc2@documentsUpload');
+            $api->get('store/documents', 'App\\Api\\V1\\Controllers\\Qsc2@documentsList');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
