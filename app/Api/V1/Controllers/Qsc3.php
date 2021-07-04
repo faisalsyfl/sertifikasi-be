@@ -21,7 +21,7 @@ class Qsc3 extends Controller
         $existing = [];
         if ($section_status_id) {
             $existing = SectionFormValue::where('section_status_id', $section_status_id->id)->get();
-            if(count($existing) > 0){
+            if (count($existing) > 0) {
                 $existing = $existing->toArray();
             }
         } else {
@@ -81,22 +81,24 @@ class Qsc3 extends Controller
         return ["status" => false, "error" => "No Data!"];
     }
 
-    static function get_auditor_objects($ids=[]){
-        $auditors = Auditor::whereIn("id",$ids)->get();
+    static function get_auditor_objects($ids = [])
+    {
+        $auditors = Auditor::whereIn("id", $ids)->get();
         $auditor_objects = [];
-        foreach ($auditors as $auditor){
+        foreach ($auditors as $auditor) {
             array_push($auditor_objects, $auditor->toArray());
         }
 
         return $auditor_objects;
     }
 
-    static function get_location_object($id){
-        $location = \App\Models\FormLocation::find($id)->first();
-        if($location){
+    static function get_location_object($id)
+    {
+        $location = \App\Models\FormLocation::with(['country', 'state', 'city'])->where('id', $id)->first();
+        if ($location) {
             return $location->toArray();
-        }else{
-            return (object)[];
+        } else {
+            return (object) [];
         }
     }
 }
