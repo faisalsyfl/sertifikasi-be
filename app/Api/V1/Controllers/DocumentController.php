@@ -274,7 +274,7 @@ class DocumentController extends Controller
             if (isset($id) && $id) {
                 $auditor = Document::find($id);
                 $insert = $request->all();
-                if ($request->file('file')->isValid()) {
+                if ($request->file('file')) {
                     $file = $request->file('file');
                     $file_hash                  = 'document_' . $this->hash_filename();
                     $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));

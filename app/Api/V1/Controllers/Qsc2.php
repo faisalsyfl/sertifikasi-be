@@ -6,6 +6,7 @@ use Validator, Config, DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Traits\RestApi;
+use App\Models\Contact;
 use App\Models\SectionForm;
 use App\Models\SectionFormValue;
 use App\Models\SectionStatus;
@@ -68,10 +69,10 @@ class Qsc2 extends Controller
             }
           }
 
-          if($section_status->status < 2){
-              $section_status->update([
-                  "status" => 1
-              ]);
+          if ($section_status->status < 2) {
+            $section_status->update([
+              "status" => 1
+            ]);
           }
         });
         return ["status" => true, "data" => "Berhasil Menyimpan Data"];
@@ -83,6 +84,34 @@ class Qsc2 extends Controller
     return ["status" => false, "error" => "No Data!"];
   }
 
+  /**
+   * @OA\Get(
+   *  path="/api/v1/qsc2/documents",
+   *  summary="List document",
+   *  tags={"Form"},
+   * @OA\JsonContent(
+   *   type="object",
+   *   @OA\Property(property="transaction_id", type="integer"),
+   *   @OA\Property(property="section_id", type="integer"),
+   * )
+   * ),
+   *  @OA\Response(response=200,description="Success",
+   *      @OA\MediaType(
+   *           mediaType="application/json",
+   *      )
+   *   ),
+   *  @OA\Response(response=201,description="Success",
+   *      @OA\MediaType(
+   *           mediaType="application/json",
+   *      )
+   *   ),
+   *  @OA\Response(response=401,description="Unauthenticated"),
+   *  @OA\Response(response=400,description="Bad Request"),
+   *  @OA\Response(response=404,description="not found"),
+   *  @OA\Response(response=403,description="Forbidden"),
+   *  security={{ "apiAuth": {} }}
+   * )
+   */
   public function documentsList(Request $request)
   {
     $validator = Validator::make($request->input(), ['transaction_id' => 'required', 'section_id' => 'required']);
@@ -120,6 +149,129 @@ class Qsc2 extends Controller
     return $this->output($res);
   }
 
+  /**
+   * @OA\Delete(
+   *  path="/api/v1/qsc2/documents",
+   *  summary="Delete document",
+   *  tags={"Form"},
+   *  @OA\Parameter(
+   *      name="id",
+   *      in="query",
+   *      required=true,
+   *      description="",
+   *      @OA\Schema(
+   *           type="integer",
+   *           format="int64"
+   *      )
+   *   ),
+   *  @OA\Response(response=200,description="Success",
+   *      @OA\MediaType(
+   *           mediaType="application/json",
+   *      )
+   *   ),
+   *  @OA\Response(response=201,description="Success",
+   *      @OA\MediaType(
+   *           mediaType="application/json",
+   *      )
+   *   ),
+   *  @OA\Response(response=401,description="Unauthenticated"),
+   *  @OA\Response(response=400,description="Bad Request"),
+   *  @OA\Response(response=404,description="not found"),
+   *  @OA\Response(response=403,description="Forbidden"),
+   *  security={{ "apiAuth": {} }}
+   * )
+   */
+  public function documentsDelete(Request $request)
+  {
+    try {
+      if (isset($request->id) && $request->id) {
+        $res = FormDocument::find($request->id);
+        if ($res) {
+          $res->delete();
+        } else {
+          return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+        }
+        return $this->output('Berhasil menghapus data');
+      }
+
+      return $this->output('ID Kosong');
+    } catch (\Throwable $th) {
+      return $this->errorRequest(500, 'Unexpected error');
+    }
+  }
+
+  /**
+   * @OA\Post(
+   *  path="/api/v1/qsc2/documents/edit",
+   *  summary="Store Data document",
+   *  tags={"Form"},
+   *     @OA\RequestBody(
+   *         required=true,
+   *         @OA\MediaType(
+   *             mediaType="multipart/form-data",
+   *             @OA\Schema(
+   *                 @OA\Property(
+   *                     description="file to upload",
+   *                     property="file",
+   *                     type="file",
+   *                     format="file",
+   *                 )
+   *             )
+   *         )
+   *     ),
+   *  @OA\Response(response=200,description="Success",
+   *      @OA\MediaType(
+   *           mediaType="application/json",
+   *      )
+   *   ),
+   *  @OA\Response(response=201,description="Success",
+   *      @OA\MediaType(
+   *           mediaType="application/json",
+   *      )
+   *   ),
+   *  @OA\Response(response=401,description="Unauthenticated"),
+   *  @OA\Response(response=400,description="Bad Request"),
+   *  @OA\Response(response=404,description="not found"),
+   *  @OA\Response(response=403,description="Forbidden"),
+   *  security={{ "apiAuth": {} }}
+   * )
+   */
+  public function documentUpdate(Request $request)
+  {
+    try {
+      if (isset($request->id) && $request->id) {
+        $doc = FormDocument::where('id', $request->id)->first();
+        $insert = $request->all();
+        if ($request->file('file')) {
+          $file = $request->file('file');
+          $file_hash                  = 'document_' . $this->hash_filename();
+          $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
+          $save = Storage::disk('local')->put('public/document/' . $file_info['file_hash'], file_get_contents($file));
+          if ($save) {
+            $insert['name'] = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            $insert['file_hash'] = $file_info['file_hash'];
+            $insert['file_type'] = $file->getClientOriginalExtension();
+            $insert['file_size'] = $file->getSize();
+            $insert['created_by'] = Auth::user()->id;
+            $insert['transaction_id'] = $doc->transaction_id;
+            $insert['section_id'] = $doc->section_id;
+            unset($insert['file']);
+          }
+        }
+        if ($doc) {
+          $doc->update($insert);
+        } else {
+          return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+        }
+        return $this->output('Berhasil Merubah data');
+      }
+
+      return $this->output('Id Kosong');
+    } catch (\Throwable $th) {
+      return $this->errorRequest(500, 'Unexpected error');
+    }
+  }
+
   private function saveDoc($file, $name, $request)
   {
     $file_hash                  = 'form_document_' . $this->hash_filename();
@@ -139,6 +291,14 @@ class Qsc2 extends Controller
         return true;
     }
     return false;
+  }
+
+  static function getContact($ids)
+  {
+    $Contact = [];
+    if ($ids)
+      $Contact = Contact::where("id", $ids)->first();
+    return $Contact;
   }
 
   private function transformDoc($file)

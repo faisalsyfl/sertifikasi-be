@@ -29,7 +29,8 @@ class SectionFormValue extends Model
      * @var string
      */
     protected $primaryKey = 'id';
-    public function sectionForm(){
+    public function sectionForm()
+    {
         return $this->hasOne('App\Models\SectionForm', 'id', 'section_form_id');
     }
 

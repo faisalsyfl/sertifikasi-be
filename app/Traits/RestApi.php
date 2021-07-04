@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Api\V1\Controllers\Qsc3;
+use App\Api\V1\Controllers\Qsc2;
 use Illuminate\Http\Response;
 
 use App\Http\Requests;
@@ -199,6 +200,8 @@ trait RestApi
                     $val[] = Qsc3::get_location_object($v);
                 }
                 $final[$temp['section_form']['key']] = $val;
+            } elseif ($temp['section_form']['key'] == "tanda_tangan_formulir") {
+                $final[$temp['section_form']['key']] = Qsc2::getContact($temp['value']);
             } elseif ($temp['section_form']['key'] == "auditor_ids") {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
             } else {

@@ -38,15 +38,19 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         });
 
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc2'], function (Router $api) {
-            $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
-            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
-            $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
-            $api->post('store/documents', 'App\\Api\\V1\\Controllers\\Qsc2@documentsUpload');
-            $api->get('store/documents', 'App\\Api\\V1\\Controllers\\Qsc2@documentsList');
-
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
             });
+            $api->group(['middleware' => 'jwt.auth', 'prefix' => 'documents'], function (Router $api) {
+                $api->post('/', 'App\\Api\\V1\\Controllers\\Qsc2@documentsUpload');
+                $api->get('/', 'App\\Api\\V1\\Controllers\\Qsc2@documentsList');
+                $api->post('/edit', 'App\\Api\\V1\\Controllers\\Qsc2@documentUpdate');
+                $api->delete('/', 'App\\Api\\V1\\Controllers\\Qsc2@documentsDelete');
+            });
+
+            $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
         });
 
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc3'], function (Router $api) {
