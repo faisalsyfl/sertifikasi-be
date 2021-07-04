@@ -48,8 +48,11 @@ class Qsc3 extends Controller
         }
 
         if (is_array($request->all()) && (count($request->all()) > 0)) {
+            $section_status_id = $request->input("section_status_id");
+            $section_status = SectionStatus::find($section_status_id);
+
             try {
-                DB::transaction(function () use ($request) {
+                DB::transaction(function () use ($request, $section_status) {
                     foreach ($request->all() as $key => $v) {
                         $idFormValue = SectionForm::where('section_id', $request['section'])->where('key', $key)->first("id");
                         if (isset($idFormValue->id) && $idFormValue->id) {
@@ -61,6 +64,12 @@ class Qsc3 extends Controller
                             $formValue->value =  is_array($v) ? json_encode($v) : $v;
                             $formValue->save();
                         }
+                    }
+
+                    if($section_status->status < 2){
+                        $section_status->update([
+                            "status" => 1
+                        ]);
                     }
                 });
                 return ["status" => true, "data" => "Berhasil Menyimpan Data"];

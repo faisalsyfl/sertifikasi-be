@@ -2,6 +2,7 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\SectionStatus;
 use Validator;
 use App\User;
 use Illuminate\Http\Request;
@@ -185,7 +186,7 @@ class TransactionController extends Controller
      *  tags={"Form"},     * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
-     *   @OA\Property(property="mode", type="string"),
+     *   @OA\Property(property="mode", type="QSC2"),
      *   @OA\Property(property="section", type="integer"),
      *   @OA\Property(property="transaction_id", type="integer"),
      *   @OA\Property(property="section_status_id", type="integer"),
@@ -247,10 +248,11 @@ class TransactionController extends Controller
      * @OA\Post(
      *  path="/api/v1/qsc3/store",
      *  summary="Save and Edit - Step 3",
-     *  tags={"Form"},     * @OA\RequestBody(
+     *  tags={"Form"},
+     * @OA\RequestBody(
      * @OA\JsonContent(
      *   type="object",
-     *   @OA\Property(property="mode", type="string"),
+     *   @OA\Property(property="mode", type="QSC3"),
      *   @OA\Property(property="section", type="integer"),
      *   @OA\Property(property="transaction_id", type="integer"),
      *   @OA\Property(property="section_status_id", type="integer"),
@@ -585,5 +587,77 @@ class TransactionController extends Controller
         $transaction = Transaction::all();
 
         return $this->output(['org' => count($org), 'client' => count($klien), 'auditor' => count($auditor), 'comp' => count($comp), 'transaction' => count($transaction)]);
+    }
+
+    /**
+     * @OA\Put(
+     *  path="/api/v1/qsc/status/{id}",
+     *  summary="Update Section Status",
+     *  tags={"Form"},
+     *   @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      description="",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="status",
+     *      in="query",
+     *      required=true,
+     *      description="Status Number (0-3)",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function setStatus(Request $request, $id)
+    {
+        $validate = $this->validateRequest(
+            $request->all(),
+            [
+                'status' => 'required',
+            ]
+        );
+        if ($validate)
+            return $this->errorRequest(422, 'Validation Error', $validate);
+
+        $status = $request->input("status");
+
+        if($id and $status){
+            $section_status = SectionStatus::find($id);
+
+            if($section_status){
+                $section_status->update([
+                    "status" => $status
+                ]);
+
+                return $this->output('Berhasil Merubah data');
+            }else{
+                return $this->errorRequest(422, 'Gagal Memperbarui Data, Section Status tidak ditemukan');
+            }
+        }else{
+            return $this->errorRequest(422, 'Gagal Memperbarui Data, Id tidak tersedia');
+        }
     }
 }

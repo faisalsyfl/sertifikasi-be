@@ -226,7 +226,6 @@ class CompetenceController extends Controller
      *   @OA\Property(property="name", type="string"),
      *   @OA\Property(property="type", type="string"),
      *   @OA\Property(property="code", type="string"),
-
      * )
      * ),
      *  @OA\Response(response=200,description="Success",
