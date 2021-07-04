@@ -17,10 +17,10 @@ class Document extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'title', 'code','type', 'file_hash','file_type','file_size','status','created_by'
+        'name', 'title', 'code', 'type', 'file_hash', 'file_type', 'file_size', 'status', 'created_by'
     ];
     protected $hidden = [
-        'created_at', 'updated_at'
+        'updated_at'
     ];
 
 

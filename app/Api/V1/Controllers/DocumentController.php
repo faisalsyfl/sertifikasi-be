@@ -109,56 +109,54 @@ class DocumentController extends Controller
         }
         $user = $user->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $user->toArray();
+        foreach ($arr['data'] as $key => $value) {
+            $arr['data'][$key]['file_url'] = asset('storage/document/' .  $value['file_hash']);
+        }
         $this->pagination = array_except($arr, 'data');
 
-        return $this->output($user);
+        return $this->output($arr);
     }
-/**
+    /**
      * @OA\Post(
      *  path="/api/v1/document",
      *  summary="Store Data document",
      *  tags={"Informasi - Document"},
-     *  @OA\Parameter(
-     *      name="name",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="title",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string",
-     *      )
-     *   ),
-     * @OA\Parameter(
-     *      name="code",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="type",
-     *      in="query",
-     *      description="[INTERNAL,EXTERNAL]",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="file",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="file"
-     *      )
-     *   ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"file","name","title","code","type"},
+     *                 @OA\Property(
+     *                     description="name",
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     description="title",
+     *                     property="title",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     description="code",
+     *                     property="code",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     description="type",
+     *                     property="type",
+     *                     description="[INTERNAL,EXTERNAL]",
+     *                     type="string"
+     *                 ),
+     *                 @OA\Property(
+     *                     description="file to upload",
+     *                     property="file",
+     *                     type="file",
+     *                     format="file",
+     *                 )
+     *             )
+     *         )
+     *     ),
      *  @OA\Response(response=200,description="Success",
      *      @OA\MediaType(
      *           mediaType="application/json",
@@ -191,14 +189,14 @@ class DocumentController extends Controller
         );
         if ($validate)
             return $this->errorRequest(422, 'Validation Error', $validate);
-        
+
         $insert = $request->all();
-        if ($request->file('file')->isValid()) {
+        if ($request->file('file')) {
             $file = $request->file('file');
             $file_hash                  = 'document_' . $this->hash_filename();
             $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
             $save = Storage::disk('local')->put('public/document/' . $file_info['file_hash'], file_get_contents($file));
-            if($save){
+            if ($save) {
                 $insert['file_hash'] = $file_info['file_hash'];
                 $insert['file_type'] = $file->getClientOriginalExtension();
                 $insert['file_size'] = $file->getSize();
@@ -206,10 +204,10 @@ class DocumentController extends Controller
                 unset($insert['file']);
             }
         }
-        if($save){
+        if ($save) {
             $doc = new Document($insert);
             $doc->save();
-        }else{
+        } else {
             $this->errorRequest(422, 'File Upload Error');
         }
 
@@ -281,7 +279,7 @@ class DocumentController extends Controller
                     $file_hash                  = 'document_' . $this->hash_filename();
                     $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
                     $save = Storage::disk('local')->put('public/document/' . $file_info['file_hash'], file_get_contents($file));
-                    if($save){
+                    if ($save) {
                         $insert['file_hash'] = $file_info['file_hash'];
                         $insert['file_type'] = $file->getClientOriginalExtension();
                         $insert['file_size'] = $file->getSize();
@@ -353,5 +351,4 @@ class DocumentController extends Controller
             return $this->errorRequest(500, 'Unexpected error');
         }
     }
-
 }
