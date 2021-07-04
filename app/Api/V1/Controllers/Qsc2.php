@@ -89,20 +89,20 @@ class Qsc2 extends Controller
    *  path="/api/v1/qsc2/documents",
    *  summary="List document",
    *  tags={"Form"},
-   * @OA\JsonContent(
-   *   type="object",
-   *   @OA\Property(property="transaction_id", type="integer"),
-   *   @OA\Property(property="section_id", type="integer"),
-   * )
-   * ),
-   *  @OA\Response(response=200,description="Success",
-   *      @OA\MediaType(
-   *           mediaType="application/json",
+   *  @OA\Parameter(
+   *      name="transaction_id",
+   *      in="query",
+   *      required=true,
+   *      @OA\Schema(
+   *           type="integer"
    *      )
    *   ),
-   *  @OA\Response(response=201,description="Success",
-   *      @OA\MediaType(
-   *           mediaType="application/json",
+   *  @OA\Parameter(
+   *      name="section_id",
+   *      in="query",
+   *      required=true,
+   *      @OA\Schema(
+   *           type="integer"
    *      )
    *   ),
    *  @OA\Response(response=401,description="Unauthenticated"),
