@@ -45,6 +45,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
                 $api->post('/', 'App\\Api\\V1\\Controllers\\Qsc2@documentsUpload');
                 $api->get('/', 'App\\Api\\V1\\Controllers\\Qsc2@documentsList');
                 $api->post('/edit', 'App\\Api\\V1\\Controllers\\Qsc2@documentUpdate');
+                $api->post('/status', 'App\\Api\\V1\\Controllers\\Qsc2@documentUpdateStatus');
                 $api->delete('/', 'App\\Api\\V1\\Controllers\\Qsc2@documentsDelete');
             });
 
