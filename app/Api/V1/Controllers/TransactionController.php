@@ -162,6 +162,15 @@ class TransactionController extends Controller
      *           type="string",
      *      )
      *   ),
+     *  @OA\Parameter(
+     *      name="auditi_status",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="seluruh/cabang"
+     *      )
+     *   ),
      *   @OA\Response(
      *     response=200,
      *     description="Success"
@@ -346,6 +355,7 @@ class TransactionController extends Controller
      *   @OA\Property(property="survailen_tahap_2_penyesuaian", type="integer"),
      *   @OA\Property(property="justifikasi_waktu_audit", type="integer"),
      *   @OA\Property(property="aplikasi_sertifikasi", type="boolean"),
+     *   @OA\Property(property="catatan_aplikasi_ditolak", type="string"),
      *   @OA\Property(property="nomor_sertifikasi", type="string"),
      *   @OA\Property(property="dikaji_oleh_1", type="string"),
      *   @OA\Property(property="dikaji_oleh_2", type="string"),
