@@ -194,10 +194,15 @@ trait RestApi
         $final = array();
         foreach ($data as $temp) {
             if ($temp['section_form']['key'] == "lokasi_id") {
-                $expld = explode(',', $temp['value']);
                 $val = [];
-                foreach ($expld as $v) {
-                    $val[] = Qsc3::get_location_object($v);
+                if ($temp['value']) {
+                    $expld = explode(',', $temp['value']);
+
+                    foreach ($expld as $v) {
+                        $location = \App\Models\FormLocation::with(['country', 'state', 'city'])->where('id', $v)->first();
+                        if ($location)
+                            $val[] = $location;
+                    }
                 }
                 $final[$temp['section_form']['key']] = $val;
             } elseif ($temp['section_form']['key'] == "tanda_tangan_formulir") {

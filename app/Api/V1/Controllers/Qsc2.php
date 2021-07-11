@@ -307,30 +307,43 @@ class Qsc2 extends Controller
     foreach ($file as $value) {
       switch ($value['type']) {
         case 'QSC_2_DOC_AKTE_NOTARIS';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_1'][] = $value;
           break;
         case 'QSC_2_DOC_STRUKTUR_ORGANISASI';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_2'][] = $value;
           break;
         case 'QSC_2_DOC_INTERAKSI_PROSES';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_3'][] = $value;
           break;
         case 'QSC_2_DOC_DIGARAM_ALIR';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_4'][] = $value;
           break;
         case 'QSC_2_DOC_LAYOUT_AREA';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_6'][] = $value;
           break;
         case 'QSC_2_DOC_REKAMAN_INTERNAL';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_6'][] = $value;
           break;
         case 'QSC_2_DOC_TINJAUAN_MANAGEMEN';
+          $value['file_url'] = $this->assignUrl($value['file_hash']);
           $data['dokumen_7'][] = $value;
           break;
       }
     }
 
     return $data;
+  }
+
+  private function assignUrl($file_hash)
+  {
+    if ($file_hash)
+      return asset('storage/document/' .  $file_hash);
   }
 
   private function docTypeReverse($file)
