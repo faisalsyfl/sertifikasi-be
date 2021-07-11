@@ -55,6 +55,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
 
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc3'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\TransactionController@index');
+            $api->get('/lingkup-suggestion', 'App\\Api\\V1\\Controllers\\Qsc3@getLingkupSuggestion');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
 

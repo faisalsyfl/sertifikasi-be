@@ -21,8 +21,38 @@ class QSCSectionForm001Seeder extends Seeder
                 'rule' => null,
             ],
             [
+                'section_id' => 2,
+                'key' => 'nama_klien',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 2,
+                'key' => 'tipe_klien',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 2,
+                'key' => 'website_klien',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 2,
+                'key' => 'email_klien',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 2,
+                'key' => 'telp_klien',
+                'rule' => null,
+            ],
+            [
                 'section_id' => 3,
                 'key' => 'catatan_aplikasi_ditolak',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 3,
+                'key' => 'alamat_klien',
                 'rule' => null,
             ]
         ];
