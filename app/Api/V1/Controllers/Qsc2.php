@@ -11,6 +11,7 @@ use App\Models\SectionForm;
 use App\Models\SectionFormValue;
 use App\Models\SectionStatus;
 use App\Models\FormDocument;
+use App\Models\FormDocumentStatus;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -128,7 +129,7 @@ class Qsc2 extends Controller
     }
 
     $res = FormDocument::where('transaction_id', $request->transaction_id)->where('section_id', $request->section_id)->get();
-    $res = $this->transformDoc($res->toArray());
+    $res = $this->transformDoc($res->toArray(), $request->transaction_id, $request->section_id);
     return $this->output($res);
   }
 
@@ -280,6 +281,39 @@ class Qsc2 extends Controller
     }
   }
 
+  public function documentUpdateStatus(Request $request)
+  {
+    // try {
+    $validator = Validator::make($request->input(), ['transaction_id' => 'required', 'section_id' => 'required', 'type' => 'required', 'status' => 'required']);
+    if ($validator->fails()) {
+      return $this->errorRequest(422, 'Validation Error', $validator->errors()->toArray());
+    }
+
+    $doc = $this->getStatusDocument($request->transaction_id, $request->section_id, $request->type);
+
+    if ($doc) {
+      $insert['transaction_id'] = $request->transaction_id;
+      $insert['section_id'] = $request->section_id;
+      $insert['type'] = $this->docType($request->type);
+      $insert['status'] = $request->status;
+      $insert['created_by'] = Auth::user()->id;
+      $doc->update($insert);
+      return $this->output('Berhasil Merubah data');
+    } else {
+      $doc = new FormDocumentStatus();
+      $doc->transaction_id = $request->transaction_id;
+      $doc->section_id = $request->section_id;
+      $doc->type =  $this->docType($request->type);
+      $doc->status = $request->status;
+      $doc->created_by = Auth::user()->id;
+      $doc->save();
+      return $this->output('Berhasil Menambah data');
+    }
+    // } catch (\Throwable $th) {
+    //   return $this->errorRequest(500, 'Unexpected error');
+    // }
+  }
+
   private function saveDoc($file, $name, $request)
   {
     $file_hash                  = 'form_document_' . $this->hash_filename();
@@ -309,49 +343,92 @@ class Qsc2 extends Controller
     return $Contact;
   }
 
-  private function transformDoc($file)
+  private function transformDoc($file, $transaction_id, $section_id)
   {
-    $data = [];
+    $init = array('status' => 0, 'files' => []);
+    $doc_type = array();
+    // $doc_type['AKTE_NOTARIS'] = $init;
+    // $doc_type['STRUKTUR_ORGANISASI'] = $init;
+    // $doc_type['INTERAKSI_PROSES'] = $init;
+    // $doc_type['DIGARAM_ALIR'] = $init;
+    // $doc_type['LAYOUT_AREA'] = $init;
+    // $doc_type['REKAMAN_INTERNAL'] = $init;
+    // $doc_type['TINJAUAN_MANAGEMEN'] = $init;    
+    $doc_type['dokumen_1'] = $init;
+    $doc_type['dokumen_2'] = $init;
+    $doc_type['dokumen_3'] = $init;
+    $doc_type['dokumen_4'] = $init;
+    $doc_type['dokumen_5'] = $init;
+    $doc_type['dokumen_6'] = $init;
+    $doc_type['dokumen_7'] = $init;
+
     foreach ($file as $value) {
       switch ($value['type']) {
         case 'QSC_2_DOC_AKTE_NOTARIS';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_1'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_1']['status'] = $status;
+          $doc_type['dokumen_1']['files'][] = $value;
           break;
         case 'QSC_2_DOC_STRUKTUR_ORGANISASI';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_2'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_2']['status'] = $status;
+          $doc_type['dokumen_2']['files'][] = $value;
           break;
         case 'QSC_2_DOC_INTERAKSI_PROSES';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_3'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_3']['status'] = $status;
+          $doc_type['dokumen_3']['files'][] = $value;
           break;
         case 'QSC_2_DOC_DIGARAM_ALIR';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_4'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_4']['status'] = $status;
+          $doc_type['dokumen_4']['files'][] = $value;
           break;
         case 'QSC_2_DOC_LAYOUT_AREA';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_6'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_5']['status'] = $status;
+          $doc_type['dokumen_5']['files'][] = $value;
           break;
         case 'QSC_2_DOC_REKAMAN_INTERNAL';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_6'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_6']['status'] = $status;
+          $doc_type['dokumen_6']['files'][] = $value;
           break;
         case 'QSC_2_DOC_TINJAUAN_MANAGEMEN';
           $value['file_url'] = $this->assignUrl($value['file_hash']);
-          $data['dokumen_7'][] = $value;
+          $res = $this->getStatusDocument($value['transaction_id'], $value['section_id'], $value['type']);
+          $status = isset($res->status) && $res->status ? $res->status : 0;
+          $doc_type['dokumen_7']['status'] = $status;
+          $doc_type['dokumen_7']['files'][] = $value;
           break;
       }
     }
-
-    return $data;
+    return $doc_type;
   }
 
   private function assignUrl($file_hash)
   {
     if ($file_hash)
       return asset('storage/document/' .  $file_hash);
+  }
+
+  private function getStatusDocument($transaction_id, $section_id, $type)
+  {
+    return FormDocumentStatus::where('transaction_id', $transaction_id)
+      ->where('section_id', $section_id)
+      ->where('type', $type)->first();
   }
 
   private function docTypeReverse($file)

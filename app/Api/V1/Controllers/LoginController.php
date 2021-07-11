@@ -91,7 +91,7 @@ class LoginController extends Controller
                 'role'      => $user->role,
                 'token'     => $token,
                 'username'     => $user->username,
-                'expires_in' => Auth::guard()->factory()->getTTL() * 60 * 60 * 2
+                'expires_in' => Auth::guard()->factory()->getTTL()
             ], 'Successfully logged in');
         }
     }
