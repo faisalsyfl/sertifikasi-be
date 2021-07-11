@@ -17,7 +17,7 @@ class Competence extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'type', 'code'
+        'name', 'type', 'code', 'risk'
     ];
     protected $hidden = [
         'created_at', 'updated_at',
