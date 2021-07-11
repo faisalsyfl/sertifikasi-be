@@ -49,7 +49,7 @@ class RefreshController extends Controller
         return $this->output([
             'status' => 'Successfully Refresh the token',
             'token' => $token,
-            'expires_in' => Auth::guard()->factory()->getTTL() * 60
+            'expires_in' => Auth::guard()->factory()->getTTL()
         ]);
     }
 }
