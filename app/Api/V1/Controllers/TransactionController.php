@@ -2,6 +2,8 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\SectionForm;
+use App\Models\SectionFormValue;
 use App\Models\SectionStatus;
 use Validator;
 use App\User;
@@ -274,9 +276,9 @@ class TransactionController extends Controller
      *   @OA\Property(property="audit_joint", type="boolean"),
      *   @OA\Property(property="audit_combination", type="boolean"),
      *   @OA\Property(property="audit_integration", type="boolean"),
-     *   @OA\Property(property="lingkup", type="string"),
-     *   @OA\Property(property="sektor_ea", type="string"),
-     *   @OA\Property(property="sektor_nace", type="string"),
+     *   @OA\Property(property="ruang_lingkup", type="string"),
+     *   @OA\Property(property="sektor_ea_id", type="integer"),
+     *   @OA\Property(property="sektor_nace_id", type="integer"),
      *   @OA\Property(property="akreditasi_lingkup_kan", type="boolean"),
      *   @OA\Property(property="personil_kompeten", type="boolean"),
      *   @OA\Property(property="konflik_kepentingan", type="boolean"),
@@ -667,6 +669,82 @@ class TransactionController extends Controller
             }
         }else{
             return $this->errorRequest(422, 'Gagal Memperbarui Data, Id tidak tersedia');
+        }
+    }
+
+    static function preDefineSectionFormValue($section_status_id, $reference_only=true){
+        $section_status = SectionStatus::find($section_status_id);
+
+        if($section_status){
+            $key_values = [];
+            $predefined_values = [];
+
+            switch ($section_status->section_id){
+                case 2:
+                    $predefined_reference = [
+                        // section_id reference
+                        "1" => [
+                            // keys
+                            "nama_klien", "tipe_klien", "website_klien", "email_klien", "telp_klien"
+                        ],
+                    ];
+                    break;
+                case 3:
+                    $key_values = Qsc3::getKeyValueQSC3();
+                    $predefined_reference = [
+                        // section_id reference
+                        "1" => [
+                            // keys
+                            "nama_klien", "alamat_klien"
+                        ],
+                        "2" => [
+                            // keys
+                            "manajemen_mutu", "manajemen_lingkungan", "manajemen_keselamatan", "industri_hijau",
+                            "status_aplikasi_sertifikasi",
+                        ],
+                    ];
+                    break;
+                default:
+                    $key_values = [];
+                    $predefined_reference = [];
+                    break;
+            }
+
+            foreach ($predefined_reference as $section_id => $keys){
+                $section_form_values = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
+                    ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
+                    ->where("section_status.transaction_id",$section_status->transaction_id)
+                    ->where("section_form.section_id",$section_id)
+                    ->whereIn("section_form.key",$keys)
+                    ->select("section_form_value.*", "section_form.key")
+                    ->get();
+
+                foreach ($section_form_values as $section_form_value){
+                    $predefined_values[$section_form_value->key] = $section_form_value->value;
+                }
+            }
+
+            if($reference_only){
+                $key_values = $predefined_values;
+            }else{
+                $key_values = array_merge($key_values,$predefined_values);
+            }
+
+            foreach ($key_values as $key => $value){
+                $section_form = SectionForm::where("section_id", $section_status->section_id)
+                    ->where("key", $key)->first();
+                if($section_form){
+                    $section_value = SectionFormValue::where("section_status_id",$section_status_id)
+                        ->where("section_form_id",$section_form->id)->first();
+                    if(!$section_value){
+                        $section_value = new SectionFormValue();
+                        $section_value->section_status_id = $section_status_id;
+                        $section_value->section_form_id = $section_form->id;
+                    }
+                    $section_value->value = $value;
+                    $section_value->save();
+                }
+            }
         }
     }
 }
