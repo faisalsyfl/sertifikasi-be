@@ -245,9 +245,9 @@ class Qsc2 extends Controller
         $insert = $request->all();
         if ($request->file('file')) {
           $file = $request->file('file');
-          $file_hash                  = 'document_' . $this->hash_filename();
+          $file_hash                  = 'form_document_' . $this->hash_filename();
           $file_info['file_hash']     = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
-          $save = Storage::disk('local')->put('public/document/' . $file_info['file_hash'], file_get_contents($file));
+          $save = Storage::disk('local')->put('public/form_document/' . $file_info['file_hash'], file_get_contents($file));
           if ($save) {
             $insert['name'] = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             $insert['file_hash'] = $file_info['file_hash'];
@@ -413,7 +413,7 @@ class Qsc2 extends Controller
   private function assignUrl($file_hash)
   {
     if ($file_hash)
-      return asset('storage/document/' .  $file_hash);
+      return asset('storage/form_document/' .  $file_hash);
   }
 
   private function getStatusDocument($transaction_id, $section_id, $type)
