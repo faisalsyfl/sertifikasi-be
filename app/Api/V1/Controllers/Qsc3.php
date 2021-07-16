@@ -42,8 +42,6 @@ class Qsc3 extends Controller
             $arrayRule[$v['key']] = $v['rule'];
         }
 
-        $arrayRule = array_merge($arrayRule, Config::get('validation_rules.form_qsc_2.validation_rules'));
-
         $validator = Validator::make($request->input(), $arrayRule);
         if ($validator->fails()) {
             return ["status" => false, "error" => $validator->errors()->toArray()];
@@ -72,6 +70,13 @@ class Qsc3 extends Controller
                         $section_status->update([
                             "status" => 1
                         ]);
+                    }
+
+                    // Update QSC4
+                    $qsc4_section_status = SectionStatus::where("transaction_id",$section_status->transaction_id)
+                        ->where("section_id",4)->first();
+                    if($qsc4_section_status){
+                        TransactionController::preDefineSectionFormValue($qsc4_section_status->id, true);
                     }
                 });
                 return ["status" => true, "data" => "Berhasil Menyimpan Data"];

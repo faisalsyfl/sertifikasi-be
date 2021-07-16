@@ -10,6 +10,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Api\V1\Controllers\Qsc4;
 use App\Api\V1\Controllers\Qsc3;
 use App\Api\V1\Controllers\Qsc2;
 use App\Api\V1\Controllers\Qsc1;
@@ -31,11 +32,13 @@ class TransactionController extends Controller
     protected $Qsc1;
     protected $Qsc2;
     protected $Qsc3;
-    public function __construct(Qsc1 $Qsc1, Qsc2 $Qsc2, Qsc3 $Qsc3)
+    protected $Qsc4;
+    public function __construct(Qsc1 $Qsc1, Qsc2 $Qsc2, Qsc3 $Qsc3, Qsc4 $Qsc4)
     {
         $this->Qsc1 = $Qsc1;
         $this->Qsc2 = $Qsc2;
         $this->Qsc3 = $Qsc3;
+        $this->Qsc4 = $Qsc4;
     }
     /**
      * @OA\Get(
@@ -381,6 +384,41 @@ class TransactionController extends Controller
      * )
      */
 
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc4/store",
+     *  summary="Save and Edit - Step 4",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="mode", type="string",default="QSC4"),
+     *   @OA\Property(property="section", type="integer",default="4"),
+     *   @OA\Property(property="transaction_id", type="integer"),
+     *   @OA\Property(property="section_status_id", type="integer"),
+     *   @OA\Property(property="penawaran", type="integer"),
+     *   @OA\Property(property="biaya_sertifikasi", type="integer"),
+     *   @OA\Property(property="transportasi", type="integer"),
+     *   @OA\Property(property="terbilang", type="integer"),
+     *   @OA\Property(property="total", type="integer"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
     public function store(Request $request)
     {
         switch ($request->mode) {
@@ -409,6 +447,12 @@ class TransactionController extends Controller
                 return $this->output($res);
                 break;
             case 'QSC4':
+                #Section Aplikasi = 4
+                $request['section'] = 4;
+                $res = $this->Qsc4->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
                 break;
             case 'QSC5':
                 break;
@@ -544,6 +588,47 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc4/list/{id}",
+     *  summary="Detail - Step 4",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC4"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
     public function list(Request $request, $id)
     {
         switch ($request->mode) {
@@ -576,6 +661,13 @@ class TransactionController extends Controller
                 return $this->output($final);
                 break;
             case 'QSC4':
+                $res = $this->Qsc4->list($request, $id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             case 'QSC5':
                 break;
@@ -672,7 +764,7 @@ class TransactionController extends Controller
         }
     }
 
-    static function preDefineSectionFormValue($section_status_id, $reference_only=true){
+    static function preDefineSectionFormValue($section_status_id, $reference_only=true, $additional_data=[]){
         $section_status = SectionStatus::find($section_status_id);
 
         if($section_status){
@@ -704,6 +796,20 @@ class TransactionController extends Controller
                         ],
                     ];
                     break;
+                case 4:
+                    $key_values = Qsc4::getKeyValueQSC4();
+                    $predefined_reference = [
+                        // section_id reference
+                        "1" => [
+                            // keys
+                            "nama_klien"
+                        ],
+                        "3" => [
+                            // keys
+                            "nomor_sertifikasi",
+                        ],
+                    ];
+                    break;
                 default:
                     $key_values = [];
                     $predefined_reference = [];
@@ -728,6 +834,10 @@ class TransactionController extends Controller
                 $key_values = $predefined_values;
             }else{
                 $key_values = array_merge($key_values,$predefined_values);
+            }
+
+            if(count($additional_data) > 0 and isset($additional_data[$section_status->section_id])){
+                $key_values = array_merge($key_values,$additional_data[$section_status->section_id]);
             }
 
             foreach ($key_values as $key => $value){
