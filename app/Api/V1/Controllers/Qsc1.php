@@ -72,6 +72,11 @@ class Qsc1 extends Controller
                 'organization_id' => $request->organization_id
             ]);
         }
+
+        if(isset($insert["auditi_status"]) and $insert["auditi_status"]){
+            $map["auditi_status"] = $insert["auditi_status"];
+        }
+
         if (is_array($map) && (count($map) > 0)) {
             $section_status_id = SectionStatus::where('transaction_id',$transaction_id)->where('section_id',$insert['section'])->first()->id;
             try {
