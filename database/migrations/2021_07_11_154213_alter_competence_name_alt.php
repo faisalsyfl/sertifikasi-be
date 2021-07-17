@@ -15,7 +15,7 @@ class AlterCompetenceNameAlt extends Migration
     {
         if (!Schema::hasColumn('competence', 'name_alt')) {
             Schema::table('competence', function (Blueprint $table) {
-                $table->string('name_alt', 200);
+                $table->string('name_alt', 200)->nullable();
             });
         }
     }
