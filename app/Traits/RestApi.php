@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Api\V1\Controllers\Qsc3;
 use App\Api\V1\Controllers\Qsc2;
+use App\Api\V1\Controllers\Qsc4;
 use Illuminate\Http\Response;
 
 use App\Http\Requests;
@@ -211,6 +212,8 @@ trait RestApi
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
             } elseif ($temp['section_form']['key'] == "sektor_ea_id" or $temp['section_form']['key'] == "sektor_nace_id") {
                 $final[$temp['section_form']['key']] = Qsc3::get_competence_object($temp['value']);
+            } elseif ($temp['section_form']['key'] == "payment"){
+                $final[$temp['section_form']['key']] = Qsc4::get_payment_object($temp['value']);
             } else {
                 $final[$temp['section_form']['key']] = $temp['value'];
             }

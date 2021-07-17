@@ -31,6 +31,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
             $api->put('status/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@setStatus');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@destroy');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
@@ -59,6 +60,16 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/lingkup-suggestion', 'App\\Api\\V1\\Controllers\\Qsc3@getLingkupSuggestion');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+
+            $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
+                $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
+            });
+        });
+
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc4'], function (Router $api) {
+            $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+            $api->post('email-payment/{id}', 'App\\Api\\V1\\Controllers\\Qsc4@sendPaymentEmail');
+            $api->put('set-payment/{id}', 'App\\Api\\V1\\Controllers\\Qsc4@setPaymentStatus');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');

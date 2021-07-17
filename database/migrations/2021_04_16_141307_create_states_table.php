@@ -13,19 +13,19 @@ class CreateStatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('states', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name');
-            $table->bigInteger('country_id');
-            $table->string('country_code');
-            $table->string('fips_code');
-            $table->string('iso2');
-            $table->decimal('latitude');
-            $table->decimal('longitude');
-            $table->tinyInteger('flag');
-            $table->string('wikiDataId');
-            $table->timestamps();
-        });
+        // Schema::create('states', function (Blueprint $table) {
+        //     $table->bigIncrements('id');
+        //     $table->string('name');
+        //     $table->bigInteger('country_id');
+        //     $table->string('country_code');
+        //     $table->string('fips_code');
+        //     $table->string('iso2');
+        //     $table->decimal('latitude');
+        //     $table->decimal('longitude');
+        //     $table->tinyInteger('flag');
+        //     $table->string('wikiDataId');
+        //     $table->timestamps();
+        // });
     }
 
     /**
@@ -35,6 +35,6 @@ class CreateStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('states');
+        // Schema::dropIfExists('states');
     }
 }

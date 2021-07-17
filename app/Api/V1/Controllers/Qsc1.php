@@ -57,12 +57,16 @@ class Qsc1 extends Controller
         }
 
         $section_status_ids = [];
+        $transaction_code = "-";
         if(!$request->has('transaction_id')){
-            $transaction_id = $this->generateTransaction($request);
+            $transaction = $this->generateTransaction($request);
+            $transaction_id = $transaction->id;
+            $transaction_code = $transaction->code;
             $section_status_ids = $this->generateSectionStatus($transaction_id);
         }else{
             $transaction_id = $request->transaction_id;
             $trans = Transaction::find($transaction_id);
+            $transaction_code = $trans->code;
             $trans->update([
                 'auditi_id' => $request->auditi_id,
                 'organization_id' => $request->organization_id
@@ -88,7 +92,11 @@ class Qsc1 extends Controller
 
                 // Pre-define section form value
                 foreach ($section_status_ids as $section_status_id){
-                    TransactionController::preDefineSectionFormValue($section_status_id, false);
+                    TransactionController::preDefineSectionFormValue($section_status_id, false, [
+                        '4' => [
+                            'nomor_sertifikasi' => $transaction_code
+                        ]
+                    ]);
                 }
 
                 return ["status" => true, "data" => ['transaction_id' => $transaction_id]];
@@ -137,7 +145,7 @@ class Qsc1 extends Controller
         $transaction->code   = 'SC';
         $transaction->save();
 
-        return $transaction->id;
+        return $transaction;
     }
     private function generateSectionStatus($transaction_id){
         $section_status_ids = [];
