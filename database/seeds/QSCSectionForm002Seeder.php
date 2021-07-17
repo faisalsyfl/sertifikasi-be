@@ -18,7 +18,7 @@ class QSCSectionForm002Seeder extends Seeder
             [
                 'section_id' => 4,
                 'key' => 'penawaran',
-                'rule' => 'required',
+                'rule' => null,
             ],
             [
                 'section_id' => 4,
