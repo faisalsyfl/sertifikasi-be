@@ -14,7 +14,9 @@ class ChangeTransactionTable extends Migration
     public function up()
     {
         Schema::table('transaction', function (Blueprint $table) {
-            $table->dropColumn('status');
+            if (Schema::hasColumn('transaction', 'status')) {
+                $table->dropColumn('status');
+            }
         });
     }
 

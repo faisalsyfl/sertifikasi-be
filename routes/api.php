@@ -31,6 +31,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
             $api->put('status/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@setStatus');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@destroy');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
@@ -143,6 +144,13 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->post('location', 'App\\Api\\V1\\Controllers\\FormLocation@storeFormLocation');
             $api->put('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@updateLocation');
             $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@destroy');
+        });
+
+        #profile endpoint
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'pdf'], function (Router $api) {
+            $api->get('invoice', 'App\\Api\\V1\\Controllers\\PdfController@invoice');
+            $api->get('penawaran', 'App\\Api\\V1\\Controllers\\PdfController@penawaran');
+            $api->get('kwitansi', 'App\\Api\\V1\\Controllers\\PdfController@kwitansi');
         });
 
         #protect with Jwt Auth

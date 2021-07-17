@@ -185,27 +185,30 @@ class initialCompetenceSeeder extends Seeder
               'type' => 'Sistem',
               'code' => $sistems[$i] == "Industri Hijau" ? "IH" : substr($sistems[$i],0,1),
               'parent_code' => null,
-              'created_at' => Carbon::now()->format('Y-m-d H:i:s')
-          ]);
-        }
-
-        for($i=0;$i<count($sektors);$i++){
-          DB::table($this->tableName)->insert([
+              'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+              'name_alt' => null
+            ]);
+          }
+          
+          for($i=0;$i<count($sektors);$i++){
+            DB::table($this->tableName)->insert([
               'name' => $sektors[$i][1],
               'type' => 'Sektor',
               'code' => $sektors[$i][0],
               'parent_code' => null,
-              'created_at' => Carbon::now()->format('Y-m-d H:i:s')
-          ]);
-        }
-
-        for($i=0;$i<count($nace);$i++){
+              'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+              'name_alt' => null
+            ]);
+          }
+          
+          for($i=0;$i<count($nace);$i++){
             DB::table($this->tableName)->insert([
-                'name' => $nace[$i][2],
-                'type' => 'NACE',
-                'code' => $nace[$i][1],
-                'parent_code' => $nace[$i][0],
-                'created_at' => Carbon::now()->format('Y-m-d H:i:s')
+              'name' => $nace[$i][2],
+              'type' => 'NACE',
+              'code' => $nace[$i][1],
+              'parent_code' => $nace[$i][0],
+              'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+              'name_alt' => null
             ]);
         }
     }

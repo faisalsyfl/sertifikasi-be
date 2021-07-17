@@ -856,4 +856,56 @@ class TransactionController extends Controller
             }
         }
     }
+
+        /**
+     * @OA\Delete(
+     *  path="/api/v1/qsc/{id}",
+     *  summary="Delete Transaksi",
+     *  tags={"Transaction"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      description="",
+     *      @OA\Schema(
+     *           type="integer",
+     *           format="int64"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+    public function destroy($id)
+    {
+        try {
+            if (isset($id) && $id) {
+                $trans = Transaction::find($id);
+                if ($trans) {
+                    $trans->update(['stats' => 0]);
+                } else {
+                    return $this->errorRequest(422, 'Gagal Menghapus Data, Id tidak tersedia');
+                }
+                return $this->output('Berhasil Merubah data');
+            }
+
+            return $this->output('ID Kosong');
+        } catch (\Throwable $th) {
+            return $this->errorRequest(500, 'Unexpected error');
+        }
+    }
+
 }

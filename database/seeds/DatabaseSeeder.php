@@ -15,5 +15,7 @@ class DatabaseSeeder extends Seeder
         $this->call(initialCompetenceSeeder::class);
         // $this->call(CountryCitiesStatesSeeds::class);
         $this->call(SectionQSCSeeder::class);
+        $this->call(QSCSectionForm001Seeder::class);
+        $this->call(QSCSectionForm002Seeder::class);
     }
 }
