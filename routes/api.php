@@ -31,6 +31,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@index');
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
             $api->put('status/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@setStatus');
+            $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@destroy');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
