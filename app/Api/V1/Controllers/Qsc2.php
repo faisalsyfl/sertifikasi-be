@@ -78,10 +78,10 @@ class Qsc2 extends Controller
         });
 
         // Update QSC3
-        $qsc3_section_status = SectionStatus::where("transaction_id",$section_status->transaction_id)
-          ->where("section_id",3)->first();
-        if($qsc3_section_status){
-            TransactionController::preDefineSectionFormValue($qsc3_section_status->id, true);
+        $qsc3_section_status = SectionStatus::where("transaction_id", $section_status->transaction_id)
+          ->where("section_id", 3)->first();
+        if ($qsc3_section_status) {
+          TransactionController::preDefineSectionFormValue($qsc3_section_status->id, true);
         }
 
         return ["status" => true, "data" => "Berhasil Menyimpan Data"];

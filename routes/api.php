@@ -135,6 +135,13 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@destroy');
         });
 
+        #profile endpoint
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'pdf'], function (Router $api) {
+            $api->get('invoice', 'App\\Api\\V1\\Controllers\\PdfController@invoice');
+            $api->get('penawaran', 'App\\Api\\V1\\Controllers\\PdfController@penawaran');
+            $api->get('kwitansi', 'App\\Api\\V1\\Controllers\\PdfController@kwitansi');
+        });
+
         #protect with Jwt Auth
         $api->group(['middleware' => 'jwt.auth'], function (Router $api) {
             $api->get('protected', function () {
