@@ -151,6 +151,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->get('invoice', 'App\\Api\\V1\\Controllers\\PdfController@invoice');
             $api->get('penawaran', 'App\\Api\\V1\\Controllers\\PdfController@penawaran');
             $api->get('kwitansi', 'App\\Api\\V1\\Controllers\\PdfController@kwitansi');
+            $api->get('testmail', 'App\\Api\\V1\\Controllers\\MailController@testMail');
         });
 
         #protect with Jwt Auth
