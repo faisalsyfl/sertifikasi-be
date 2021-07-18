@@ -295,6 +295,7 @@ class TransactionController extends Controller
      *   @OA\Property(property="risiko_iso_9001", type="string"),
      *   @OA\Property(property="kompleksitas_iso_14001", type="string"),
      *   @OA\Property(property="kompleksitas_iso_45001", type="string"),
+     *   @OA\Property(property="jumlah_personil_efektif", type="string"),
      *   @OA\Property(property="jumlah_personil_management", type="integer"),
      *   @OA\Property(property="jumlah_personil_administrasi", type="integer"),
      *   @OA\Property(property="jumlah_personil_part_time", type="integer"),
@@ -792,7 +793,7 @@ class TransactionController extends Controller
                         "2" => [
                             // keys
                             "manajemen_mutu", "manajemen_lingkungan", "manajemen_keselamatan", "industri_hijau",
-                            "status_aplikasi_sertifikasi",
+                            "status_aplikasi_sertifikasi", "jumlah_personil_efektif"
                         ],
                     ];
                     break;
