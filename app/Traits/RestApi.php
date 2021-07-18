@@ -208,7 +208,12 @@ trait RestApi
                 $final[$temp['section_form']['key']] = $val;
             } elseif ($temp['section_form']['key'] == "tanda_tangan_formulir") {
                 $final[$temp['section_form']['key']] = Qsc2::getContact($temp['value']);
-            } elseif ($temp['section_form']['key'] == "auditor_ids") {
+            } elseif (
+                $temp['section_form']['key'] == "auditor_ids"
+                or $temp['section_form']['key'] == "dikaji_oleh_1"
+                or $temp['section_form']['key'] == "dikaji_oleh_2"
+                or $temp['section_form']['key'] == "disetujui_oleh"
+            ) {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
             } elseif ($temp['section_form']['key'] == "sektor_ea" or $temp['section_form']['key'] == "sektor_nace") {
                 $final[$temp['section_form']['key']] = Qsc3::get_competence_object($temp['value']);
