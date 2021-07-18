@@ -168,12 +168,21 @@ class Qsc4 extends Controller
                 }
                 $payment->save();
 
-                return ["status" => true, "data" => "Berhasil Menyimpan Data"];
+                return $this->output(
+                    ["status" => true, "data" => "Berhasil Menyimpan Data"],
+                    "Berhasil Menyimpan Data"
+                );
             }else{
-                return ["status" => false, "data" => "Payment tidak ditemukan"];
+                return $this->output(
+                    ["status" => false, "data" => "Payment tidak ditemukan"],
+                    "Payment tidak ditemukan"
+                );
             }
         }else{
-            return ["status" => false, "data" => "Invalid status"];
+            return $this->output(
+                ["status" => false, "data" => "Invalid status"],
+                "Invalid status"
+            );
         }
     }
 
@@ -235,13 +244,22 @@ class Qsc4 extends Controller
         if($email and $document){
             $payment = Payment::find($payment_id);
             if($payment){
-                // Send Email
-                return ["status" => true, "data" => "Berhasil Mengirim Email"];
+                // TODO: Send Email
+                return $this->output(
+                    ["status" => true, "data" => "Berhasil Mengirim Email"],
+                    "Berhasil Mengirim Email"
+                );
             }else{
-                return ["status" => false, "data" => "Payment tidak ditemukan"];
+                return $this->output(
+                    ["status" => false, "data" => "Payment tidak ditemukan"],
+                    "Payment tidak ditemukan"
+                );
             }
         }else{
-            return ["status" => false, "data" => "Email tidak ditemukan"];
+            return $this->output(
+                ["status" => false, "data" => "Email tidak ditemukan"],
+                "Email tidak ditemukan"
+            );
         }
     }
 
