@@ -210,7 +210,7 @@ trait RestApi
                 $final[$temp['section_form']['key']] = Qsc2::getContact($temp['value']);
             } elseif ($temp['section_form']['key'] == "auditor_ids") {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
-            } elseif ($temp['section_form']['key'] == "sektor_ea_id" or $temp['section_form']['key'] == "sektor_nace_id") {
+            } elseif ($temp['section_form']['key'] == "sektor_ea" or $temp['section_form']['key'] == "sektor_nace") {
                 $final[$temp['section_form']['key']] = Qsc3::get_competence_object($temp['value']);
             } elseif ($temp['section_form']['key'] == "payment"){
                 $final[$temp['section_form']['key']] = Qsc4::get_payment_object($temp['value']);
