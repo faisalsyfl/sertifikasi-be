@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 use PDF;
 
 
@@ -24,7 +25,7 @@ class PdfController extends Controller
         return self::generateKwitansi($request->all());
     }
 
-    static function generateInvoice($data){
+    static function generateInvoice($data, $target="download"){
         $data_invoice = [
             [
                 "uraian" => "Biaya Sertifikasi",
@@ -38,14 +39,15 @@ class PdfController extends Controller
         ];
 
         $id = isset($data['transaction_id']) ? $data['transaction_id'] : '426';
-        $month =  (int)date("m", isset($data['tanggal_invoice']) ? strtotime($data['tanggal_invoice']) : time());
+        $tanggal_invoice = isset($data['tanggal_invoice']) ? $data['tanggal_invoice'] : date("Y-m-d H:i:s");
+        $month =  (int)date("m", strtotime($tanggal_invoice));
         $month_roman = self::numberToRomanRepresentation($month);
-        $year = date("Y", isset($data['tanggal_invoice']) ? strtotime($data['tanggal_invoice']) : time());
+        $year = date("Y", strtotime($tanggal_invoice));
 
         $info = [
             'kepada' => isset($data['nama_klien']) ? $data['nama_klien'] : 'PT. Telkom',
             'alamat' => isset($data['alamat_klien']) ? $data['alamat_klien'] : 'Jl. Jend. Ahmad Yani no 106 Cilegon 42421, Banten tarkun@sucofindo.co.id',
-            'tanggal' => isset($data['tanggal_invoice']) ? date("Y/m/d", $data['tanggal_invoice']) : date("Y/m/d"),
+            'tanggal' => date("Y/m/d", strtotime($tanggal_invoice)),
             'nomor' => $id.'/PUP/BBBBT- Keu/'.$month_roman.'/'.$year,
             'nomor_order' => $id,
             'nomor_ref' => '-',
@@ -54,10 +56,19 @@ class PdfController extends Controller
             'data' => $data_invoice
         ];
         $pdf = PDF::loadView('pdf/invoice', $info);
-        return $pdf->download('b4t-invoice-' . date("Y/m/d") . '.pdf');
+
+        if($target == "file_path"){
+            $file = $pdf->download()->getOriginalContent();
+            $file_path = 'public/pdf/'.$id.'_invoice_'.date("YmdHis").'.pdf';
+            Storage::disk('local')->put($file_path,$file);
+
+            return $file_path;
+        }else{
+            return $pdf->download('b4t-invoice-' . date("Y/m/d") . '.pdf');
+        }
     }
 
-    static function generatePenawaran($data){
+    static function generatePenawaran($data, $target="download"){
         $data_invoice = [
             [
                 "kegiatan" => "Biaya Sertifikasi",
@@ -72,9 +83,10 @@ class PdfController extends Controller
         $id = isset($data['transaction_id']) ? $data['transaction_id'] : '1';
         $tanggal_invoice = isset($data['tanggal_invoice']) ? $data['tanggal_invoice'] : date("Y-m-d H:i:s",time());
         $tanggal_expire = isset($data['tanggal_expire']) ? $data['tanggal_expire'] : date("Y-m-d H:i:s",time());
-        $month =  (int)date("m", strtotime($tanggal_invoice));
+        $month = (int)date("m", strtotime($tanggal_invoice));
         $month_roman = self::numberToRomanRepresentation($month);
         $year = date("Y", strtotime($tanggal_invoice));
+        $file_path = 'public/pdf/'.$id.'_penawaran_'.date("YmdHis").'.pdf';
 
         $info = [
             'nomor_dokumen' => 'B/'.$id.'/BSKJI/B4T/MS/'.$month_roman.'/'.$year,
@@ -86,15 +98,25 @@ class PdfController extends Controller
             'jenis' => isset($data['jenis']) ? $data['jenis'] : 'ISO 9001:2015',
             'va_number' => isset($data['va_number']) ? $data['va_number'] : '0123456789',
             'va_expire' => strftime("%d %B %Y", strtotime($tanggal_expire)),
-            'pdf_file' => isset($data['file_url']) ? $data['file_url'] : 'https://api-sertifikasi.b4t.go.id/storage/form_document/form_document_KA4ZWKF7u72021-07-18-10-53-0331.pdf',
+            'pdf_file' => $file_path,
             'data' => $data_invoice
         ];
         $pdf = PDF::loadView('pdf/penawaran', $info);
-        return $pdf->download('b4t-penawaran-' . date("Y/m/d") . '.pdf');
+
+        if($target == "file_path"){
+            $file = $pdf->download()->getOriginalContent();
+            Storage::disk('local')->put($file_path,$file);
+
+            return $file_path;
+        }else{
+            return $pdf->download('b4t-penawaran-'.$id."-".date("Y/m/d") . '.pdf');
+        }
     }
 
-    static function generateKwitansi($data){
+    static function generateKwitansi($data, $target="download"){
         $tanggal_invoice = isset($data['tanggal_invoice']) ? $data['tanggal_invoice'] : date("Y-m-d H:i:s",time());
+        $transaction_id = isset($data["transaction_id"]) ? $data["transaction_id"] : 1;
+        $file_path = 'public/pdf/'.$transaction_id.'_kuitansi_'.date("YmdHis").'.pdf';
 
         $info = [
             'va_number' => isset($data['va_number']) ? $data['va_number'] : '0123456789',
@@ -102,13 +124,21 @@ class PdfController extends Controller
             'alamat' => isset($data['alamat_klien']) ? $data['alamat_klien'] : 'Jl. Jend. Ahmad Yani no 106 Cilegon 42421, Banten tarkun@sucofindo.co.id',
             'desc' => '-',
             'nilai' => isset($data['total']) ? $data['total'] : 100000,
-            'nomor_registrasi' => isset($data['nomor_registrasi']) ? $data['nomor_registrasi'] : '123456',
+            'nomor_registrasi' => $transaction_id,
             'tempat_tanggal' => 'Bandung, '.strftime("%d %B %Y", strtotime($tanggal_invoice)),
-            'pdf_file' => isset($data['file_url']) ? $data['file_url'] : 'https://api-sertifikasi.b4t.go.id/storage/form_document/form_document_KA4ZWKF7u72021-07-18-10-53-0331.pdf',
+            'pdf_file' => $file_path,
         ];
 
         $pdf = PDF::loadView('pdf/kwitansi', $info);
-        return $pdf->download('b4t-kwitansi-' . date("Y/m/d") . '.pdf');
+
+        if($target == "file_path"){
+            $file = $pdf->download()->getOriginalContent();
+            Storage::disk('local')->put($file_path,$file);
+
+            return $file_path;
+        }else{
+            return $pdf->download('b4t-kwitansi-'.$transaction_id."-". date("Y/m/d") . '.pdf');
+        }
     }
 
     static function numberToRomanRepresentation($number) {

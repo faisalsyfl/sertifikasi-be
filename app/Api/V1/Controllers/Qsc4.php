@@ -2,12 +2,14 @@
 
 namespace App\Api\V1\Controllers;
 
+use App\Models\Auditi;
 use App\Models\Auditor;
 use App\Models\Competence;
 use App\Models\Payment;
 use App\Models\SectionStatus;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Validator, Config, DB;
 use App\Http\Controllers\Controller;
 use App\Traits\RestApi;
@@ -58,14 +60,17 @@ class Qsc4 extends Controller
                 DB::transaction(function () use ($request, $section_status) {
                     $request_data = $request->all();
 
+                    $penawaran = isset($request_data['penawaran']) ? $request_data['penawaran'] : 0;
+                    $biaya_sertifikasi = isset($request_data['biaya_sertifikasi'])
+                        ? $request_data['biaya_sertifikasi'] : 0;
+                    $transportasi = isset($request_data['transportasi'])
+                        ? $request_data['transportasi'] : 0;
+
                     if(!isset($request_data['total'])){
                         $request_data['total'] = 0;
-                        $request_data['total'] += isset($request_data['penawaran'])
-                            ? $request_data['penawaran'] : 0;
-                        $request_data['total'] += isset($request_data['biaya_sertifikasi'])
-                            ? $request_data['biaya_sertifikasi'] : 0;
-                        $request_data['total'] += isset($request_data['transportasi'])
-                            ? $request_data['transportasi'] : 0;
+                        $request_data['total'] += $penawaran;
+                        $request_data['total'] += $biaya_sertifikasi;
+                        $request_data['total'] += $transportasi;
                     }
                     if(!isset($request_data['nilai_penawaran'])){
                         $request_data['nilai_penawaran'] = $request_data['total'];
@@ -88,7 +93,9 @@ class Qsc4 extends Controller
                     }
 
                     $this->generateData($section_status, [
-                        "total" => $request_data["total"]
+                        "total" => $request_data["total"],
+                        "biaya_sertifikasi" => $biaya_sertifikasi,
+                        "transportasi" => $biaya_sertifikasi,
                     ]);
 
                     if($section_status->status < 2){
@@ -154,13 +161,24 @@ class Qsc4 extends Controller
         if($status != null){
             $payment = Payment::find($payment_id);
             if($payment){
+                $transaction = Transaction::find($payment->transaction_id);
+                $auditi = null;
+                if($transaction){
+                    $auditi = Auditi::find($transaction->auditi_id);
+                }
                 $payment->status = $status;
-                if($status == 1){
+                if($status == 1 and $transaction and $auditi){
                     $payment->status = 1;
                     $payment->payment_datetime = Carbon::now()->format('Y-m-d H:i:s');
 
-                    // TODO: Generate receipt later
-                    $payment->receipt = "";
+                    $payment->receipt = URL::to('/')."/".PdfController::generateKwitansi([
+                        "tanggal_invoice" => $payment->created_at,
+                        "transaction_id" => $payment->transaction_id,
+                        "va_number" => $payment->payment_code,
+                        "nama_klien" => $auditi->name,
+                        "alamat_klien" => $auditi->address,
+                        "total" => $auditi->amount,
+                    ], "file_path");
                 }elseif ($status == 0){
                     $payment->payment_datetime = null;
                 }else{
@@ -244,11 +262,39 @@ class Qsc4 extends Controller
         if($email and $document){
             $payment = Payment::find($payment_id);
             if($payment){
-                // TODO: Send Email
-                return $this->output(
-                    ["status" => true, "data" => "Berhasil Mengirim Email"],
-                    "Berhasil Mengirim Email"
-                );
+                $transaction = Transaction::find($payment->transaction_id);
+                $auditi = null;
+                if($transaction){
+                    $auditi = Auditi::find($transaction->auditi_id);
+                }
+
+                if($transaction and $auditi){
+                    $attachment = null;
+
+                    if($document == "offering"){
+                        $attachment = $payment->other_documents;
+                    }elseif ($document == "invoice"){
+                        $attachment = $payment->invoice;
+                    }elseif ($document == "receipt"){
+                        $attachment = $payment->receipt;
+                    }
+
+                    MailController::setupMail([
+                        "name" => $auditi->name,
+                        "email" => $email,
+                        "attachment" => $attachment
+                    ]);
+
+                    return $this->output(
+                        ["status" => true, "data" => "Berhasil Mengirim Email"],
+                        "Berhasil Mengirim Email"
+                    );
+                }else{
+                    return $this->output(
+                        ["status" => false, "data" => "Transaksi tidak ditemukan"],
+                        "Transaksi tidak ditemukan"
+                    );
+                }
             }else{
                 return $this->output(
                     ["status" => false, "data" => "Payment tidak ditemukan"],
@@ -263,18 +309,19 @@ class Qsc4 extends Controller
         }
     }
 
-    private function generateOfferingPayment($transaction_id, $amount=0){
+    private function generateOfferingPayment($transaction_id, $data=[]){
         $transaction = Transaction::find($transaction_id);
         $payment = null;
 
         if($transaction){
+            $auditi = Auditi::find($transaction->auditi_id);
             $payment = Payment::where("transaction_id",$transaction->id)
                 ->where("type","penawaran")->first();
-            if(!$payment){
+            if(!$payment and $auditi){
                 $payment = new Payment();
                 $payment->transaction_id = $transaction->id;
                 $payment->type = "penawaran";
-                $payment->amount = $amount;
+                $payment->amount = isset($data["total"]) ? $data["total"] : 0;
                 $payment->method = "VA";
                 $payment->status = 0;
 
@@ -284,13 +331,25 @@ class Qsc4 extends Controller
                 $payment->payment_code = $va_number;
                 $payment->payment_expiration = Carbon::now()->addDays(3)->format('Y-m-d H:i:s');
 
-                $response =
-
-                // TODO: Generate the pdf later
-                $payment->invoice = "";
-                $payment->other_documents = json_encode([
-                    "offering" => ""
-                ]);
+                $payment->invoice = URL::to('/')."/".PdfController::generateInvoice([
+                    "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
+                    "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
+                    "transaction_id" => $transaction->id,
+                    "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
+                    "nama_klien" => $auditi->name,
+                    "alamat_klien" => $auditi->address,
+                    "va_number" => $va_number,
+                ], "file_path");
+                $payment->other_documents = URL::to('/')."/".PdfController::generatePenawaran([
+                    "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
+                    "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
+                    "transaction_id" => $transaction->id,
+                    "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
+                    "tanggal_expire" => Carbon::now()->addDays(3)->format('Y-m-d H:i:s'),
+                    "nama_klien" => $auditi->name,
+                    "alamat_klien" => $auditi->address,
+                    "va_number" => $va_number,
+                ], "file_path");
 
                 $payment->save();
             }
@@ -307,7 +366,7 @@ class Qsc4 extends Controller
             $value = "";
 
             if($section_form->key == "payment" and isset($data["total"])){
-                $payment = $this->generateOfferingPayment($section_status->transaction_id, $data["total"]);
+                $payment = $this->generateOfferingPayment($section_status->transaction_id, $data);
                 if($payment){
                     $value = $payment->id;
                 }
@@ -378,9 +437,7 @@ class Qsc4 extends Controller
         if ($payment) {
             $result = $payment->toArray();
             $result["offering_value"] = $result["amount"];
-
-            $other_documents = json_decode($result["other_documents"], true);
-            $result["offering_form"] = isset($other_documents["offering"]) ? $other_documents["offering"] : "";
+            $result["offering_form"] = $result["other_documents"];
 
             unset($result["amount"]);
             unset($result["other_documents"]);

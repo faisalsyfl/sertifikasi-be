@@ -1,2 +1,2 @@
 <h1>Dear, {{ $name }}</h1>
-<p>Penawaran terlampir.</p>
+<p>Dokumen terlampir.</p>
