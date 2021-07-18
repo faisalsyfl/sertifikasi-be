@@ -18,7 +18,7 @@ class Payment extends Model
      */
     protected $fillable = [
         'transaction_id', 'type', 'amount','method', 'payment_code',
-        'status', 'invoice', 'receipt', 'other_documents'
+        'status', 'invoice', 'receipt', 'other_documents', 'payment_expiration'
     ];
     protected $hidden = [
         'created_at', 'updated_at', 'payment_datetime'

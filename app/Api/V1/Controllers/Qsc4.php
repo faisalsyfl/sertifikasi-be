@@ -282,6 +282,9 @@ class Qsc4 extends Controller
                 $digits = 10;
                 $va_number = str_pad(rand(0, pow(10, $digits)-1), $digits, '0', STR_PAD_LEFT);
                 $payment->payment_code = $va_number;
+                $payment->payment_expiration = Carbon::now()->addDays(3)->format('Y-m-d H:i:s');
+
+                $response =
 
                 // TODO: Generate the pdf later
                 $payment->invoice = "";

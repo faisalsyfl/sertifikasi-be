@@ -19,24 +19,54 @@
 .border-right {
     border-right: 1px solid #000;
 }
+
+.nomor {
+    width: 30px;
+}
+.biaya {
+    text-align: right;
+}
+
+.catatan {
+    text-align: left;
+}
 </style>
 
+<table width="100%">
+    <tr>
+        <td>Nomor</td>
+        <td>:</td>
+        <td>{{$nomor_dokumen}}</td>
+        <td>{{$tempat_tanggal}}</td>
+    </tr>
+    <tr>
+        <td>Lampiran</td>
+        <td>:</td>
+        <td>-</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>Perihal</td>
+        <td>:</td>
+        <td><b><u>Biaya {{$sertifikasi." ". $jenis}} </u></b></td>
+        <td></td>
+    </tr>
+</table>
+
 <p align="left">
-    Kepada Yth.<br>
-    {{$kepada}}<br>
+    Yth.<br>
+    {{$nama}}<br>
     {{$alamat}}<br><br>
 
-    Sehubungan dengan permintaan saudara melalui layanan booking online kami. Dengan ini kami sampaikan informasi biaya
-    untuk pelaksanaan Pengujian Bahan adalah sebagai berikut :
+    Sehubungan dengan permohonan {{$sertifikasi." Sistem ".$jenis_lengkap}} dari {{ $nama }}, dengan ini kami sampaikan biaya
+    sertifikasi sesuai Tarif Badan Layanan Umum (BLU) B4T dengan sistem paket sebagai berikut:
 </p>
 
 <table class="data-table" width="100%">
     <tr>
-        <th class="border-top border-bottom border-left border-right">No</th>
-        <th class="border-top border-bottom border-right">Uraian</th>
-        <th class="border-top border-bottom border-right">Satuan</th>
-        <th class="border-top border-bottom border-right">Jumlah</th>
-        <th class="border-top border-bottom border-right">Total</th>
+        <th class="border-top border-bottom border-left border-right nomor">No</th>
+        <th class="border-top border-bottom border-right">Kegiatan</th>
+        <th class="border-top border-bottom border-right">Biaya</th>
     </tr>
 
     @php
@@ -44,30 +74,48 @@
     @endphp
 
     @for ($i = 0; $i < count($data); $i++) <tr>
-        {{$subtotal = $data[$i]['satuan'] * $data[$i]['jumlah']}}
         <td class="border-bottom border-left border-right">{{$i+1}}.</td>
-        <td class="border-bottom border-right">{{$data[$i]['uraian']}}</td>
-        <td class="border-bottom border-right">{{$data[$i]['satuan']}}</td>
-        <td class="border-bottom border-right">{{$data[$i]['jumlah']}}</td>
-        <td class="border-bottom border-right">{{$subtotal}}</td>
-        {{ $total+=$subtotal}}
+        <td class="border-bottom border-right">{{$data[$i]['kegiatan']}}</td>
+        <td class="border-bottom border-right biaya">Rp. {{number_format($data[$i]['biaya'], 0, ',', '.')}}</td>
+        {{ $total+=$data[$i]['biaya']}}
         </tr>
         @endfor
         <tr>
-            <td colspan="4" class="border-bottom border-left border-right">Item Total</td>
-            <td class="border-bottom border-right">{{$total}}</td>
+            <td colspan="2" class="border-bottom border-left border-right"><b>Total</b></td>
+            <td class="border-bottom border-right biaya"><b>Rp. {{number_format($total, 0, ',', '.')}}</b></td>
         </tr>
         <tr>
-            <td colspan="4" class="border-bottom border-left border-right">{{terbilang($total)}}</td>
-            <td class="border-bottom border-right"></td>
+            <td colspan="3" class="border-bottom border-left border-right"><b>Terbilang: {{terbilang($total)}}</b></td>
         </tr>
 </table>
 
-<p align="left">
-    Pembayaran dapat dilakukan melalui Virtual Account Bank BNI dengan Nomor: 9883333706013595. Pengujian akan
-    dilaksanakan setelah pembayaran kami terima.
-    Demikian informasi biaya Layanan Jasa kami sampaikan. Atas perhatian dan kerjasama yang baik kami ucapkan terima
-    kasih.
+<p style="text-align: left">
+    Catatan:<br>
+    <ol class="catatan">
+        <li>Biaya tersebut diluar biaya akomodasi</li>
+        <li>Biaya tersebut tidak dikenakan pajak, karena B4T merupakan instansi pemerintah yang tidak menarik PPH dan PPN</li>
+        <li><b>Pembayaran dilakukan dengan transfer melalui pembayaran Virtual Account BIN, dengan nomor {{ $va_number }}
+            sebelum tanggal {{ $va_expire }}</b></li>
+        <li>Proses Audit/Sertifikasi dapat dilakukan setelah bukti pembayaran diterima oleh Balai Besar Bahan dan Barang Teknik</li>
+    </ol>
+
+    <br>
+    <p style="text-align: left">
+        Atas perhatian dan kerjasamanya kami ucapkan terimakasih.
+    </p>
+    <br>
+
+    <p align="right">
+        Kepala Balai Besar Bahan dan Barang Teknik<br>
+        <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ $pdf_file }}&choe=UTF-8" title="Link to Google.com" />
+    </p>
+
+    <p style="text-align: left">
+        Tembusan:
+        <ol class="catatan">
+            <li>1. Plt Ka. Bid Sertifikasi</li>
+        </ol>
+    </p>
 </p>
 
 @include('pdf/footer')
