@@ -43,6 +43,7 @@ class PdfController extends Controller
         $month =  (int)date("m", strtotime($tanggal_invoice));
         $month_roman = self::numberToRomanRepresentation($month);
         $year = date("Y", strtotime($tanggal_invoice));
+        $file_path = 'public/pdf/'.$id.'_invoice_'.date("YmdHis").'.pdf';
 
         $info = [
             'kepada' => isset($data['nama_klien']) ? $data['nama_klien'] : 'PT. Telkom',
@@ -59,10 +60,9 @@ class PdfController extends Controller
 
         if($target == "file_path"){
             $file = $pdf->download()->getOriginalContent();
-            $file_path = 'public/pdf/'.$id.'_invoice_'.date("YmdHis").'.pdf';
             Storage::disk('local')->put($file_path,$file);
 
-            return $file_path;
+            return str_replace("public", "storage",$file_path);
         }else{
             return $pdf->download('b4t-invoice-' . date("Y/m/d") . '.pdf');
         }
@@ -107,7 +107,7 @@ class PdfController extends Controller
             $file = $pdf->download()->getOriginalContent();
             Storage::disk('local')->put($file_path,$file);
 
-            return $file_path;
+            return str_replace("public", "storage",$file_path);
         }else{
             return $pdf->download('b4t-penawaran-'.$id."-".date("Y/m/d") . '.pdf');
         }
@@ -135,7 +135,7 @@ class PdfController extends Controller
             $file = $pdf->download()->getOriginalContent();
             Storage::disk('local')->put($file_path,$file);
 
-            return $file_path;
+            return str_replace("public", "storage",$file_path);
         }else{
             return $pdf->download('b4t-kwitansi-'.$transaction_id."-". date("Y/m/d") . '.pdf');
         }
