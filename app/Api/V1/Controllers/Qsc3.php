@@ -141,12 +141,11 @@ class Qsc3 extends Controller
         $limit  = $request->has('limit') ? $request->limit : 10;
         $page   = $request->has('page') ? $request->page : 1;
         $keyword = $request->has('keyword') ? $request->keyword : "";
-        $lang = $request->has('lang') ? $request->lang : "id";
         $suggestions = [];
 
         if($keyword){
             // Find from existing lingkup values
-            $lingkup_forms = SectionForm::where("key","LIKE","%lingkup%")->select("id")->get();
+            $lingkup_forms = SectionForm::where("key","ruang_lingkup")->select("id")->get();
             $lingkup_form_ids = [];
             foreach ($lingkup_forms as $row){
                 array_push($lingkup_form_ids,$row->id);
@@ -225,7 +224,8 @@ class Qsc3 extends Controller
             "audit_joint" => false,
             "audit_combination" => false,
             "audit_integration" => false,
-            "lingkup" => "-",
+            "ruang_lingkup" => "-",
+            "scope" => "-",
             "sektor_ea" => null,
             "sektor_nace" => null,
             "akreditasi_lingkup_kan" => false,

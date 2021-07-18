@@ -59,6 +59,11 @@ class QSCSectionForm002Seeder extends Seeder
                 'section_id' => 4,
                 'key' => 'payment',
                 'rule' => null,
+            ],
+            [
+                'section_id' => 3,
+                'key' => 'scope',
+                'rule' => null,
             ]
         ];
 

@@ -280,6 +280,7 @@ class TransactionController extends Controller
      *   @OA\Property(property="audit_combination", type="boolean"),
      *   @OA\Property(property="audit_integration", type="boolean"),
      *   @OA\Property(property="ruang_lingkup", type="string"),
+     *   @OA\Property(property="scope", type="string"),
      *   @OA\Property(property="sektor_ea_id", type="integer"),
      *   @OA\Property(property="sektor_nace_id", type="integer"),
      *   @OA\Property(property="akreditasi_lingkup_kan", type="boolean"),
