@@ -281,13 +281,11 @@ class Qsc4 extends Controller
                         $attachment = $payment->receipt;
                     }
 
-                    foreach ($emails as $email){
-                        MailController::setupMail([
-                            "name" => $auditi->name,
-                            "email" => $email,
-                            "attachment" => $attachment
-                        ]);
-                    }
+                    MailController::setupMail([
+                        "name" => $auditi->name,
+                        "email" => $emails,
+                        "attachment" => $attachment
+                    ]);
 
                     return $this->output(
                         ["status" => true, "data" => "Berhasil Mengirim Email"],

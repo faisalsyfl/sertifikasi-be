@@ -4,6 +4,7 @@ namespace App\Api\V1\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\URL;
 use Mail;
 
 class MailController extends Controller
@@ -26,6 +27,7 @@ class MailController extends Controller
             $message->from('sertifikasi@b4t.go.id', 'Sertifikasi B4T');
 
             if($attachment){
+                $attachment = str_replace(URL::to('/'), base_path()."/public", $attachment);
                 $message->attach($attachment);
             }
         });
