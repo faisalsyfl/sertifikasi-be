@@ -14,3 +14,5 @@ yarn-error.log
 /storage/api-docs/api-docs.json
 
 .vscode/
+
+.env-dev
