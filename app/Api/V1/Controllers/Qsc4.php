@@ -260,6 +260,8 @@ class Qsc4 extends Controller
         $document = $request->has('document') ? $request->document : null;
 
         if($email and $document){
+            $emails = explode(";", $email);
+
             $payment = Payment::find($payment_id);
             if($payment){
                 $transaction = Transaction::find($payment->transaction_id);
@@ -279,11 +281,13 @@ class Qsc4 extends Controller
                         $attachment = $payment->receipt;
                     }
 
-                    MailController::setupMail([
-                        "name" => $auditi->name,
-                        "email" => $email,
-                        "attachment" => $attachment
-                    ]);
+                    foreach ($emails as $email){
+                        MailController::setupMail([
+                            "name" => $auditi->name,
+                            "email" => $email,
+                            "attachment" => $attachment
+                        ]);
+                    }
 
                     return $this->output(
                         ["status" => true, "data" => "Berhasil Mengirim Email"],
