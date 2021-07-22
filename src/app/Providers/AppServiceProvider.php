@@ -23,10 +23,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        if (App::environment() === "production") {
-            URL::forceScheme("https");
-        }
-
         app('Dingo\Api\Exception\Handler')->register(function (ValidationHttpException $exception) {
             return $this->errorRequest(422, 'Validation Error', $exception->getErrors()->getMessages());
         });
