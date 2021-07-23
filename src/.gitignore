@@ -16,5 +16,3 @@ yarn-error.log
 .vscode/
 
 .env-dev
-
-src/composer.lock
