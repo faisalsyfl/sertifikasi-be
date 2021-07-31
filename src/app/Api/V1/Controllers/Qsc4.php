@@ -95,7 +95,7 @@ class Qsc4 extends Controller
                     $this->generateData($section_status, [
                         "total" => $request_data["total"],
                         "biaya_sertifikasi" => $biaya_sertifikasi,
-                        "transportasi" => $biaya_sertifikasi,
+                        "transportasi" => $transportasi,
                     ]);
 
                     if($section_status->status < 2){
