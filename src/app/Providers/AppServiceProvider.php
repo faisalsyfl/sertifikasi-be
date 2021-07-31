@@ -50,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
         app('Dingo\Api\Exception\Handler')->register(function (MethodNotAllowedHttpException $exception) {
             return $this->errorRequest(405, $exception->getMessage());
         });
+
+        if (env('APP_ENV') !== 'local') {
+            URL::forceScheme("https");
+        }
     }
 
     /**
