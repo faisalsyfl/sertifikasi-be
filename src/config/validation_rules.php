@@ -36,7 +36,7 @@ return [
 
     'form_location' => [
         'validation_rules' => [
-            'location_type' => 'required|in:KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN',
+            'location_type' => 'required|in:KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN,KANTOR_PUSAT',
             'address' => 'required',
             'location' => 'required',
             'country_id' => 'required',
