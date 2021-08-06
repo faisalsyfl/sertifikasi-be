@@ -2,9 +2,9 @@ name: Laravel
 
 on:
   push:
-    branches: [develop]
+    branches: [master]
   pull_request:
-    branches: []
+    branches: [master]
 
 jobs:
   laravel-tests:
@@ -17,4 +17,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           host: "52.187.66.134"
           password: ${{ secrets.PASSWORD }}
-          script: "cd /home/b4t/DEV/sertifikasi-be && chmod +x /home/b4t/DEV/sertifikasi-be/deploy-dev.sh && sh /home/b4t/DEV/sertifikasi-be/deploy-dev.sh"
+          script: "cd /home/b4t/PROD/sertifikasi-be && chmod +x /home/b4t/PROD/sertifikasi-be/deploy-prod.sh && sh /home/b4t/PROD/sertifikasi-be/deploy-prod.sh"
