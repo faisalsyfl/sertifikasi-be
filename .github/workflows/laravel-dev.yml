@@ -1,0 +1,21 @@
+name: Laravel
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: []
+
+jobs:
+  laravel-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy to production
+        uses: appleboy/ssh-action@master
+        with:
+          username: ${{ secrets.USERNAME }}
+          host: "52.187.66.134"
+          port: "50171"
+          password: ${{ secrets.PASSWORD }}
+          script: "cd /home/b4t/DEV/sertifikasi-be && chmod +x /home/b4t/DEV/sertifikasi-be/deploy-dev.sh && sh /home/b4t/DEV/sertifikasi-be/deploy-dev.sh"
