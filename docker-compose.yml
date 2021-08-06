@@ -1,57 +1,57 @@
 version: '3'
 
 networks:
-  api_sifion_laravel_prod:
+  laravel:
 
 services:
-  api_sifion_site_prod:
+  site:
     build:
       context: .
       dockerfile: nginx.dockerfile
-    container_name: api_sifion_nginx_prod
+    container_name: nginx
     ports:
-      - 8888:80
+      - 80:80
     volumes:
       - ./src:/var/www/html:delegated
     depends_on:
-      - api_sifion_php_prod
+      - php
     networks:
-      - api_sifion_laravel_prod
+      - laravel
 
-  api_sifion_php_prod:
+  php:
     build:
       context: .
       dockerfile: php.dockerfile
-    container_name: api_sifion_php_prod
+    container_name: php
     volumes:
       - ./src:/var/www/html:delegated
     networks:
-      - api_sifion_laravel_prod
+      - laravel
 
-  api_sifion_composer_prod:
+  composer:
     build:
       context: .
       dockerfile: composer.dockerfile
-    container_name: api_sifion_composer_prod
+    container_name: composer
     volumes:
       - ./src:/var/www/html
     working_dir: /var/www/html
     depends_on:
-      - api_sifion_php_prod
+      - php
     user: laravel
     entrypoint: ['composer', '--ignore-platform-reqs']
     networks:
-      - api_sifion_laravel_prod
+      - laravel
 
-  api_sifion_artisan_prod:
+  artisan:
     build:
       context: .
       dockerfile: php.dockerfile
-    container_name: api_sifion_artisan_prod
+    container_name: artisan
     volumes:
       - ./src:/var/www/html:delegated
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']
     networks:
-      - api_sifion_laravel_prod
+      - laravel
