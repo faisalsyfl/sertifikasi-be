@@ -18,7 +18,6 @@ class DocumentController extends Controller
 {
     use RestApi;
     private $table = 'document';
-
     /**
      * @OA\Get(
      *  path="/api/v1/document",
@@ -28,6 +27,15 @@ class DocumentController extends Controller
      *      name="q",
      *      in="query",
      *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="type",
+     *      in="query",
+     *      required=false,
+     *      description="[INTERNAL,EXTERNAL]",
      *      @OA\Schema(
      *           type="string"
      *      )
@@ -107,6 +115,10 @@ class DocumentController extends Controller
         } else {
             $user = Document::findQuery(null);
         }
+
+        if ($request->has('type'))
+            $user->where('type', 'like', "%{$request->type}%");
+
         $user = $user->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $arr = $user->toArray();
         foreach ($arr['data'] as $key => $value) {
