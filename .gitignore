@@ -22,3 +22,4 @@ yarn-error.log
 src/composer.lock
 
 nginx/
+docker-compose.yml
