@@ -2,20 +2,19 @@ name: Laravel
 
 on:
   push:
-    branches: [ develop ]
+    branches: [master]
   pull_request:
-    branches: []
+    branches: [master]
 
 jobs:
   laravel-tests:
-
     runs-on: ubuntu-latest
 
     steps:
-    - name: Deploy to production
-      uses: appleboy/ssh-action@master
-      with:
+      - name: Deploy to production
+        uses: appleboy/ssh-action@master
+        with:
           username: ${{ secrets.USERNAME }}
           host: "52.187.66.134"
           password: ${{ secrets.PASSWORD }}
-          script: 'cd ~ && touch ssh from github action'
+          script: "cd /home/b4t/PROD/sertifikasi-be && chmod +x /home/b4t/PROD/sertifikasi-be/deploy-prod.sh && sh /home/b4t/PROD/sertifikasi-be/deploy-prod.sh"
