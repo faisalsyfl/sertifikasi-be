@@ -119,7 +119,7 @@ class FormLocation extends Controller
      *      name="location_type",
      *      in="query",
      *      required=true,
-     *      description="[KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN]",
+     *      description="[KEGIATAN_UTAMA,KEGIATAN_LAIN,KEGIATAN_NON_PERMANEN,KANTOR_PUSAT]",
      *      @OA\Schema(
      *           type="string"
      *      )

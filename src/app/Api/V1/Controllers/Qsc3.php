@@ -201,14 +201,15 @@ class Qsc3 extends Controller
         }
     }
 
-    static function get_competence_object($id)
+    static function get_competence_object($ids = [])
     {
-        $competence = Competence::find($id);
-        if ($competence) {
-            return $competence->toArray();
-        } else {
-            return (object) [];
+        $competences = Competence::whereIn($ids)->get();
+        $competence_objects = [];
+        foreach ($competences as $competence) {
+            array_push($competence_objects, $competence->toArray());
         }
+
+        return $competence_objects;
     }
 
     static function getKeyValueQSC3()
