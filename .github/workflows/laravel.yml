@@ -4,7 +4,7 @@ on:
   push:
     branches: [ develop ]
   pull_request:
-    branches: [ master ]
+    branches: []
 
 jobs:
   laravel-tests:
@@ -15,7 +15,7 @@ jobs:
     - name: Deploy to production
       uses: appleboy/ssh-action@master
       with:
-          username: "api-sertifikasi"
-          host: "api-sertifikasi.b4t.go.id"
-          password: "api-sertifikasi"
-          script: 'cd /home/api-sertifikasi/public_html && sh /home/api-sertifikasi/public_html/deploy.sh'
+          username: ${{ secrets.USERNAME }}
+          host: "52.187.66.134"
+          password: ${{ secrets.PASSWORD }}
+          script: 'cd ~ && touch ssh from github action'
