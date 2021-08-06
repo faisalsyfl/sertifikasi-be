@@ -20,3 +20,5 @@ yarn-error.log
 .env-dev
 
 src/composer.lock
+
+nginx/
