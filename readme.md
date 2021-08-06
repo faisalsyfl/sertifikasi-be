@@ -20,3 +20,8 @@ Three additional containers are included that handle Composer, NPM, and Artisan 
 - `docker-compose run --rm composer update`
 - `docker-compose run --rm npm run dev`
 - `docker-compose run --rm artisan migrate` 
+
+for Production
+- `docker-compose run --rm api_sifion_composer_prod update`
+- `docker-compose run --rm api_sifion_artisan_prod migrate` 
+- `docker-compose run --rm api_sifion_artisan_prod l5-swagger:generate`
