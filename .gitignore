@@ -2,6 +2,8 @@
 /public/hot
 /public/storage
 /storage/*.key
+/src/vendor/*
+/src/vendor
 /vendor/*
 /vendor
 .env
@@ -18,3 +20,6 @@ yarn-error.log
 .env-dev
 
 src/composer.lock
+
+nginx/
+docker-compose.yml

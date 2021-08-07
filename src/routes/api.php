@@ -6,7 +6,7 @@ use Dingo\Api\Routing\Router;
 $api = app(Router::class);
 
 $api->version('v1', function ($api) { // Always keep this to v1, and ignore accept header.
-    $api->group(['prefix' => 'v1'], function ($api) { // Use this route group for v1
+    $api->group(['prefix' => 'v1', 'middleware' => 'cors'], function ($api) { // Use this route group for v1
         $api->group(['prefix' => 'auth'], function (Router $api) {
             $api->post('signup', 'App\\Api\\V1\\Controllers\\SignUpController@signUp');
             $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
