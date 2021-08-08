@@ -6,7 +6,7 @@ git fetch
 git pull origin master
 
 docker-compose up --build -d
-docker-compose run --rm api_sifion_artisan_prod migrate
+docker-compose run --rm api_sifion_artisan_prod migrate --force
 docker-compose run --rm api_sifion_artisan_prod cache:clear
 docker-compose run --rm api_sifion_artisan_prod config:clear
 docker-compose run --rm api_sifion_artisan_prod config:cache
