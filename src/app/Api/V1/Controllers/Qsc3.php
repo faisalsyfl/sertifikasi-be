@@ -208,7 +208,7 @@ class Qsc3 extends Controller
     {
         $competence_objects = [];
         if(count($ids) > 0 and $ids[0]){
-            $competences = Competence::whereIn($ids)->get();
+            $competences = Competence::whereIn("id", $ids)->get();
             foreach ($competences as $competence) {
                 array_push($competence_objects, $competence->toArray());
             }
@@ -243,7 +243,7 @@ class Qsc3 extends Controller
             "audit_shift_1" => false,
             "audit_shift_2" => false,
             "audit_shift_3" => false,
-            "risiko_iso_9001" => 0,
+            "risiko_iso_9001" => "",
             "kompleksitas_iso_14001" => 0,
             "kompleksitas_iso_45001" => 0,
             "jumlah_personil_efektif" => 0,
