@@ -1,0 +1,51 @@
+version: '3'
+
+networks: 
+  default: 
+    external: 
+      name: nginx-proxy_default
+
+services:
+  api_sifion_site_prod:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    container_name: api_sifion_nginx_prod
+    ports:
+      - 8888:80
+    volumes:
+      - ./src:/var/www/html:delegated
+    depends_on:
+      - api_sifion_php_prod
+
+  api_sifion_php_prod:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: api_sifion_php_prod
+    volumes:
+      - ./src:/var/www/html:delegated
+
+  api_sifion_composer_prod:
+    build:
+      context: .
+      dockerfile: composer.dockerfile
+    container_name: api_sifion_composer_prod
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - api_sifion_php_prod
+    user: laravel
+    entrypoint: ['composer', '--ignore-platform-reqs']
+
+  api_sifion_artisan_prod:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: api_sifion_artisan_prod
+    volumes:
+      - ./src:/var/www/html:delegated
+    working_dir: /var/www/html
+    user: laravel
+    entrypoint: ['php', '/var/www/html/artisan']
