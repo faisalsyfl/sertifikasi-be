@@ -1,7 +1,9 @@
 version: '3'
 
-networks:
-  api_sifion_laravel_prod:
+networks: 
+  default: 
+    external: 
+      name: nginx-proxy_default
 
 services:
   api_sifion_site_prod:
@@ -15,8 +17,6 @@ services:
       - ./src:/var/www/html:delegated
     depends_on:
       - api_sifion_php_prod
-    networks:
-      - api_sifion_laravel_prod
 
   api_sifion_php_prod:
     build:
@@ -25,8 +25,6 @@ services:
     container_name: api_sifion_php_prod
     volumes:
       - ./src:/var/www/html:delegated
-    networks:
-      - api_sifion_laravel_prod
 
   api_sifion_composer_prod:
     build:
@@ -40,8 +38,6 @@ services:
       - api_sifion_php_prod
     user: laravel
     entrypoint: ['composer', '--ignore-platform-reqs']
-    networks:
-      - api_sifion_laravel_prod
 
   api_sifion_artisan_prod:
     build:
@@ -53,5 +49,3 @@ services:
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']
-    networks:
-      - api_sifion_laravel_prod
