@@ -182,10 +182,13 @@ class Qsc3 extends Controller
 
     static function get_auditor_objects($ids = [])
     {
-        $auditors = Auditor::whereIn("id", $ids)->get();
         $auditor_objects = [];
-        foreach ($auditors as $auditor) {
-            array_push($auditor_objects, $auditor->toArray());
+
+        if(count($ids) > 0){
+            $auditors = Auditor::whereIn("id", $ids)->get();
+            foreach ($auditors as $auditor) {
+                array_push($auditor_objects, $auditor->toArray());
+            }
         }
 
         return $auditor_objects;
@@ -203,10 +206,12 @@ class Qsc3 extends Controller
 
     static function get_competence_object($ids = [])
     {
-        $competences = Competence::whereIn($ids)->get();
         $competence_objects = [];
-        foreach ($competences as $competence) {
-            array_push($competence_objects, $competence->toArray());
+        if(count($ids) > 0){
+            $competences = Competence::whereIn($ids)->get();
+            foreach ($competences as $competence) {
+                array_push($competence_objects, $competence->toArray());
+            }
         }
 
         return $competence_objects;
