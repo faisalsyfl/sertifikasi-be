@@ -31,7 +31,7 @@
         <tr style="height: 41px;">
             <td style="width: 209px; height: 41px;"><span style="text-decoration: underline;">Untuk
                     Pembayaran</span><br />Content</td>
-            <td style="width: 400px; height: 41px;" colspan="2">Biaya Sertifikasi {{ $nomor_registrasi }}</td>
+            <td style="width: 400px; height: 41px;" colspan="2">Biaya {{$sertifikasi." ". $jenis}}</td>
         </tr>
         <tr style="height: 21px;">
             <td style="width: 209px; height: 21px;"></td>

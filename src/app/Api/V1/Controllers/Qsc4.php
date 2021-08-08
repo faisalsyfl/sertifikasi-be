@@ -178,6 +178,8 @@ class Qsc4 extends Controller
                         "nama_klien" => $auditi->name,
                         "alamat_klien" => $auditi->address,
                         "total" => $auditi->amount,
+                        "jenis" => self::getJenisSertifikasiManajemen($transaction->id),
+                        "sertifikasi" => self::getJenisSertifikasi($transaction->id),
                     ], "file_path");
                 }elseif ($status == 0){
                     $payment->payment_datetime = null;
@@ -349,8 +351,11 @@ class Qsc4 extends Controller
                     "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
                     "tanggal_expire" => Carbon::now()->addDays(3)->format('Y-m-d H:i:s'),
                     "nama_klien" => $auditi->name,
-                    "alamat_klien" => $auditi->address,
+                    "alamat_klien" => $auditi->address.", ".self::getFullAddress(1),
                     "va_number" => $va_number,
+                    "jenis" => self::getJenisSertifikasiManajemen($transaction_id),
+                    "jenis_lengkap" => self::getJenisSertifikasiManajemen($transaction_id, true),
+                    "sertifikasi" => self::getJenisSertifikasi($transaction->id),
                 ], "file_path");
 
                 $payment->save();
@@ -450,5 +455,80 @@ class Qsc4 extends Controller
         } else {
             return (object) [];
         }
+    }
+
+    static function getJenisSertifikasiManajemen($transaction_id, $complete=false){
+        $sertifikasi_management = [];
+        $section_status = SectionStatus::where("transaction_id",$transaction_id)
+            ->where("section_id",2)->first();
+        $section_form = SectionForm::whereIn("key",["manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan"])
+            ->where("section_id",2)->get();
+
+        if($section_status and $section_form){
+            foreach ($section_form as $item){
+                $section_value = SectionFormValue::where("section_form_id",$item->id)
+                    ->where("section_status_id",$section_status->id)->first();
+
+                if($section_value and $item->key == "manajemen_mutu" and $section_value->value){
+                    array_push($sertifikasi_management,($complete ? "Manajemen Mutu " : "") . "ISO 9001:2015");
+                } elseif ($section_value and $item->key == "manajemen_lingkungan" and $section_value->value){
+                    array_push($sertifikasi_management,($complete ? "Manajemen Lingkungan " : "") . "ISO 14001:2015");
+                } elseif ($section_value and $item->key == "manajemen_keselamatan" and $section_value->value){
+                    array_push($sertifikasi_management,($complete ? "Manajemen Keselamatan " : "") . "ISO 45001:2018");
+                }
+            }
+        }
+
+        return implode(", ",$sertifikasi_management);
+    }
+
+    static function getJenisSertifikasi($transaction_id){
+        $sertifikasi = "";
+        $section_status = SectionStatus::where("transaction_id",$transaction_id)
+            ->where("section_id",2)->first();
+        $section_form = SectionForm::where("key","status_aplikasi_sertifikasi")
+            ->where("section_id",2)->first();
+
+        if($section_status and $section_form){
+            $section_value = SectionFormValue::where("section_form_id",$section_form->id)
+                ->where("section_status_id",$section_status->id)->first();
+
+            if($section_value->value == "SERTIFIKASI_AWAL"){
+                $sertifikasi = "Sertifikasi Awal";
+            } elseif ($section_value->value == "RESERTIFIKASI"){
+                $sertifikasi = "Resertifikasi";
+            }
+        }
+
+        return $sertifikasi;
+    }
+
+    static function getFullAddress($transaction_id){
+        $address = [
+            "kota" => "",
+            "provinsi" => "",
+            "kode_pos" => "",
+        ];
+        $section_status = SectionStatus::where("transaction_id",$transaction_id)
+            ->where("section_id",1)->first();
+        $section_form = SectionForm::whereIn("key",["kota","provinsi","kode_pos"])
+            ->where("section_id",1)->get();
+
+        if($section_status and $section_form){
+            foreach ($section_form as $item){
+                $section_value = SectionFormValue::where("section_form_id",$item->id)
+                    ->where("section_status_id",$section_status->id)->first();
+
+                if($section_value and $item->key == "kota" and $section_value->value and $section_value->value != "-"){
+                    $address["kota"] = $section_value->value;
+                } elseif ($section_value and $item->key == "provinsi" and $section_value->value and $section_value->value != "-"){
+                    $address["provinsi"] = $section_value->value;
+                } elseif ($section_value and $item->key == "kode_pos" and $section_value->value and $section_value->value != "-"){
+                    $address["kode_pos"] = $section_value->value;
+                }
+            }
+        }
+
+        return implode(", ",$address);
     }
 }

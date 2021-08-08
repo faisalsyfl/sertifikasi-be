@@ -34,10 +34,10 @@
 
 <table width="100%">
     <tr>
-        <td>Nomor</td>
-        <td>:</td>
-        <td>{{$nomor_dokumen}}</td>
-        <td>{{$tempat_tanggal}}</td>
+        <td style="width: 10%">Nomor</td>
+        <td style="width: 1%">:</td>
+        <td style="width: 59%">{{$nomor_dokumen}}</td>
+        <td style="width: 30%">{{$tempat_tanggal}}</td>
     </tr>
     <tr>
         <td>Lampiran</td>
@@ -92,7 +92,7 @@
 <p style="text-align: left">
     Catatan:<br>
     <ol class="catatan">
-        <li>Biaya tersebut diluar biaya akomodasi</li>
+        <li>Biaya tersebut diluar biaya akomodasi {{ $transport_0 }}</li>
         <li>Biaya tersebut tidak dikenakan pajak, karena B4T merupakan instansi pemerintah yang tidak menarik PPH dan PPN</li>
         <li><b>Pembayaran dilakukan dengan transfer melalui pembayaran Virtual Account BIN, dengan nomor {{ $va_number }}
             sebelum tanggal {{ $va_expire }}</b></li>

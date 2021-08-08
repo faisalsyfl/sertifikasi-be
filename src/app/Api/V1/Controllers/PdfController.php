@@ -76,7 +76,7 @@ class PdfController extends Controller
             ],
             [
                 "kegiatan" => "Transportasi",
-                "biaya" => isset($data['transportasi']) ? $data['transportasi'] : 100000
+                "biaya" => isset($data['transportasi']) ? $data['transportasi'] : 0
             ],
         ];
 
@@ -88,19 +88,31 @@ class PdfController extends Controller
         $year = date("Y", strtotime($tanggal_invoice));
         $file_path = 'public/pdf/'.$id.'_penawaran_'.date("YmdHis").'.pdf';
 
+        # $data['jenis'] = Qsc4::getJenisSertifikasiManajemen(1);
+        # $data['jenis_lengkap'] = Qsc4::getJenisSertifikasiManajemen(1, true);
+        # $data['sertifikasi'] = Qsc4::getJenisSertifikasi(1);
+        # $data['alamat_klien'] = isset($data['alamat_klien']) ? $data['alamat_klien'] : "Jl. Jend. Ahmad Yani No. 106".", ".Qsc4::getFullAddress(1);
+
         $info = [
-            'nomor_dokumen' => 'B/'.$id.'/BSKJI/B4T/MS/'.$month_roman.'/'.$year,
+            'nomor_dokumen' => 'B/'.str_pad($id,3,"0",STR_PAD_LEFT).'/BSKJI/B4T/MS/'.$month_roman.'/'.$year,
             'tempat_tanggal' => 'Bandung, '.strftime("%d %B %Y", strtotime($tanggal_invoice)),
             'nama' => isset($data['nama_klien']) ? $data['nama_klien'] : 'PT. Telkom',
-            'alamat' => isset($data['alamat_klien']) ? $data['alamat_klien'] : 'Jl. Jend. Ahmad Yani no 106 Cilegon 42421, Banten tarkun@sucofindo.co.id',
+            'alamat' => isset($data['alamat_klien']) ? $data['alamat_klien'] : "Jl. Jend. Ahmad Yani No. 106, Bandung, Jawa Barat, 12345",
             'sertifikasi' => isset($data['sertifikasi']) ? $data['sertifikasi'] : 'Sertifikasi Awal',
             'jenis_lengkap' => isset($data['jenis_lengkap']) ? $data['jenis_lengkap'] : 'Manajemen Mutu ISO 9001:2015',
             'jenis' => isset($data['jenis']) ? $data['jenis'] : 'ISO 9001:2015',
             'va_number' => isset($data['va_number']) ? $data['va_number'] : '0123456789',
             'va_expire' => strftime("%d %B %Y", strtotime($tanggal_expire)),
             'pdf_file' => $file_path,
-            'data' => $data_invoice
+            'data' => $data_invoice,
+            'transport_0' => "",
         ];
+
+        if($data_invoice[1]["biaya"] == 0){
+            $info["transport_0"] = " dan transportasi";
+            unset($info['data'][1]);
+        }
+
         $pdf = PDF::loadView('pdf/penawaran', $info);
 
         if($target == "file_path"){
@@ -118,6 +130,9 @@ class PdfController extends Controller
         $transaction_id = isset($data["transaction_id"]) ? $data["transaction_id"] : 1;
         $file_path = 'public/pdf/'.$transaction_id.'_kuitansi_'.date("YmdHis").'.pdf';
 
+        # $data['jenis'] = Qsc4::getJenisSertifikasiManajemen(1);
+        # $data['sertifikasi'] = Qsc4::getJenisSertifikasi(1);
+
         $info = [
             'va_number' => isset($data['va_number']) ? $data['va_number'] : '0123456789',
             'nama' => isset($data['nama_klien']) ? $data['nama_klien'] : 'PT. Telkom',
@@ -127,6 +142,8 @@ class PdfController extends Controller
             'nomor_registrasi' => $transaction_id,
             'tempat_tanggal' => 'Bandung, '.strftime("%d %B %Y", strtotime($tanggal_invoice)),
             'pdf_file' => $file_path,
+            'sertifikasi' => isset($data['sertifikasi']) ? $data['sertifikasi'] : 'Sertifikasi Awal',
+            'jenis' => isset($data['jenis']) ? $data['jenis'] : 'ISO 9001:2015',
         ];
 
         $pdf = PDF::loadView('pdf/kwitansi', $info);
