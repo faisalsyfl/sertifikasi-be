@@ -182,10 +182,13 @@ class Qsc3 extends Controller
 
     static function get_auditor_objects($ids = [])
     {
-        $auditors = Auditor::whereIn("id", $ids)->get();
         $auditor_objects = [];
-        foreach ($auditors as $auditor) {
-            array_push($auditor_objects, $auditor->toArray());
+
+        if(count($ids) > 0 and $ids[0]){
+            $auditors = Auditor::whereIn("id", $ids)->get();
+            foreach ($auditors as $auditor) {
+                array_push($auditor_objects, $auditor->toArray());
+            }
         }
 
         return $auditor_objects;
@@ -203,10 +206,12 @@ class Qsc3 extends Controller
 
     static function get_competence_object($ids = [])
     {
-        $competences = Competence::whereIn($ids)->get();
         $competence_objects = [];
-        foreach ($competences as $competence) {
-            array_push($competence_objects, $competence->toArray());
+        if(count($ids) > 0 and $ids[0]){
+            $competences = Competence::whereIn("id", $ids)->get();
+            foreach ($competences as $competence) {
+                array_push($competence_objects, $competence->toArray());
+            }
         }
 
         return $competence_objects;
@@ -238,7 +243,7 @@ class Qsc3 extends Controller
             "audit_shift_1" => false,
             "audit_shift_2" => false,
             "audit_shift_3" => false,
-            "risiko_iso_9001" => 0,
+            "risiko_iso_9001" => "",
             "kompleksitas_iso_14001" => 0,
             "kompleksitas_iso_45001" => 0,
             "jumlah_personil_efektif" => 0,
@@ -311,7 +316,8 @@ class Qsc3 extends Controller
             "nomor_sertifikasi" => "-",
             "dikaji_oleh_1" => "-",
             "dikaji_oleh_2" => "-",
-            "disetujui_oleh" => "-"
+            "disetujui_oleh" => "-",
+            "audit_tahap_1" => true
         ];
     }
 }
