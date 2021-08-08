@@ -184,7 +184,7 @@ class Qsc3 extends Controller
     {
         $auditor_objects = [];
 
-        if(count($ids) > 0){
+        if(count($ids) > 0 and $ids[0]){
             $auditors = Auditor::whereIn("id", $ids)->get();
             foreach ($auditors as $auditor) {
                 array_push($auditor_objects, $auditor->toArray());
@@ -207,7 +207,7 @@ class Qsc3 extends Controller
     static function get_competence_object($ids = [])
     {
         $competence_objects = [];
-        if(count($ids) > 0){
+        if(count($ids) > 0 and $ids[0]){
             $competences = Competence::whereIn($ids)->get();
             foreach ($competences as $competence) {
                 array_push($competence_objects, $competence->toArray());
