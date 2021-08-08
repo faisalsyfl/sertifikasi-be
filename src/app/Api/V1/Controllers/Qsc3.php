@@ -311,7 +311,8 @@ class Qsc3 extends Controller
             "nomor_sertifikasi" => "-",
             "dikaji_oleh_1" => "-",
             "dikaji_oleh_2" => "-",
-            "disetujui_oleh" => "-"
+            "disetujui_oleh" => "-",
+            "audit_tahap_1" => true
         ];
     }
 }

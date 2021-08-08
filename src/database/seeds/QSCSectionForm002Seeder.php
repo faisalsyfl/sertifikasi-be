@@ -69,6 +69,11 @@ class QSCSectionForm002Seeder extends Seeder
                 'section_id' => 3,
                 'key' => 'jumlah_personil_efektif',
                 'rule' => null,
+            ],
+            [
+                'section_id' => 3,
+                'key' => 'audit_tahap_1',
+                'rule' => null,
             ]
         ];
 
