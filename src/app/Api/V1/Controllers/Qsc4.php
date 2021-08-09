@@ -72,6 +72,7 @@ class Qsc4 extends Controller
                         $request_data['total'] += $biaya_sertifikasi;
                         $request_data['total'] += $transportasi;
                     }
+
                     if(!isset($request_data['nilai_penawaran'])){
                         $request_data['nilai_penawaran'] = $request_data['total'];
                     }
@@ -493,10 +494,12 @@ class Qsc4 extends Controller
             $section_value = SectionFormValue::where("section_form_id",$section_form->id)
                 ->where("section_status_id",$section_status->id)->first();
 
-            if($section_value->value == "SERTIFIKASI_AWAL"){
-                $sertifikasi = "Sertifikasi Awal";
-            } elseif ($section_value->value == "RESERTIFIKASI"){
-                $sertifikasi = "Resertifikasi";
+            if($section_value){
+                if($section_value->value == "SERTIFIKASI_AWAL"){
+                    $sertifikasi = "Sertifikasi Awal";
+                } elseif ($section_value->value == "RESERTIFIKASI"){
+                    $sertifikasi = "Resertifikasi";
+                }
             }
         }
 
