@@ -439,9 +439,14 @@ class Qsc4 extends Controller
         ];
     }
 
-    static function get_payment_object($payment_id)
+    static function get_payment_object($payment_id, $transaction_id=null, $public=false)
     {
-        $payment = Payment::find($payment_id);
+        if($transaction_id){
+            $payment = Payment::where('transaction_id',$transaction_id)->first();
+        }else{
+            $payment = Payment::find($payment_id);
+        }
+
         if ($payment) {
             $result = $payment->toArray();
             $result["offering_value"] = $result["amount"];
@@ -451,6 +456,11 @@ class Qsc4 extends Controller
             unset($result["other_documents"]);
             unset($result["created_at"]);
             unset($result["updated_at"]);
+
+            if($public){
+                $keeps = ["offering_value", "offering_form", "invoice", "receipt"];
+                $result = array_intersect_key($result, array_flip($keeps));
+            }
 
             return $result;
         } else {

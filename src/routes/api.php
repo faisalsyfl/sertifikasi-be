@@ -172,6 +172,11 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             ]);
         });
 
+        // Public API
+        $api->group(['prefix' => 'public'], function (Router $api) {
+            $api->get('info/{public_code}', 'App\\Api\\V1\\Controllers\\TransactionController@getPublicInfo');
+        });
+
         $api->get('hello', function () {
             return response()->json([
                 'message' => 'This is a simple example of item returned by your APIs. Everyone can see it. v1'

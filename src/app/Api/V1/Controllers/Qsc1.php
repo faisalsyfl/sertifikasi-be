@@ -147,7 +147,8 @@ class Qsc1 extends Controller
     private function generateTransaction($request){
 
         $transaction = new Transaction(['organization_id' => $request->organization_id, 'auditi_id' => $request->auditi_id]);
-        $transaction->code   = 'SC';
+        $transaction->code = 'SC';
+        $transaction->public_code = self::generatePublicCode();
         $transaction->save();
 
         return $transaction;
@@ -170,5 +171,16 @@ class Qsc1 extends Controller
         }
 
         return $section_status_ids;
+    }
+
+    static function generatePublicCode(){
+        $code = null;
+        $unique = true;
+        while($unique){
+            $code = strtolower(substr(bin2hex(random_bytes(20)), 0, 5));
+            $unique = Transaction::where("public_code",$code)->first();
+        }
+
+        return $code;
     }
 }

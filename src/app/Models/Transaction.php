@@ -26,7 +26,7 @@ class Transaction extends Model
      */
 
     protected $fillable = [
-        'code', 'stats' , 'created_at', 'organization_id','auditi_id'
+        'code', 'stats' , 'created_at', 'organization_id','auditi_id','public_code'
     ];
     protected $hidden = [
         'updated_at','contact_id',
