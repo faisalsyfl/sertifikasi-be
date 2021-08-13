@@ -910,4 +910,109 @@ class TransactionController extends Controller
         }
     }
 
+    /**
+     * @OA\Get(
+     *  path="/api/v1/public/info/{public_code}",
+     *  summary="Get public info of transaction",
+     *  tags={"Transaction"},
+     *  @OA\Parameter(
+     *      name="public_code",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    public function getPublicInfo(Request $request, $public_code=null)
+    {
+        if(!$public_code){
+            return $this->errorRequest(422, 'Id tidak tersedia');
+        }else{
+            $transaction = Transaction::where('public_code',$public_code)->first();
+
+            if(!$transaction){
+                return $this->errorRequest(422, 'Transaksi tidak ditemukan');
+            }else{
+                $info = self::generate_public_info_object($transaction);
+                return $this->output($info);
+            }
+        }
+    }
+
+    static function generate_public_info_object($transaction){
+        $result = [
+            "order_info" => [
+                "code" => $transaction->code,
+                "nama_klien" => $transaction->auditi["name"],
+                "sertifikasi" => "-",
+                "status_aplikasi_sertifikasi" => "-",
+                "created_date" => $transaction->created_at,
+                "status" => self::get_step_status($transaction),
+            ],
+            "payment" => Qsc4::get_payment_object(null, $transaction->id, true),
+            "audit" => [],
+        ];
+
+        $data = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
+            ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
+            ->where("section_status.transaction_id", $transaction->id)
+            ->whereIn("section_form.key", [
+                "status_aplikasi_sertifikasi",
+                "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan"
+            ])
+            ->get();
+
+        if($data){
+            $sertifikasi_management = [];
+            foreach ($data as $item){
+                if($item->key == "manajemen_mutu" and $item->value){
+                    array_push($sertifikasi_management,"Manajemen Mutu ISO 9001:2015");
+                } elseif ($item->key == "manajemen_lingkungan" and $item->value){
+                    array_push($sertifikasi_management,"Manajemen Lingkungan ISO 14001:2015");
+                } elseif ($item->key == "manajemen_keselamatan" and $item->value){
+                    array_push($sertifikasi_management,"Manajemen Keselamatan ISO 45001:2018");
+                } elseif ($item->key == "status_aplikasi_sertifikasi" and $item->value == "SERTIFIKASI_AWAL"){
+                    $result["order_info"]["status_aplikasi_sertifikasi"] = "Sertifikasi Awal";
+                } elseif ($item->key == "status_aplikasi_sertifikasi" and $item->value == "RESERTIFIKASI"){
+                    $result["order_info"]["status_aplikasi_sertifikasi"] = "Resertifikasi";
+                }
+            }
+
+            $result["order_info"]["sertifikasi"] = implode(", ",$sertifikasi_management);
+        }
+
+        return $result;
+    }
+
+    static function get_step_status($transaction){
+        $object = [];
+        $section_statuses = SectionStatus::where("transaction_id",$transaction->id)->get();
+
+        foreach ($section_statuses as $section_status){
+            array_push($object, [
+                "name" => $section_status->section["name"],
+                "status" => $section_status->status,
+            ]);
+        }
+
+        return $object;
+    }
 }
