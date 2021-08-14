@@ -74,6 +74,106 @@ class QSCSectionForm002Seeder extends Seeder
                 'section_id' => 3,
                 'key' => 'audit_tahap_1',
                 'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'jumlah_auditor',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'start_jadwal',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'end_jadwal',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'type',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'auditor_ids',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'nama_klien',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'alamat_klien',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'status_aplikasi_sertifikasi', // kriteria_audit
+                'rule' => null,
+            ],
+            [
+                'section_id' => 3,
+                'key' => 'ruang_lingkup',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'ruang_lingkup',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'scope',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'sektor_ea',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'sektor_nace',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'nomor_sertifikasi',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'evaluasi_file',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 7,
+                'key' => 'nomor_sertifikat',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 7,
+                'key' => 'start_sertifikat',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 7,
+                'key' => 'end_sertifikat',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 7,
+                'key' => 'draft_sertifikat',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 7,
+                'key' => 'published_sertifikat',
+                'rule' => null,
             ]
         ];
 

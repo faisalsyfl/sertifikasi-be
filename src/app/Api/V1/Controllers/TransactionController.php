@@ -33,12 +33,20 @@ class TransactionController extends Controller
     protected $Qsc2;
     protected $Qsc3;
     protected $Qsc4;
-    public function __construct(Qsc1 $Qsc1, Qsc2 $Qsc2, Qsc3 $Qsc3, Qsc4 $Qsc4)
-    {
+    protected $Qsc5;
+    protected $Qsc6;
+    protected $Qsc7;
+    public function __construct(
+        Qsc1 $Qsc1, Qsc2 $Qsc2, Qsc3 $Qsc3, Qsc4 $Qsc4,
+        Qsc5 $Qsc5, Qsc6 $Qsc6, Qsc7 $Qsc7
+    ){
         $this->Qsc1 = $Qsc1;
         $this->Qsc2 = $Qsc2;
         $this->Qsc3 = $Qsc3;
         $this->Qsc4 = $Qsc4;
+        $this->Qsc5 = $Qsc5;
+        $this->Qsc6 = $Qsc6;
+        $this->Qsc7 = $Qsc7;
     }
     /**
      * @OA\Get(
@@ -420,6 +428,107 @@ class TransactionController extends Controller
      * )
      */
 
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc5/store",
+     *  summary="Save and Edit - Step 5",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="mode", type="string",default="QSC5"),
+     *   @OA\Property(property="section", type="integer",default="5"),
+     *   @OA\Property(property="transaction_id", type="integer"),
+     *   @OA\Property(property="section_status_id", type="integer"),
+     *   @OA\Property(property="jumlah_auditor", type="integer"),
+     *   @OA\Property(property="start_jadwal", type="string"),
+     *   @OA\Property(property="end_jadwal", type="string"),
+     *   @OA\Property(property="type", type="string"),
+     *   @OA\Property(property="auditor_ids", type="string"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc6/store",
+     *  summary="Save and Edit - Step 6",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="mode", type="string",default="QSC6"),
+     *   @OA\Property(property="section", type="integer",default="6"),
+     *   @OA\Property(property="transaction_id", type="integer"),
+     *   @OA\Property(property="section_status_id", type="integer"),
+     *   @OA\Property(property="evaluasi_file", type="string"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc7/store",
+     *  summary="Save and Edit - Step 7",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="mode", type="string",default="QSC7"),
+     *   @OA\Property(property="section", type="integer",default="7"),
+     *   @OA\Property(property="transaction_id", type="integer"),
+     *   @OA\Property(property="section_status_id", type="integer"),
+     *   @OA\Property(property="nomor_sertifikat", type="string"),
+     *   @OA\Property(property="start_sertifikat", type="string"),
+     *   @OA\Property(property="end_sertifikat", type="string"),
+     *   @OA\Property(property="draft_sertifikat", type="string"),
+     *   @OA\Property(property="published_sertifikat", type="string"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
     public function store(Request $request)
     {
         switch ($request->mode) {
@@ -456,10 +565,28 @@ class TransactionController extends Controller
                 return $this->output($res);
                 break;
             case 'QSC5':
+                #Section Aplikasi = 5
+                $request['section'] = 5;
+                $res = $this->Qsc5->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
                 break;
             case 'QSC6':
+                #Section Aplikasi = 6
+                $request['section'] = 6;
+                $res = $this->Qsc6->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
                 break;
             case 'QSC7':
+                #Section Aplikasi = 7
+                $request['section'] = 7;
+                $res = $this->Qsc7->store($request);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["error"]);
+                return $this->output($res);
                 break;
             default:
                 return $this->errorRequest(422, 'Store Function Not Found');
@@ -630,6 +757,130 @@ class TransactionController extends Controller
      *  security={{ "apiAuth": {} }}
      * )
      */
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc5/list/{id}",
+     *  summary="Detail - Step 5",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC5"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc6/list/{id}",
+     *  summary="Detail - Step 6",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC6"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    /**
+     * @OA\Get(
+     *  path="/api/v1/qsc7/list/{id}",
+     *  summary="Detail - Step 7",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=false,
+     *      description="Fill with id_transaction",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC7"
+     *      )
+     *   ),
+     *  @OA\Response(response=200,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
     public function list(Request $request, $id)
     {
         switch ($request->mode) {
@@ -671,10 +922,31 @@ class TransactionController extends Controller
                 return $this->output($final);
                 break;
             case 'QSC5':
+                $res = $this->Qsc5->list($request, $id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             case 'QSC6':
+                $res = $this->Qsc6->list($request, $id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             case 'QSC7':
+                $res = $this->Qsc7->list($request, $id);
+                if (!$res["status"])
+                    return $this->errorRequest(422, 'Validation Error', $res["data"]);
+
+                $transaction = Transaction::where('id', $id)->first();
+                $final = array_merge($transaction->toArray(), ['form' => $this->serializeForm($res['data'])]);
+                return $this->output($final);
                 break;
             default:
                 return $this->errorRequest(422, 'Store Function Not Found');
@@ -810,6 +1082,32 @@ class TransactionController extends Controller
                             "nomor_sertifikasi",
                         ],
                     ];
+                    break;
+                case 5:
+                    $key_values = Qsc5::getKeyValueQSC5();
+                    $predefined_reference = [];
+                    break;
+                case 6:
+                    $key_values = Qsc6::getKeyValueQSC6();
+                    $predefined_reference = [
+                        // section_id reference
+                        "1" => [
+                            // keys
+                            "nama_klien", "alamat_klien"
+                        ],
+                        "2" => [
+                            // keys
+                            "status_aplikasi_sertifikasi",
+                        ],
+                        "3" => [
+                            // keys
+                            "ruang_lingkup", "scope", "sektor_ea", "sector_nace", "nomor_sertifikasi"
+                        ],
+                    ];
+                    break;
+                case 7:
+                    $key_values = Qsc7::getKeyValueQSC7();
+                    $predefined_reference = [];
                     break;
                 default:
                     $key_values = [];
