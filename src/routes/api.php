@@ -86,6 +86,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
 
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc6'], function (Router $api) {
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+            $api->post('upload', 'App\\Api\\V1\\Controllers\\Qsc6@filesUpload');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
@@ -94,6 +95,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
 
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc7'], function (Router $api) {
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+            $api->post('upload', 'App\\Api\\V1\\Controllers\\Qsc6@filesUpload');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');

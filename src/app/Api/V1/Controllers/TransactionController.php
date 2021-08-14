@@ -404,7 +404,7 @@ class TransactionController extends Controller
      *   @OA\Property(property="mode", type="string",default="QSC4"),
      *   @OA\Property(property="section", type="integer",default="4"),
      *   @OA\Property(property="transaction_id", type="integer"),
-     *   @OA\Property(property="section_status_id", type="integer"),
+     *   @OA\Property(property="section_status_id", type="integer",default="1"),
      *   @OA\Property(property="biaya_sertifikasi", type="integer"),
      *   @OA\Property(property="transportasi", type="integer"),
      *   @OA\Property(property="terbilang", type="integer"),

@@ -92,8 +92,8 @@ class Qsc7 extends Controller
             "nomor_sertifikat" => "-",
             "start_sertifikat" => "-",
             "end_sertifikat" => "-",
-            "draft_sertifikat" => "-",
-            "published_sertifikat" => "-"
+            "draft_sertifikat" => null,
+            "published_sertifikat" => null
         ];
     }
 }

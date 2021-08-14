@@ -5,11 +5,14 @@ namespace App\Api\V1\Controllers;
 use App\Models\Auditi;
 use App\Models\Auditor;
 use App\Models\Competence;
+use App\Models\FormDocument;
 use App\Models\Payment;
 use App\Models\SectionStatus;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Storage;
 use Validator, Config, DB;
 use App\Http\Controllers\Controller;
 use App\Traits\RestApi;
@@ -93,6 +96,111 @@ class Qsc6 extends Controller
         return ["status" => false, "error" => "No Data!"];
     }
 
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc6/upload",
+     *  summary="Upload File - Step 6",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="evaluasi_file", type="string",default="FILE"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc7/upload",
+     *  summary="Upload File - Step 7",
+     *  tags={"Form"},     * @OA\RequestBody(
+     * @OA\JsonContent(
+     *   type="object",
+     *   @OA\Property(property="draft_sertifikat", type="string",default="FILE"),
+     *   @OA\Property(property="published_sertifikat", type="string",default="FILE"),
+     * )
+     * ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
+
+    public function filesUpload(Request $request)
+    {
+        $documents = [
+            "evaluasi_file", "draft_sertifikat", "published_sertifikat"
+        ];
+        $file_urls = [];
+
+        foreach ($documents as $document){
+            if($request->$document){
+                $file_urls[$document] = null;
+                $file = $request->$document;
+                $file_path = $this->saveFile($file, $document);
+                if($file_path){
+                    $file_urls[$document] = $file_path;
+                }
+            }
+        }
+
+        return $this->output($file_urls);
+    }
+
+    private function saveFile($file, $name)
+    {
+        $file_hash = 'document_'. $name . '_' . $this->hash_filename();
+        $file_name = str_replace(' ', '', trim($file_hash . "." . pathinfo($file->getClientOriginalName(), PATHINFO_EXTENSION)));
+        $save = Storage::disk('local')->put('public/form_document/' . $file_name, file_get_contents($file));
+        if ($save) {
+            return asset("/storage/form_document/".$file_name);
+        }
+        return false;
+    }
+
+    private function docType($name)
+    {
+        switch ($name) {
+            case 'evaluasi_file':
+                return 'QSC_6_DOC_EVALUASI_FILE';
+                break;
+            case 'draft_sertifikat':
+                return 'QSC_7_DOC_DRAFT_SERTIFIKAT';
+                break;
+            case 'published_sertifikat':
+                return 'QSC_7_DOC_PUBLISHED_SERTIFIKAT';
+                break;
+            default:
+                return 'default';
+                break;
+        }
+    }
+
     static function getKeyValueQSC6()
     {
         return [
@@ -104,7 +212,7 @@ class Qsc6 extends Controller
             "sektor_ea" => "-",
             "sektor_nace" => "-",
             "nomor_sertifikasi" => "-",
-            "evaluasi_file" => "-",
+            "evaluasi_file" => null,
         ];
     }
 }
