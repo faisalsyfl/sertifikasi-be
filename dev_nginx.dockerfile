@@ -1,4 +1,4 @@
-FROM nginx:1.20-alpine
+FROM nginx:stable-alpine
 
 ADD ./nginx/dev/nginx.conf /etc/nginx/
 ADD ./nginx/dev/default.conf /etc/nginx/conf.d/
