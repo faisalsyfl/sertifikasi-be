@@ -1273,8 +1273,11 @@ class TransactionController extends Controller
             ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
             ->where("section_status.transaction_id", $transaction->id)
             ->whereIn("section_form.key", [
+                // order info
                 "status_aplikasi_sertifikasi",
-                "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan"
+                "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
+                // audit
+                "auditor_ids", "jumlah_auditor", "start_jadwal", "end_jadwal"
             ])
             ->get();
 
@@ -1291,6 +1294,13 @@ class TransactionController extends Controller
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Sertifikasi Awal";
                 } elseif ($item->key == "status_aplikasi_sertifikasi" and $item->value == "RESERTIFIKASI"){
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Resertifikasi";
+                } elseif ($item->key == "auditor_ids" and $item->value){
+                    $result["audit"]["auditors"] = Qsc3::get_auditor_objects(explode(",", $item->value));
+                } elseif (
+                    ($item->key == "jumlah_auditor" or $item->key == "start_jadwal" or $item->key == "end_jadwal")
+                    and $item->value
+                ){
+                    $result["audit"][$item->key] = $item->value;
                 }
             }
 
