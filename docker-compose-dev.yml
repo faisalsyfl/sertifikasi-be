@@ -9,7 +9,7 @@ services:
   site:
     build:
       context: .
-      dockerfile: nginx/dev/nginx.dockerfile
+      dockerfile: dev_nginx.dockerfile
     container_name: nginx
     ports:
       - 8989:80
@@ -21,7 +21,7 @@ services:
   php:
     build:
       context: .
-      dockerfile: php/dev/php.dockerfile
+      dockerfile: dev_php.dockerfile
     container_name: php
     volumes:
       - ./src:/var/www/html:default
@@ -29,7 +29,7 @@ services:
   composer:
     build:
       context: .
-      dockerfile: composer/composer_dev.dockerfile
+      dockerfile: dev_composer.dockerfile
     container_name: composer
     volumes:
       - ./src:/var/www/html
@@ -42,7 +42,7 @@ services:
   artisan:
     build:
       context: .
-      dockerfile:  php/dev/php.dockerfile
+      dockerfile: dev_php.dockerfile
     container_name: artisan
     volumes:
       - ./src:/var/www/html:default
