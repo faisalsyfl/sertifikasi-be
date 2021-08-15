@@ -59,7 +59,7 @@ class PdfController extends Controller
         $pdf = PDF::loadView('pdf/invoice', $info);
 
         if($target == "file_path"){
-            $file = $pdf->download()->getOriginalContent();
+            $file = $pdf->output();
             Storage::disk('local')->put($file_path,$file);
 
             return str_replace("public", "storage",$file_path);
@@ -116,7 +116,7 @@ class PdfController extends Controller
         $pdf = PDF::loadView('pdf/penawaran', $info);
 
         if($target == "file_path"){
-            $file = $pdf->download()->getOriginalContent();
+            $file = $pdf->output();
             Storage::disk('local')->put($file_path,$file);
 
             return str_replace("public", "storage",$file_path);
@@ -149,7 +149,7 @@ class PdfController extends Controller
         $pdf = PDF::loadView('pdf/kwitansi', $info);
 
         if($target == "file_path"){
-            $file = $pdf->download()->getOriginalContent();
+            $file = $pdf->output();
             Storage::disk('local')->put($file_path,$file);
 
             return str_replace("public", "storage",$file_path);
