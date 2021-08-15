@@ -100,7 +100,7 @@ class Qsc6 extends Controller
      * @OA\Post(
      *  path="/api/v1/qsc6/upload",
      *  summary="Save and Upload File - Step 6",
-     *  tags={"Form-other"},     
+     *  tags={"Form-other"},
      *  @OA\RequestBody(
      *     required=true,
    *         @OA\MediaType(
@@ -136,7 +136,7 @@ class Qsc6 extends Controller
      * @OA\Post(
      *  path="/api/v1/qsc7/upload",
      *  summary="Save and Upload File - Step 7",
-     *  tags={"Form-other"},    
+     *  tags={"Form-other"},
      * @OA\RequestBody(
      *     required=true,
    *         @OA\MediaType(
@@ -224,7 +224,7 @@ class Qsc6 extends Controller
             "nama_klien" => "-",
             "alamat_klien" => "-",
             "status_aplikasi_sertifikasi" => "-",
-            "ruang_lingkup" => "-",
+            "lingkup" => "-",
             "scope" => "-",
             "sektor_ea" => "-",
             "sektor_nace" => "-",

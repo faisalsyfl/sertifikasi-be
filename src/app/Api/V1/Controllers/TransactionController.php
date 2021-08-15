@@ -229,7 +229,7 @@ class TransactionController extends Controller
      *   @OA\Property(property="audit_joint", type="boolean"),
      *   @OA\Property(property="audit_combination", type="boolean"),
      *   @OA\Property(property="audit_integration", type="boolean"),
-     *   @OA\Property(property="ruang_lingkup", type="string"),
+     *   @OA\Property(property="lingkup", type="string"),
      *   @OA\Property(property="scope", type="string"),
      *   @OA\Property(property="sektor_ea", type="integer"),
      *   @OA\Property(property="sektor_nace", type="integer"),
@@ -1048,7 +1048,7 @@ class TransactionController extends Controller
                         ],
                         "3" => [
                             // keys
-                            "ruang_lingkup", "scope", "sektor_ea", "sector_nace", "nomor_sertifikasi"
+                            "lingkup", "scope", "sektor_ea", "sektor_nace", "nomor_sertifikasi"
                         ],
                     ];
                     break;
