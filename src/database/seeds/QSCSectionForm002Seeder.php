@@ -77,27 +77,27 @@ class QSCSectionForm002Seeder extends Seeder
             ],
             [
                 'section_id' => 5,
-                'key' => 'jumlah_auditor',
+                'key' => 'jumlah_auditor_tahap_1',
                 'rule' => null,
             ],
             [
                 'section_id' => 5,
-                'key' => 'start_jadwal',
+                'key' => 'start_jadwal_tahap_1',
                 'rule' => null,
             ],
             [
                 'section_id' => 5,
-                'key' => 'end_jadwal',
+                'key' => 'end_jadwal_tahap_1',
                 'rule' => null,
             ],
             [
                 'section_id' => 5,
-                'key' => 'type',
+                'key' => 'type_tahap_1',
                 'rule' => null,
             ],
             [
                 'section_id' => 5,
-                'key' => 'auditor_ids',
+                'key' => 'auditor_ids_tahap_1',
                 'rule' => null,
             ],
             [
@@ -123,6 +123,56 @@ class QSCSectionForm002Seeder extends Seeder
             [
                 'section_id' => 5,
                 'key' => 'auditor_ids_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'jumlah_auditor_survailen_tahap_1',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'start_jadwal_survailen_tahap_1',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'end_jadwal_survailen_tahap_1',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'type_survailen_tahap_1',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'auditor_ids_survailen_tahap_1',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'jumlah_auditor_survailen_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'start_jadwal_survailen_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'end_jadwal_survailen_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'type_survailen_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'auditor_ids_survailen_tahap_2',
                 'rule' => null,
             ],
             [
