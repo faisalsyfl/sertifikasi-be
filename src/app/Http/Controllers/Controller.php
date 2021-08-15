@@ -43,6 +43,10 @@ class Controller extends BaseController
      *     name="Form",
      *     description="Form proses pendaftaran sertifikasi"
      * )
+     * @OA\Tag(
+     *     name="Form-other",
+     *     description="Form - endpoint tambahan"
+     * )
      */
 
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;

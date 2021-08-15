@@ -99,8 +99,8 @@ class Qsc6 extends Controller
     /**
      * @OA\Post(
      *  path="/api/v1/qsc6/upload",
-     *  summary="Upload File - Step 6",
-     *  tags={"Form"},     
+     *  summary="Save and Upload File - Step 6",
+     *  tags={"Form-other"},     
      *  @OA\RequestBody(
      *     required=true,
    *         @OA\MediaType(
@@ -135,8 +135,8 @@ class Qsc6 extends Controller
     /**
      * @OA\Post(
      *  path="/api/v1/qsc7/upload",
-     *  summary="Upload File - Step 7",
-     *  tags={"Form"},    
+     *  summary="Save and Upload File - Step 7",
+     *  tags={"Form-other"},    
      * @OA\RequestBody(
      *     required=true,
    *         @OA\MediaType(

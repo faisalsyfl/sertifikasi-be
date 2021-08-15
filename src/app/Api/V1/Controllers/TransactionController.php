@@ -143,64 +143,6 @@ class TransactionController extends Controller
 
         return $this->output($transaction);
     }
-
-
-    /**
-     * @OA\Post(
-     *  path="/api/v1/qsc/store",
-     *  summary="Save - Step 1",
-     *  tags={"Form"},
-     *  @OA\Parameter(
-     *      name="mode",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string",
-     *           default="QSC1"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="organization_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string",
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="auditi_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string",
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="auditi_status",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string",
-     *           default="seluruh/cabang"
-     *      )
-     *   ),
-     *   @OA\Response(
-     *     response=200,
-     *     description="Success"
-     *  ),
-     *  @OA\Response(response=201,description="Success",
-     *      @OA\MediaType(
-     *           mediaType="application/json",
-     *      )
-     *   ),
-     *  @OA\Response(response=401,description="Unauthenticated"),
-     *  @OA\Response(response=400,description="Bad Request"),
-     *  @OA\Response(response=404,description="not found"),
-     *  @OA\Response(response=403,description="Forbidden"),
-     *  security={{ "apiAuth": {} }}
-     * )
-     */
-
     /**
      * @OA\Post(
      *  path="/api/v1/qsc2/store",
@@ -444,6 +386,11 @@ class TransactionController extends Controller
      *   @OA\Property(property="end_jadwal", type="string"),
      *   @OA\Property(property="type", type="string"),
      *   @OA\Property(property="auditor_ids", type="string"),
+     *   @OA\Property(property="jumlah_auditor_tahap_2", type="integer"),
+     *   @OA\Property(property="start_jadwal_tahap_2", type="string"),
+     *   @OA\Property(property="end_jadwal_tahap_2", type="string"),
+     *   @OA\Property(property="type_tahap_2", type="string"),
+     *   @OA\Property(property="auditor_ids_tahap_2", type="string"),
      * )
      * ),
      *   @OA\Response(
@@ -1296,6 +1243,8 @@ class TransactionController extends Controller
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Resertifikasi";
                 } elseif ($item->key == "auditor_ids" and $item->value){
                     $result["audit"]["auditors"] = Qsc3::get_auditor_objects(explode(",", $item->value));
+                } elseif ($item->key == "auditor_ids_tahap_2" and $item->value){
+                    $result["audit"]["auditors_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 } elseif (
                     ($item->key == "jumlah_auditor" or $item->key == "start_jadwal" or $item->key == "end_jadwal")
                     and $item->value

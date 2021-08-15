@@ -101,6 +101,31 @@ class QSCSectionForm002Seeder extends Seeder
                 'rule' => null,
             ],
             [
+                'section_id' => 5,
+                'key' => 'jumlah_auditor_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'start_jadwal_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'end_jadwal_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'type_tahap_2',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 5,
+                'key' => 'auditor_ids_tahap_2',
+                'rule' => null,
+            ],
+            [
                 'section_id' => 6,
                 'key' => 'nama_klien',
                 'rule' => null,

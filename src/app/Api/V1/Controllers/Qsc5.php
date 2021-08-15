@@ -93,7 +93,12 @@ class Qsc5 extends Controller
             "start_jadwal" => "-",
             "end_jadwal" => "-",
             "type" => "-",
-            "auditor_ids" => "-"
+            "auditor_ids" => "-",
+            "jumlah_auditor_tahap_2" => 0,
+            "start_jadwal_tahap_2" => "-",
+            "end_jadwal_tahap_2" => "-",
+            "type_tahap_2" => "-",
+            "auditor_ids_tahap_2" => "-"
         ];
     }
 }

@@ -97,7 +97,7 @@ class Qsc2 extends Controller
    * @OA\Get(
    *  path="/api/v1/qsc2/documents",
    *  summary="List document",
-   *  tags={"Form"},
+   *  tags={"Form-other"},
    *  @OA\Parameter(
    *      name="transaction_id",
    *      in="query",
@@ -162,7 +162,7 @@ class Qsc2 extends Controller
    * @OA\Delete(
    *  path="/api/v1/qsc2/documents",
    *  summary="Delete document",
-   *  tags={"Form"},
+   *  tags={"Form-other"},
    *  @OA\Parameter(
    *      name="id",
    *      in="query",
@@ -213,7 +213,7 @@ class Qsc2 extends Controller
    * @OA\Post(
    *  path="/api/v1/qsc2/documents/edit",
    *  summary="Store Data document",
-   *  tags={"Form"},
+   *  tags={"Form-other"},
    *     @OA\RequestBody(
    *         required=true,
    *         @OA\MediaType(
