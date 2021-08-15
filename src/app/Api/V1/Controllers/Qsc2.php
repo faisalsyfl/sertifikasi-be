@@ -78,10 +78,10 @@ class Qsc2 extends Controller
         });
 
         // Update QSC3
-        $qsc3_section_status = SectionStatus::where("transaction_id", $section_status->transaction_id)
-          ->where("section_id", 3)->first();
-        if ($qsc3_section_status) {
-          TransactionController::preDefineSectionFormValue($qsc3_section_status->id, true);
+        $section_statuses = SectionStatus::where("transaction_id",$section_status->transaction_id)
+          ->whereIn("section_id",[3,6])->get();
+        foreach ($section_statuses as $section_status){
+          TransactionController::preDefineSectionFormValue($section_status->id, true);
         }
 
         return ["status" => true, "data" => "Berhasil Menyimpan Data"];
@@ -353,7 +353,7 @@ class Qsc2 extends Controller
     // $doc_type['DIGARAM_ALIR'] = $init;
     // $doc_type['LAYOUT_AREA'] = $init;
     // $doc_type['REKAMAN_INTERNAL'] = $init;
-    // $doc_type['TINJAUAN_MANAGEMEN'] = $init;    
+    // $doc_type['TINJAUAN_MANAGEMEN'] = $init;
     $doc_type['dokumen_1'] = $init;
     $doc_type['dokumen_2'] = $init;
     $doc_type['dokumen_3'] = $init;

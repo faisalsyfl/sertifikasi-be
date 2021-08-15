@@ -322,8 +322,15 @@ class Qsc4 extends Controller
             $auditi = Auditi::find($transaction->auditi_id);
             $payment = Payment::where("transaction_id",$transaction->id)
                 ->where("type","penawaran")->first();
-            if(!$payment and $auditi){
+            $update = false;
+            if(!$payment and $auditi) {
                 $payment = new Payment();
+                $update = true;
+            } else if($payment and $auditi and $payment->amount != $data["total"]){
+                $update = true;
+            }
+
+            if($update){
                 $payment->transaction_id = $transaction->id;
                 $payment->type = "penawaran";
                 $payment->amount = isset($data["total"]) ? $data["total"] : 0;
@@ -337,27 +344,27 @@ class Qsc4 extends Controller
                 $payment->payment_expiration = Carbon::now()->addDays(3)->format('Y-m-d H:i:s');
 
                 $payment->invoice = URL::to('/')."/".PdfController::generateInvoice([
-                    "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
-                    "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
-                    "transaction_id" => $transaction->id,
-                    "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
-                    "nama_klien" => $auditi->name,
-                    "alamat_klien" => $auditi->address,
-                    "va_number" => $va_number,
-                ], "file_path");
+                        "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
+                        "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
+                        "transaction_id" => $transaction->id,
+                        "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
+                        "nama_klien" => $auditi->name,
+                        "alamat_klien" => $auditi->address,
+                        "va_number" => $va_number,
+                    ], "file_path");
                 $payment->other_documents = URL::to('/')."/".PdfController::generatePenawaran([
-                    "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
-                    "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
-                    "transaction_id" => $transaction->id,
-                    "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
-                    "tanggal_expire" => Carbon::now()->addDays(3)->format('Y-m-d H:i:s'),
-                    "nama_klien" => $auditi->name,
-                    "alamat_klien" => $auditi->address.", ".self::getFullAddress(1),
-                    "va_number" => $va_number,
-                    "jenis" => self::getJenisSertifikasiManajemen($transaction_id),
-                    "jenis_lengkap" => self::getJenisSertifikasiManajemen($transaction_id, true),
-                    "sertifikasi" => self::getJenisSertifikasi($transaction->id),
-                ], "file_path");
+                        "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
+                        "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
+                        "transaction_id" => $transaction->id,
+                        "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
+                        "tanggal_expire" => Carbon::now()->addDays(3)->format('Y-m-d H:i:s'),
+                        "nama_klien" => $auditi->name,
+                        "alamat_klien" => $auditi->address.", ".self::getFullAddress(1),
+                        "va_number" => $va_number,
+                        "jenis" => self::getJenisSertifikasiManajemen($transaction_id),
+                        "jenis_lengkap" => self::getJenisSertifikasiManajemen($transaction_id, true),
+                        "sertifikasi" => self::getJenisSertifikasi($transaction->id),
+                    ], "file_path");
 
                 $payment->save();
             }
