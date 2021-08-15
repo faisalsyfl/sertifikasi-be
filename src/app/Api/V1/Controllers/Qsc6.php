@@ -100,12 +100,21 @@ class Qsc6 extends Controller
      * @OA\Post(
      *  path="/api/v1/qsc6/upload",
      *  summary="Upload File - Step 6",
-     *  tags={"Form"},     * @OA\RequestBody(
-     * @OA\JsonContent(
-     *   type="object",
-     *   @OA\Property(property="evaluasi_file", type="string",default="FILE"),
-     * )
-     * ),
+     *  tags={"Form"},     
+     *  @OA\RequestBody(
+     *     required=true,
+   *         @OA\MediaType(
+   *             mediaType="multipart/form-data",
+   *             @OA\Schema(
+   *                 @OA\Property(
+   *                     description="file to upload",
+   *                     property="evaluasi_file",
+   *                     type="file",
+   *                     format="file",
+   *                 )
+   *             )
+   *         )
+     *  ),
      *   @OA\Response(
      *     response=200,
      *     description="Success"
@@ -127,12 +136,20 @@ class Qsc6 extends Controller
      * @OA\Post(
      *  path="/api/v1/qsc7/upload",
      *  summary="Upload File - Step 7",
-     *  tags={"Form"},     * @OA\RequestBody(
-     * @OA\JsonContent(
-     *   type="object",
-     *   @OA\Property(property="draft_sertifikat", type="string",default="FILE"),
-     *   @OA\Property(property="published_sertifikat", type="string",default="FILE"),
-     * )
+     *  tags={"Form"},    
+     * @OA\RequestBody(
+     *     required=true,
+   *         @OA\MediaType(
+   *             mediaType="multipart/form-data",
+   *             @OA\Schema(
+   *                 @OA\Property(
+   *                     description="file to upload",
+   *                     property="evaluasi_file",
+   *                     type="file",
+   *                     format="file",
+   *                 )
+   *             )
+   *         )
      * ),
      *   @OA\Response(
      *     response=200,
