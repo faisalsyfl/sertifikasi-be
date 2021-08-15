@@ -94,13 +94,13 @@ class ScheduleController extends Controller
             ->get();
             foreach ($data as $item){
                 if ($item->key == "auditor_ids_tahap_1" and $item->value){
-                    $audit["auditor_ids_tahap_1"] = Qsc3::get_auditor_objects(explode(",", $item->value));
+                    $audit["auditors_tahap_1"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 }elseif ($item->key == "auditor_ids_tahap_2" and $item->value){
-                    $audit["auditor_ids_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
+                    $audit["auditors_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 }elseif ($item->key == "auditor_ids_survailen_tahap_1" and $item->value){
-                    $audit["auditor_ids_survailen_tahap_1"] = Qsc3::get_auditor_objects(explode(",", $item->value));
+                    $audit["auditors_survailen_tahap_1"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 }elseif ($item->key == "auditor_ids_survailen_tahap_2" and $item->value){
-                    $audit["auditor_ids_survailen_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
+                    $audit["auditors_survailen_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 }
                 $audit[$item->key] = $item->value;
             }
