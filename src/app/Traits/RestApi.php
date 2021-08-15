@@ -216,8 +216,7 @@ trait RestApi
             ) {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
             } elseif (
-                $temp['section_form']['key'] != "auditor_ids"
-                and stripos($temp['section_form']['key'], "auditor_ids") != false
+                stripos($temp['section_form']['key'], "auditor_ids") !== false
             ) {
                 if(!$temp['value'] or $temp['value'] == "-"){
                     $final[$temp['section_form']['key']] = [];
