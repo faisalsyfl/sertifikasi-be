@@ -9,27 +9,27 @@ services:
   api_sifion_site_prod:
     build:
       context: .
-      dockerfile: nginx.dockerfile
+      dockerfile: nginx/prod/nginx.dockerfile
     container_name: api_sifion_nginx_prod
     ports:
       - 8888:80
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:/var/www/html:default
     depends_on:
       - api_sifion_php_prod
 
   api_sifion_php_prod:
     build:
       context: .
-      dockerfile: php.dockerfile
+      dockerfile: php/prod/php.dockerfile
     container_name: api_sifion_php_prod
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:/var/www/html:default
 
   api_sifion_composer_prod:
     build:
       context: .
-      dockerfile: composer.dockerfile
+      dockerfile: composer/composer.dockerfile
     container_name: api_sifion_composer_prod
     volumes:
       - ./src:/var/www/html
@@ -42,10 +42,10 @@ services:
   api_sifion_artisan_prod:
     build:
       context: .
-      dockerfile: php.dockerfile
+      dockerfile: php/prod/php.dockerfile
     container_name: api_sifion_artisan_prod
     volumes:
-      - ./src:/var/www/html:delegated
+      - ./src:/var/www/html:default
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']
