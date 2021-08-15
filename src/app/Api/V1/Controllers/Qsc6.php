@@ -79,13 +79,6 @@ class Qsc6 extends Controller
                             "status" => 1
                         ]);
                     }
-
-                    // Update QSC6
-                    $qsc6_section_status = SectionStatus::where("transaction_id",$section_status->transaction_id)
-                        ->where("section_id",6)->first();
-                    if($qsc6_section_status){
-                        TransactionController::preDefineSectionFormValue($qsc6_section_status->id, true);
-                    }
                 });
                 return ["status" => true, "data" => "Berhasil Menyimpan Data"];
             } catch (\Throwable $th) {
