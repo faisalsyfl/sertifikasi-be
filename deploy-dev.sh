@@ -14,5 +14,3 @@ docker-compose -f docker-compose-dev.yml run --rm artisan cache:clear
 docker-compose -f docker-compose-dev.yml run --rm artisan config:clear
 docker-compose -f docker-compose-dev.yml run --rm artisan config:cache
 docker-compose -f docker-compose-dev.yml run --rm artisan l5-swagger:generate
-docker-compose -f docker-compose-dev.yml run --rm artisan storage:link
-docker exec -i nginx sh -c "chmod -R 775 /var/www/html/public"
