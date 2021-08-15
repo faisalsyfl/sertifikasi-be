@@ -91,7 +91,7 @@ class Transaction extends Model
     }
     private function generateCode($type)
     {
-        if ($type == 'B4TSC') {
+        if ($type == 'SC') {
             $latest = DB::table('transaction')->where('code', 'like', 'B4TSC%')->latest()->first();
             if ($latest == null)
                 return 'B4TSC-' . '00001';
