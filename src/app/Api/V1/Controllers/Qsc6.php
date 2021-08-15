@@ -223,6 +223,9 @@ class Qsc6 extends Controller
             "sektor_nace" => "-",
             "nomor_sertifikasi" => "-",
             "evaluasi_file" => null,
+            "manajemen_mutu" => 0,
+            "manajemen_lingkungan" => 0,
+            "manajemen_keselamatan" => 0,
         ];
     }
 }

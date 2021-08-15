@@ -1055,6 +1055,7 @@ class TransactionController extends Controller
                         "2" => [
                             // keys
                             "status_aplikasi_sertifikasi",
+                            "manajemen_mutu", "manajemen_lingkungan", "manajemen_keselamatan"
                         ],
                         "3" => [
                             // keys

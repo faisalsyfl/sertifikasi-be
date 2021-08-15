@@ -226,6 +226,21 @@ class QSCSectionForm002Seeder extends Seeder
                 'rule' => null,
             ],
             [
+                'section_id' => 6,
+                'key' => 'manajemen_mutu',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'manajemen_lingkungan',
+                'rule' => null,
+            ],
+            [
+                'section_id' => 6,
+                'key' => 'manajemen_keselamatan',
+                'rule' => null,
+            ],
+            [
                 'section_id' => 7,
                 'key' => 'nomor_sertifikat',
                 'rule' => null,
