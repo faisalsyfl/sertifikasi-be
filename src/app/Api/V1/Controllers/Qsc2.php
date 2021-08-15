@@ -79,7 +79,7 @@ class Qsc2 extends Controller
 
         // Update QSC3
         $section_statuses = SectionStatus::where("transaction_id",$section_status->transaction_id)
-          ->whereIn("section_id",[3,6])->first();
+          ->whereIn("section_id",[3,6])->get();
         foreach ($section_statuses as $section_status){
           TransactionController::preDefineSectionFormValue($section_status->id, true);
         }
