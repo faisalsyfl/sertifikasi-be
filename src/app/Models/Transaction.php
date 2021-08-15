@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Helper\Helper;
 use Illuminate\Support\Facades\DB;
+use App\Models\SectionFormValue;
 
 
 class Transaction extends Model
@@ -49,7 +50,21 @@ class Transaction extends Model
     }
 
     public function getSertifikasiAttribute() {
-        return $this->attributes['sertifikasi'] = 'TBA';
+        $data = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
+        ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
+        ->where("section_status.transaction_id", $this->id)
+        ->where("section_status.transaction_id", $this->id)
+        ->whereIn("section_form.key", [
+            "status_aplikasi_sertifikasi",
+        ])
+        ->first();
+        $cert = "TBA";
+        if($data->value && $data->value == "SERTIFIKASI_AWAL"){
+            $cert = "Sertifikasi Awal";
+        }else if($data->value && $data->value == "RESERTIFIKASI"){
+            $cert = "Resertifikasi";
+        }
+        return $this->attributes['sertifikasi'] = $cert;
     }
     public function getStatusSertifikasiAttribute() {
         $progress = 0;
@@ -76,14 +91,14 @@ class Transaction extends Model
     }
     private function generateCode($type)
     {
-        if ($type == 'SC') {
-            $latest = DB::table('transaction')->where('code', 'like', 'SC%')->latest()->first();
+        if ($type == 'B4TSC') {
+            $latest = DB::table('transaction')->where('code', 'like', 'B4TSC%')->latest()->first();
             if ($latest == null)
-                return 'SC-' . '00001';
+                return 'B4TSC-' . '00001';
 
             $latest = (int) explode('-', $latest->code)[1];
             $latest += 1;
-            return 'SC-' . substr(str_repeat(0, 5) . $latest, -5);
+            return 'B4TSC-' . substr(str_repeat(0, 5) . $latest, -5);
         } else {
             // LSPRO Condition below
             // PC Condition below

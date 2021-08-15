@@ -213,6 +213,7 @@ trait RestApi
                 or $temp['section_form']['key'] == "dikaji_oleh_1"
                 or $temp['section_form']['key'] == "dikaji_oleh_2"
                 or $temp['section_form']['key'] == "disetujui_oleh"
+                or $temp['section_form']['key'] == "auditor_ids_tahap_2"
             ) {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
             } elseif ($temp['section_form']['key'] == "sektor_ea" or $temp['section_form']['key'] == "sektor_nace") {

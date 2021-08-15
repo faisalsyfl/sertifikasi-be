@@ -76,6 +76,32 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             });
         });
 
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc5'], function (Router $api) {
+            $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+
+            $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
+                $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
+            });
+        });
+
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc6'], function (Router $api) {
+            $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+            $api->post('upload', 'App\\Api\\V1\\Controllers\\Qsc6@filesUpload');
+
+            $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
+                $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
+            });
+        });
+
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'qsc7'], function (Router $api) {
+            $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
+            $api->post('upload', 'App\\Api\\V1\\Controllers\\Qsc6@filesUpload');
+
+            $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
+                $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
+            });
+        });
+
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'organization'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
             $api->get('/{id}', 'App\\Api\\V1\\Controllers\\OrganizationController@index');
@@ -138,12 +164,17 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'city'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCity');
         });
+        
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'form'], function (Router $api) {
             $api->get('location/', 'App\\Api\\V1\\Controllers\\FormLocation@index');
             $api->get('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@index');
             $api->post('location', 'App\\Api\\V1\\Controllers\\FormLocation@storeFormLocation');
             $api->put('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@updateLocation');
             $api->delete('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@destroy');
+        });
+
+        $api->group(['middleware' => 'jwt.auth', 'prefix' => 'schedule'], function (Router $api) {
+            $api->get('/', 'App\\Api\\V1\\Controllers\\ScheduleController@index');
         });
 
         #profile endpoint

@@ -29,6 +29,61 @@ class Qsc1 extends Controller
         }
         return ["status" => true, "data" => $existing->toArray()];
     }
+    /**
+     * @OA\Post(
+     *  path="/api/v1/qsc/store",
+     *  summary="Save and edit - Step 1",
+     *  tags={"Form"},
+     *  @OA\Parameter(
+     *      name="mode",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="QSC1"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="organization_id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="auditi_id",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="auditi_status",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string",
+     *           default="seluruh/cabang"
+     *      )
+     *   ),
+     *   @OA\Response(
+     *     response=200,
+     *     description="Success"
+     *  ),
+     *  @OA\Response(response=201,description="Success",
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *  @OA\Response(response=401,description="Unauthenticated"),
+     *  @OA\Response(response=400,description="Bad Request"),
+     *  @OA\Response(response=404,description="not found"),
+     *  @OA\Response(response=403,description="Forbidden"),
+     *  security={{ "apiAuth": {} }}
+     * )
+     */
 
     public function store($request)
     {
