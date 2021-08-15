@@ -17,6 +17,7 @@ class Transaction extends Model
     protected $with = ['auditi:id,name','section_status:id,status,transaction_id,section_id'];
     protected $appends = [
         'sertifikasi',
+        'type_sertifikasi',
         'status_sertifikasi',
     ];
 
@@ -53,18 +54,34 @@ class Transaction extends Model
         $data = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
         ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
         ->where("section_status.transaction_id", $this->id)
-        ->where("section_status.transaction_id", $this->id)
         ->whereIn("section_form.key", [
             "status_aplikasi_sertifikasi",
+            "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
+
         ])
         ->first();
         $cert = "TBA";
-        if($data->value && $data->value == "SERTIFIKASI_AWAL"){
+        if($data->value && $data->value == "SERTIFIKASI_AWAL" && $this->section_status[1]['status'] != 0){
             $cert = "Sertifikasi Awal";
         }else if($data->value && $data->value == "RESERTIFIKASI"){
             $cert = "Resertifikasi";
         }
         return $this->attributes['sertifikasi'] = $cert;
+    }
+    public function getTypeSertifikasiAttribute() {
+        $data = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
+        ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
+        ->where("section_status.transaction_id", $this->id)
+        ->whereIn("section_form.key", [
+            "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
+
+        ])
+        ->get();
+        $ret = [];
+        foreach($data as $d){
+            $ret[$d->key] = $d->value;
+        }
+        return $this->attributes['type_sertifikasi'] = $ret;
     }
     public function getStatusSertifikasiAttribute() {
         $progress = 0;
