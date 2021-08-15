@@ -142,12 +142,12 @@ class QSCSectionForm002Seeder extends Seeder
             ],
             [
                 'section_id' => 3,
-                'key' => 'ruang_lingkup',
+                'key' => 'lingkup',
                 'rule' => null,
             ],
             [
                 'section_id' => 6,
-                'key' => 'ruang_lingkup',
+                'key' => 'lingkup',
                 'rule' => null,
             ],
             [
