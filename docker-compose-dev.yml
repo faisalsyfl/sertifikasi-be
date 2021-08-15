@@ -14,9 +14,12 @@ services:
     ports:
       - 8989:80
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     depends_on:
       - php
+    networks: 
+      default: 
+        idv4_address: 172.21.0.99
 
   php:
     build:
@@ -24,7 +27,10 @@ services:
       dockerfile: dev_php.dockerfile
     container_name: php
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
+    networks: 
+      default: 
+        idv4_address: 172.21.0.100
 
   composer:
     build:
@@ -45,7 +51,7 @@ services:
       dockerfile: dev_php.dockerfile
     container_name: artisan
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']
