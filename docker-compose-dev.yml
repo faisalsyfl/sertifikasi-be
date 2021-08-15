@@ -19,7 +19,7 @@ services:
       - php
     networks: 
       default: 
-        idv4_address: 172.21.0.99
+        ipv4_address: 172.21.0.99
 
   php:
     build:
@@ -30,7 +30,7 @@ services:
       - ./src:/var/www/html
     networks: 
       default: 
-        idv4_address: 172.21.0.100
+        ipv4_address: 172.21.0.100
 
   composer:
     build:
