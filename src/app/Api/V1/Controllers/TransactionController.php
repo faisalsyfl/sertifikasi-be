@@ -1304,7 +1304,7 @@ class TransactionController extends Controller
                 }
             }
 
-            $result["order_info"]["sertifikasi"] = implode(", ",$sertifikasi_management);
+            $result["order_info"]["sertifikasi"] = implode(", ",array_unique($sertifikasi_management));
         }
 
         return $result;
