@@ -1214,6 +1214,7 @@ class TransactionController extends Controller
             ],
             "payment" => Qsc4::get_payment_object(null, $transaction->id, true),
             "audit" => [],
+            "sertifikat" => []
         ];
 
         $data = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
@@ -1224,7 +1225,9 @@ class TransactionController extends Controller
                 "status_aplikasi_sertifikasi",
                 "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
                 // audit
-                "auditor_ids", "jumlah_auditor", "start_jadwal", "end_jadwal"
+                "auditor_ids", "jumlah_auditor", "start_jadwal", "end_jadwal",
+                // sertifikat
+                "draft_sertifikat", "published_sertifikat",
             ])
             ->get();
 
@@ -1250,10 +1253,15 @@ class TransactionController extends Controller
                     and $item->value
                 ){
                     $result["audit"][$item->key] = $item->value;
+                } elseif (
+                    ($item->key == "draft_sertifikat" or $item->key == "published_sertifikat")
+                    and $item->value
+                ){
+                    $result["sertifikat"][$item->key] = $item->value;
                 }
             }
 
-            $result["order_info"]["sertifikasi"] = implode(", ",$sertifikasi_management);
+            $result["order_info"]["sertifikasi"] = implode(", ",array_unique($sertifikasi_management));
         }
 
         return $result;
