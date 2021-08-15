@@ -9,27 +9,33 @@ services:
   site:
     build:
       context: .
-      dockerfile: nginx/dev/nginx.dockerfile
+      dockerfile: dev_nginx.dockerfile
     container_name: nginx
     ports:
       - 8989:80
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     depends_on:
       - php
+    networks: 
+      default: 
+        ipv4_address: 172.21.0.99
 
   php:
     build:
       context: .
-      dockerfile: php/dev/php.dockerfile
+      dockerfile: dev_php.dockerfile
     container_name: php
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
+    networks: 
+      default: 
+        ipv4_address: 172.21.0.100
 
   composer:
     build:
       context: .
-      dockerfile: composer/composer_dev.dockerfile
+      dockerfile: dev_composer.dockerfile
     container_name: composer
     volumes:
       - ./src:/var/www/html
@@ -42,10 +48,10 @@ services:
   artisan:
     build:
       context: .
-      dockerfile:  php/dev/php.dockerfile
+      dockerfile: dev_php.dockerfile
     container_name: artisan
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']

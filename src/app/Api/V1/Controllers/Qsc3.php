@@ -230,7 +230,7 @@ class Qsc3 extends Controller
             "audit_joint" => false,
             "audit_combination" => false,
             "audit_integration" => false,
-            "ruang_lingkup" => "-",
+            "lingkup" => "-",
             "scope" => "-",
             "sektor_ea" => null,
             "sektor_nace" => null,

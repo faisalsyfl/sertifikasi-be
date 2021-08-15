@@ -89,16 +89,26 @@ class Qsc5 extends Controller
     static function getKeyValueQSC5()
     {
         return [
-            "jumlah_auditor" => 0,
-            "start_jadwal" => "-",
-            "end_jadwal" => "-",
-            "type" => "-",
-            "auditor_ids" => "-",
+            "jumlah_auditor_tahap_1" => 0,
+            "start_jadwal_tahap_1" => "-",
+            "end_jadwal_tahap_1" => "-",
+            "type_tahap_1" => "-",
+            "auditor_ids_tahap_1" => "-",
             "jumlah_auditor_tahap_2" => 0,
             "start_jadwal_tahap_2" => "-",
             "end_jadwal_tahap_2" => "-",
             "type_tahap_2" => "-",
-            "auditor_ids_tahap_2" => "-"
+            "auditor_ids_tahap_2" => "-",
+            "jumlah_auditor_survailen_tahap_1" => 0,
+            "start_jadwal_survailen_tahap_1" => "-",
+            "end_jadwal_survailen_tahap_1" => "-",
+            "type_survailen_tahap_1" => "-",
+            "auditor_ids_survailen_tahap_1" => "-",
+            "jumlah_auditor_survailen_tahap_2" => 0,
+            "start_jadwal_survailen_tahap_2" => "-",
+            "end_jadwal_survailen_tahap_2" => "-",
+            "type_survailen_tahap_2" => "-",
+            "auditor_ids_survailen_tahap_2" => "-",
         ];
     }
 }
