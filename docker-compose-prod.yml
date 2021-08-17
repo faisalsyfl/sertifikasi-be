@@ -17,6 +17,9 @@ services:
       - ./src:/var/www/html:default
     depends_on:
       - api_sifion_php_prod
+    networks: 
+      default: 
+        ipv4_address: 172.21.0.199
 
   api_sifion_php_prod:
     build:
@@ -25,6 +28,9 @@ services:
     container_name: api_sifion_php_prod
     volumes:
       - ./src:/var/www/html:default
+    networks: 
+      default: 
+        ipv4_address: 172.21.0.200
 
   api_sifion_composer_prod:
     build:
