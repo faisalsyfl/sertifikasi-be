@@ -32,6 +32,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
             $api->post('store', 'App\\Api\\V1\\Controllers\\TransactionController@store');
             $api->put('status/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@setStatus');
             $api->delete('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@destroy');
+            $api->post('/sendmail', 'App\\Api\\V1\\Controllers\\Qsc1@sendMail');
 
             $api->group(['middleware' => 'jwt.auth', 'prefix' => 'list'], function (Router $api) {
                 $api->get('/{id}', 'App\\Api\\V1\\Controllers\\TransactionController@list');
@@ -164,7 +165,7 @@ $api->version('v1', function ($api) { // Always keep this to v1, and ignore acce
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'city'], function (Router $api) {
             $api->get('/', 'App\\Api\\V1\\Controllers\\MasterLocation@showCity');
         });
-        
+
         $api->group(['middleware' => 'jwt.auth', 'prefix' => 'form'], function (Router $api) {
             $api->get('location/', 'App\\Api\\V1\\Controllers\\FormLocation@index');
             $api->get('location/{id}', 'App\\Api\\V1\\Controllers\\FormLocation@index');
