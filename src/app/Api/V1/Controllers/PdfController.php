@@ -46,6 +46,7 @@ class PdfController extends Controller
         $file_path = 'public/pdf/'.$id.'_invoice_'.date("YmdHis").'.pdf';
 
         $info = [
+            'peminta_jasa' => isset($data['nama_klien']) ? $data['nama_klien'] : 'PT. Telkom',
             'kepada' => isset($data['nama_klien']) ? $data['nama_klien'] : 'PT. Telkom',
             'alamat' => isset($data['alamat_klien']) ? $data['alamat_klien'] : 'Jl. Jend. Ahmad Yani no 106 Cilegon 42421, Banten tarkun@sucofindo.co.id',
             'tanggal' => date("Y/m/d", strtotime($tanggal_invoice)),
@@ -87,6 +88,8 @@ class PdfController extends Controller
         $month_roman = self::numberToRomanRepresentation($month);
         $year = date("Y", strtotime($tanggal_invoice));
         $file_path = 'public/pdf/'.$id.'_penawaran_'.date("YmdHis").'.pdf';
+        $public_code = isset($data['public_code']) ? $data['public_code'] : 'invalid';
+        $qr_url = env('FRONTEND_URL', 'https://sifion.b4t.go.id/').'pelanggan/'.$public_code;
 
         # $data['jenis'] = Qsc4::getJenisSertifikasiManajemen(1);
         # $data['jenis_lengkap'] = Qsc4::getJenisSertifikasiManajemen(1, true);
@@ -104,6 +107,7 @@ class PdfController extends Controller
             'va_number' => isset($data['va_number']) ? $data['va_number'] : '0123456789',
             'va_expire' => strftime("%d %B %Y", strtotime($tanggal_expire)),
             'pdf_file' => $file_path,
+            'qr_url' => $qr_url,
             'data' => $data_invoice,
             'transport_0' => "",
         ];
@@ -129,6 +133,8 @@ class PdfController extends Controller
         $tanggal_invoice = isset($data['tanggal_invoice']) ? $data['tanggal_invoice'] : date("Y-m-d H:i:s",time());
         $transaction_id = isset($data["transaction_id"]) ? $data["transaction_id"] : 1;
         $file_path = 'public/pdf/'.$transaction_id.'_kuitansi_'.date("YmdHis").'.pdf';
+        $public_code = isset($data['public_code']) ? $data['public_code'] : 'invalid';
+        $qr_url = env('FRONTEND_URL', 'https://sifion.b4t.go.id/').'pelanggan/'.$public_code;
 
         # $data['jenis'] = Qsc4::getJenisSertifikasiManajemen(1);
         # $data['sertifikasi'] = Qsc4::getJenisSertifikasi(1);

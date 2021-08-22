@@ -77,7 +77,7 @@ class Qsc4 extends Controller
                         $request_data['nilai_penawaran'] = $request_data['total'];
                     }
                     if(!isset($request_data['terbilang'])){
-                        $request_data['terbilang'] = $this->getTerbilang($request_data['total']) . "Rupiah";
+                        $request_data['terbilang'] = terbilang($request_data['total']);
                     }
 
                     foreach ($request_data as $key => $v) {
@@ -175,10 +175,11 @@ class Qsc4 extends Controller
                     $payment->receipt = URL::to('/')."/".PdfController::generateKwitansi([
                         "tanggal_invoice" => $payment->created_at,
                         "transaction_id" => $payment->transaction_id,
+                        "public_code" => $payment->public_code,
                         "va_number" => $payment->payment_code,
                         "nama_klien" => $auditi->name,
                         "alamat_klien" => $auditi->address,
-                        "total" => $auditi->amount,
+                        "total" => $payment->amount,
                         "jenis" => self::getJenisSertifikasiManajemen($transaction->id),
                         "sertifikasi" => self::getJenisSertifikasi($transaction->id),
                     ], "file_path");
@@ -356,6 +357,7 @@ class Qsc4 extends Controller
                         "biaya_sertifikasi" => isset($data["biaya_sertifikasi"]) ? $data["biaya_sertifikasi"] : 0,
                         "transportasi" => isset($data["transportasi"]) ? $data["transportasi"] : 0,
                         "transaction_id" => $transaction->id,
+                        "public_code" => $transaction->public_code,
                         "tanggal_invoice" => Carbon::now()->format('Y-m-d H:i:s'),
                         "tanggal_expire" => Carbon::now()->addDays(3)->format('Y-m-d H:i:s'),
                         "nama_klien" => $auditi->name,
@@ -399,36 +401,6 @@ class Qsc4 extends Controller
                 $form_value->save();
             }
         }
-    }
-
-    private function getTerbilang($nilai){
-        $nilai = abs($nilai);
-        $huruf = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
-        $temp = "";
-
-        if ($nilai < 12) {
-            $temp = " ". $huruf[$nilai];
-        } else if ($nilai <20) {
-            $temp = $this->getTerbilang($nilai - 10). " belas";
-        } else if ($nilai < 100) {
-            $temp = $this->getTerbilang($nilai/10)." puluh". $this->getTerbilang($nilai % 10);
-        } else if ($nilai < 200) {
-            $temp = " seratus" . $this->getTerbilang($nilai - 100);
-        } else if ($nilai < 1000) {
-            $temp = $this->getTerbilang($nilai/100) . " ratus" . $this->getTerbilang($nilai % 100);
-        } else if ($nilai < 2000) {
-            $temp = " seribu" . $this->getTerbilang($nilai - 1000);
-        } else if ($nilai < 1000000) {
-            $temp = $this->getTerbilang($nilai/1000) . " ribu" . $this->getTerbilang($nilai % 1000);
-        } else if ($nilai < 1000000000) {
-            $temp = $this->getTerbilang($nilai/1000000) . " juta" . $this->getTerbilang($nilai % 1000000);
-        } else if ($nilai < 1000000000000) {
-            $temp = $this->getTerbilang($nilai/1000000000) . " milyar" . $this->getTerbilang(fmod($nilai,1000000000));
-        } else if ($nilai < 1000000000000000) {
-            $temp = $this->getTerbilang($nilai/1000000000000) . " trilyun" . $this->getTerbilang(fmod($nilai,1000000000000));
-        }
-
-        return ucwords($temp);
     }
 
     static function getKeyValueQSC4()
