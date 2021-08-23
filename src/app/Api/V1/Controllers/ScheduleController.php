@@ -78,7 +78,9 @@ class ScheduleController extends Controller
         }
         $transaction = $transaction->orderBy('id', 'DESC')->offset(($page - 1) * $limit)->limit($limit)->paginate($limit);
         $detail = $transaction->toArray();
-        foreach($transaction as $d){
+        foreach($transaction as $key => $d){
+            if($d->section_status[4]->status > 0){
+            
             $data = SectionFormValue::join("section_form", "section_form.id", "=", "section_form_value.section_form_id")
             ->join("section_status", "section_status.id", "=", "section_form_value.section_status_id")
             ->where("section_status.transaction_id", $d->id)
@@ -105,6 +107,9 @@ class ScheduleController extends Controller
                 $audit[$item->key] = $item->value;
             }
             $d->audit = $audit;
+            }else{
+                unset($transaction[$key]);
+            }
         }
         return $this->output($transaction);
     }
