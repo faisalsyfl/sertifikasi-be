@@ -164,7 +164,7 @@ class Qsc1 extends Controller
                     ]);
                 }
 
-                return ["status" => true, "data" => ['transaction_id' => $transaction_id, 'public_code' => $trans->public_code]];
+                return ["status" => true, "data" => ['transaction_id' => $transaction_id, 'public_code' => 'ABCDEF']];
             } catch (\Throwable $th) {
                 #save to LOG
             }
