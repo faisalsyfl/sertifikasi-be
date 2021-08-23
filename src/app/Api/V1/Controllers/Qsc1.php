@@ -133,6 +133,9 @@ class Qsc1 extends Controller
         if (isset($insert["auditi_status"]) and $insert["auditi_status"]) {
             $map["auditi_status"] = $insert["auditi_status"];
         }
+        if (isset($insert["send_to_email"]) and $insert["send_to_email"]) {
+            $map["send_to_email"] = $insert["send_to_email"];
+        }
 
         if (is_array($map) && (count($map) > 0)) {
             $section_status_id = SectionStatus::where('transaction_id', $transaction_id)->where('section_id', $insert['section'])->first()->id;
