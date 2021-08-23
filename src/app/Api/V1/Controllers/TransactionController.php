@@ -1236,7 +1236,7 @@ class TransactionController extends Controller
                 "status_aplikasi_sertifikasi",
                 "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
                 // audit
-                "auditor_ids", "jumlah_auditor", "start_jadwal", "end_jadwal",
+                "auditor_ids_tahap_1", "jumlah_auditor_tahap_1", "start_jadwal_tahap_1", "end_jadwal_tahap_1",
                 // sertifikat
                 "draft_sertifikat", "published_sertifikat",
             ])
@@ -1260,8 +1260,11 @@ class TransactionController extends Controller
                 } elseif ($item->key == "auditor_ids_tahap_2" and $item->value){
                     $result["audit"]["auditors_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 } elseif (
-                    ($item->key == "jumlah_auditor" or $item->key == "start_jadwal" or $item->key == "end_jadwal")
-                    and $item->value
+                    (
+                        $item->key == "jumlah_auditor_tahap_1"
+                        or $item->key == "start_jadwal_tahap_1"
+                        or $item->key == "end_jadwal_tahap_1"
+                    ) and $item->value
                 ){
                     $result["audit"][$item->key] = $item->value;
                 } elseif (
