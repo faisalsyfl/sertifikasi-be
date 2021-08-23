@@ -1235,8 +1235,10 @@ class TransactionController extends Controller
                 // order info
                 "status_aplikasi_sertifikasi",
                 "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
-                // audit
+                // audit tahap 1
                 "auditor_ids_tahap_1", "jumlah_auditor_tahap_1", "start_jadwal_tahap_1", "end_jadwal_tahap_1",
+                // audit tahap 2
+                "auditor_ids_tahap_2", "jumlah_auditor_tahap_2", "start_jadwal_tahap_2", "end_jadwal_tahap_2",
                 // sertifikat
                 "draft_sertifikat", "published_sertifikat",
             ])
@@ -1264,6 +1266,9 @@ class TransactionController extends Controller
                         $item->key == "jumlah_auditor_tahap_1"
                         or $item->key == "start_jadwal_tahap_1"
                         or $item->key == "end_jadwal_tahap_1"
+                        or $item->key == "jumlah_auditor_tahap_2"
+                        or $item->key == "start_jadwal_tahap_2"
+                        or $item->key == "end_jadwal_tahap_2"
                     ) and $item->value
                 ){
                     $result["audit"][$item->key] = $item->value;
