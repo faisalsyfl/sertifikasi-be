@@ -1235,8 +1235,10 @@ class TransactionController extends Controller
                 // order info
                 "status_aplikasi_sertifikasi",
                 "manajemen_mutu","manajemen_lingkungan","manajemen_keselamatan",
-                // audit
-                "auditor_ids", "jumlah_auditor", "start_jadwal", "end_jadwal",
+                // audit tahap 1
+                "auditor_ids_tahap_1", "jumlah_auditor_tahap_1", "start_jadwal_tahap_1", "end_jadwal_tahap_1",
+                // audit tahap 2
+                "auditor_ids_tahap_2", "jumlah_auditor_tahap_2", "start_jadwal_tahap_2", "end_jadwal_tahap_2",
                 // sertifikat
                 "draft_sertifikat", "published_sertifikat",
             ])
@@ -1255,13 +1257,19 @@ class TransactionController extends Controller
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Sertifikasi Awal";
                 } elseif ($item->key == "status_aplikasi_sertifikasi" and $item->value == "RESERTIFIKASI"){
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Resertifikasi";
-                } elseif ($item->key == "auditor_ids" and $item->value){
+                } elseif ($item->key == "auditor_ids_tahap_1" and $item->value){
                     $result["audit"]["auditors"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 } elseif ($item->key == "auditor_ids_tahap_2" and $item->value){
                     $result["audit"]["auditors_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 } elseif (
-                    ($item->key == "jumlah_auditor" or $item->key == "start_jadwal" or $item->key == "end_jadwal")
-                    and $item->value
+                    (
+                        $item->key == "jumlah_auditor_tahap_1"
+                        or $item->key == "start_jadwal_tahap_1"
+                        or $item->key == "end_jadwal_tahap_1"
+                        or $item->key == "jumlah_auditor_tahap_2"
+                        or $item->key == "start_jadwal_tahap_2"
+                        or $item->key == "end_jadwal_tahap_2"
+                    ) and $item->value
                 ){
                     $result["audit"][$item->key] = $item->value;
                 } elseif (
