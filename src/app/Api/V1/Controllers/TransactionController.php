@@ -1255,7 +1255,7 @@ class TransactionController extends Controller
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Sertifikasi Awal";
                 } elseif ($item->key == "status_aplikasi_sertifikasi" and $item->value == "RESERTIFIKASI"){
                     $result["order_info"]["status_aplikasi_sertifikasi"] = "Resertifikasi";
-                } elseif ($item->key == "auditor_ids" and $item->value){
+                } elseif ($item->key == "auditor_ids_tahap_1" and $item->value){
                     $result["audit"]["auditors"] = Qsc3::get_auditor_objects(explode(",", $item->value));
                 } elseif ($item->key == "auditor_ids_tahap_2" and $item->value){
                     $result["audit"]["auditors_tahap_2"] = Qsc3::get_auditor_objects(explode(",", $item->value));
