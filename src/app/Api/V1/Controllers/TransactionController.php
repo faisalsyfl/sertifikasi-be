@@ -917,7 +917,7 @@ class TransactionController extends Controller
         $klien = Auditi::all();
         $auditor = Auditor::all();
         $comp = Competence::all();
-        $transaction = Transaction::all();
+        $transaction = Transaction::where('stats',1)->get();
 
         return $this->output(['org' => count($org), 'client' => count($klien), 'auditor' => count($auditor), 'comp' => count($comp), 'transaction' => count($transaction)]);
     }
