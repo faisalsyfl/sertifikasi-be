@@ -320,6 +320,8 @@ class Qsc1 extends Controller
 
         $html = view('pendaftaran', $data)->render();
         $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+
+        // dd(env('MAIL_HOST'));
         try {
             // Pengaturan Server
             // $mail->SMTPDebug = 2;                                 // Enable verbose debug output
@@ -332,7 +334,7 @@ class Qsc1 extends Controller
             $mail->Port = env('MAIL_PORT');                                    // TCP port to connect to
 
             // Siapa yang mengirim email
-            $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+            $mail->setFrom(env('MAIL_FROM_ADDRESS'), "Sifion Sertifikasi");
 
             // Siapa yang akan menerima email
             $mail->addAddress($auditi->email,  $auditi->name);     // Add a recipient
