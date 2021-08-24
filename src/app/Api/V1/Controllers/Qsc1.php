@@ -14,6 +14,8 @@ use App\Models\Transaction;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Mail;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class Qsc1 extends Controller
 {
@@ -308,33 +310,76 @@ class Qsc1 extends Controller
             return $this->errorRequest(422, 'Validation Error', $validate);
 
         $auditi = Auditi::find($request->auditi_id);
+        if (!$auditi)
+            return $this->errorRequest(422, 'Auditi Not Found', $validate);
+
         $data["name"] = $auditi->name;
         $data["alamat"] = $auditi->address;
         $data["email"] = $auditi->email;
         $data["kode_booking"] = $request->booking_code;
 
-        $email = isset($data["email"]) ? $data["email"] : "wahyuanggana1@gmail.com";
-        $subject = isset($data["subject"]) ? $data["subject"] : "Pendaftaran";
+        $html = view('pendaftaran', $data)->render();
+        $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+        try {
+            // Pengaturan Server
+            // $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host =  env('MAIL_HOST');                  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username =  env('MAIL_USERNAME');                  // SMTP username
+            $mail->Password = env('MAIL_PASSWORD');                          // SMTP password
+            $mail->SMTPSecure = env('MAIL_ENCRYPTION');                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = env('MAIL_PORT');                                    // TCP port to connect to
 
-        Mail::send('pendaftaran', $data, function ($message) use ($email, $subject) {
-            $message->to($email, 'Email PDF asdasd')->subject($subject);
-            $message->from('sertifikasi@b4t.go.id', 'Sertifikasi B4T');
-        });
+            // Siapa yang mengirim email
+            $mail->setFrom(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
 
-        $section_status_id = SectionStatus::where('transaction_id', $request->transaction_id)->where('section_id', 1)->first()->id;
-        $idFormValue = SectionForm::where('section_id', 1)->where('key', 'send_to_email')->first()->id;
+            // Siapa yang akan menerima email
+            $mail->addAddress($auditi->email,  $auditi->name);     // Add a recipient
+            // $mail->addAddress('ellen@example.com');               // Name is optional
+
+            // ke siapa akan kita balas emailnya
+            // $mail->addReplyTo($emailAddress, $name);
+
+            // $mail->addCC('cc@example.com');
+            // $mail->addBCC('bcc@example.com');
+
+            //Attachments
+            // $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+            // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
 
 
-        $existing = SectionFormValue::where('section_form_id', $idFormValue)->where('section_status_id', $section_status_id)->first();
-        $formValue = (isset($existing->id) && $existing->id) ? $existing : new SectionFormValue();
-        $formValue->section_form_id = $idFormValue;
-        $formValue->section_status_id = $section_status_id;
-        $formValue->value = 1;
-        $formValue->save();
+            //Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = "Pendaftaran Sifion Sertifikasi";
+            $mail->Body    = $html;
+            $mail->AltBody = $html;
 
-        return $this->output(
-            ["status" => true, "data" => "Berhasil Mengirim Email"],
-            "Berhasil Mengirim Email"
-        );
+            if ($mail->send()) {
+                $section_status_id = SectionStatus::where('transaction_id', $request->transaction_id)->where('section_id', 1)->first()->id;
+                $idFormValue = SectionForm::where('section_id', 1)->where('key', 'send_to_email')->first()->id;
+
+
+                $existing = SectionFormValue::where('section_form_id', $idFormValue)->where('section_status_id', $section_status_id)->first();
+                $formValue = (isset($existing->id) && $existing->id) ? $existing : new SectionFormValue();
+                $formValue->section_form_id = $idFormValue;
+                $formValue->section_status_id = $section_status_id;
+                $formValue->value = 1;
+                $formValue->save();
+
+                return $this->output(
+                    ["status" => true, "data" => "Berhasil Mengirim Email"],
+                    "Berhasil Mengirim Email"
+                );
+            }
+
+            return $this->output(
+                ["status" => true, "data" => "Gagal Mengirim Email"],
+                "Gagal Mengirim Email"
+            );
+        } catch (Exception $e) {
+            echo 'Message could not be sent.';
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
+        }
     }
 }
