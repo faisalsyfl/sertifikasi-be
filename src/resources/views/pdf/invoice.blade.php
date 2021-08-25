@@ -32,7 +32,7 @@
     <tr>
         <td colspan="2" class="border-bottom border-left border-right"><br />Tanggal :{{$tanggal}}<br />No :
             1<br />No Order: {{$nomor_order}}</td>
-        <td colspan="3" class="border-bottom border-right">Permintaan Jasa : LABORATORIUM</td>
+        <td colspan="3" class="border-bottom border-right">Peminta Jasa : {{$peminta_jasa}}</td>
     </tr>
     <tr>
         <td colspan="5" class="border-bottom border-left border-right"></td>

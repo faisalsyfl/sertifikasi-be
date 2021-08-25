@@ -107,7 +107,7 @@
 
     <p align="right">
         Kepala Balai Besar Bahan dan Barang Teknik<br>
-        <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ $pdf_file }}&choe=UTF-8" title="Link to Google.com" />
+        <img src="https://chart.googleapis.com/chart?chs=100x100&cht=qr&chl={{ $qr_url }}&choe=UTF-8" title="Link to Google.com" />
     </p>
 
     <p style="text-align: left">

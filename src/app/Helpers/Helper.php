@@ -90,11 +90,10 @@ function penyebut($nilai)
 
 function terbilang($nilai)
 {
-
     if ($nilai < 0) {
         $hasil = "minus " . trim(penyebut($nilai));
     } else {
         $hasil = trim(penyebut($nilai));
     }
-    return ucwords($hasil) . ' Rupiah';
+    return str_replace("  "," ", ucwords($hasil)) . ' Rupiah';
 }

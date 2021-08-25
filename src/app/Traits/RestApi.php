@@ -216,10 +216,13 @@ trait RestApi
             ) {
                 $final[$temp['section_form']['key']] = Qsc3::get_auditor_objects(explode(",", $temp['value']));
             } elseif (
-                $temp['section_form']['key'] != "auditor_ids"
-                and stripos($temp['section_form']['key'], "auditor_ids") != false
+                stripos($temp['section_form']['key'], "auditor_ids") !== false
             ) {
-                $final[$temp['section_form']['key']] = explode(",", $temp['value']);
+                if(!$temp['value'] or $temp['value'] == "-"){
+                    $final[$temp['section_form']['key']] = [];
+                }else{
+                    $final[$temp['section_form']['key']] = explode(",", $temp['value']);
+                }
             } elseif ($temp['section_form']['key'] == "sektor_ea" or $temp['section_form']['key'] == "sektor_nace") {
                 $final[$temp['section_form']['key']] = Qsc3::get_competence_object(explode(",", $temp['value']));
             } elseif ($temp['section_form']['key'] == "payment"){
