@@ -14,7 +14,7 @@ services:
     ports:
       - 8888:80
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     depends_on:
       - api_sifion_php_prod
     networks: 
@@ -27,7 +27,7 @@ services:
       dockerfile: prod_php.dockerfile
     container_name: api_sifion_php_prod
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     networks: 
       default: 
         ipv4_address: 172.21.0.200
@@ -51,7 +51,7 @@ services:
       dockerfile: prod_php.dockerfile
     container_name: api_sifion_artisan_prod
     volumes:
-      - ./src:/var/www/html:default
+      - ./src:/var/www/html
     working_dir: /var/www/html
     user: laravel
     entrypoint: ['php', '/var/www/html/artisan']
