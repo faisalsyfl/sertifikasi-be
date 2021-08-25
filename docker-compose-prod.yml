@@ -9,7 +9,7 @@ services:
   api_sifion_site_prod:
     build:
       context: .
-      dockerfile: nginx/prod/nginx.dockerfile
+      dockerfile: prod_nginx.dockerfile
     container_name: api_sifion_nginx_prod
     ports:
       - 8888:80
@@ -24,7 +24,7 @@ services:
   api_sifion_php_prod:
     build:
       context: .
-      dockerfile: php/prod/php.dockerfile
+      dockerfile: prod_php.dockerfile
     container_name: api_sifion_php_prod
     volumes:
       - ./src:/var/www/html:default
@@ -35,7 +35,7 @@ services:
   api_sifion_composer_prod:
     build:
       context: .
-      dockerfile: composer/composer.dockerfile
+      dockerfile: prod_composer.dockerfile
     container_name: api_sifion_composer_prod
     volumes:
       - ./src:/var/www/html
@@ -48,7 +48,7 @@ services:
   api_sifion_artisan_prod:
     build:
       context: .
-      dockerfile: php/prod/php.dockerfile
+      dockerfile: prod_php.dockerfile
     container_name: api_sifion_artisan_prod
     volumes:
       - ./src:/var/www/html:default

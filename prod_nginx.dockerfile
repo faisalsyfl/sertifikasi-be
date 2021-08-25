@@ -1,7 +1,7 @@
 FROM nginx:stable-alpine
 
-ADD ./nginx.conf /etc/nginx/
-ADD ./default.conf /etc/nginx/conf.d/
+ADD ./nginx/prod/nginx.conf /etc/nginx/
+ADD ./nginx/prod/default.conf /etc/nginx/conf.d/
 
 RUN mkdir -p /var/www/html
 
