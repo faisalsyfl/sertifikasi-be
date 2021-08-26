@@ -54,7 +54,7 @@
             "php artisan jwt:secret -f"
         ],
         "post-install-cmd": [
-            "ln -sr storage/app/public public/storage",
+            // "ln -sr storage/app/public public/storage",
             "Illuminate\\Foundation\\ComposerScripts::postInstall"
         ],
         "post-update-cmd": [
