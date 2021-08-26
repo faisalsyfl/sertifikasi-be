@@ -14,7 +14,7 @@ docker-compose -f docker-compose-prod.yml run --rm api_sifion_artisan_prod cache
 docker-compose -f docker-compose-prod.yml run --rm api_sifion_artisan_prod config:clear
 docker-compose -f docker-compose-prod.yml run --rm api_sifion_artisan_prod config:cache
 docker-compose -f docker-compose-prod.yml run --rm api_sifion_artisan_prod l5-swagger:generate
-docker-compose -f docker-compose-prod.yml run --rm api_sifion_artisan_prod storage:link
+# docker-compose -f docker-compose-prod.yml run --rm api_sifion_artisan_prod storage:link
 docker exec -ti api_sifion_nginx_prod sh -c "chmod -R 775 /var/www/html/public"
 
 echo "application deployed PROD"
