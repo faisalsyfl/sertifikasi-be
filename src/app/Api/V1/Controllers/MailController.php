@@ -15,7 +15,8 @@ class MailController extends Controller
         echo "HTML Email Sent. Check your inbox.";
     }
 
-    static function setupMail($data){
+    static function setupMail($data)
+    {
         $name = isset($data["name"]) ? $data["name"] : "PT. ABC";
         $email = isset($data["email"]) ? $data["email"] : "wahyuanggana1@gmail.com";
         $subject = isset($data["subject"]) ? $data["subject"] : "Payment Document";
@@ -24,10 +25,10 @@ class MailController extends Controller
         $data = array('name' => $name);
         Mail::send('mail', $data, function ($message) use ($email, $attachment, $subject) {
             $message->to($email, 'Email PDF')->subject($subject);
-            $message->from('sertifikasi@b4t.go.id', 'Sertifikasi B4T');
+            $message->from('sifion@b4t.go.id', 'Sertifikasi B4T');
 
-            if($attachment){
-                $attachment = str_replace(URL::to('/'), base_path()."/public", $attachment);
+            if ($attachment) {
+                $attachment = str_replace(URL::to('/'), base_path() . "/public", $attachment);
                 $message->attach($attachment);
             }
         });
