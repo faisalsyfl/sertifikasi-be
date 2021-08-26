@@ -1,4 +1,4 @@
-name: Laravel
+name: Laravel-to-production
 
 on:
   push:
