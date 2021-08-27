@@ -1,4 +1,4 @@
-<p>Selamat anda telah terdaftar pada SIFION B4T (sifion.b4t.go.id)<br>
+<p>Selamat anda telah terdaftar pada Sistem Sertifikasi Online (SIFION) B4T (sifion.b4t.go.id)<br>
     Nama Perusahaan : {{ $name }}<br>
     Alamat : {{ $alamat }}<br>
     Kode booking : {{ $kode_booking }}<br>
