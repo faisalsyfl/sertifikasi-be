@@ -114,7 +114,6 @@ class Qsc1 extends Controller
         if ($validator->fails()) {
             return $this->errorRequest(422, "Validation Error", $validator);
         }
-
         $section_status_ids = [];
         $transaction_code = "-";
         if (!$request->has('transaction_id')) {
@@ -165,8 +164,7 @@ class Qsc1 extends Controller
                         ]
                     ]);
                 }
-
-                return ["status" => true, "data" => ['transaction_id' => $transaction_id, 'public_code' => 'ABCDEF']];
+                return ["status" => true, "data" => ['transaction_id' => $transaction_id, 'public_code' => strtoupper($transaction->public_code)]];
             } catch (\Throwable $th) {
                 #save to LOG
             }
