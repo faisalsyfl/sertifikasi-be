@@ -332,7 +332,7 @@ class Qsc1 extends Controller
             $mail->Port = env('MAIL_PORT');                                    // TCP port to connect to
 
             // Siapa yang mengirim email
-            $mail->setFrom(env('MAIL_FROM_ADDRESS'), "Sifion Sertifikasi");
+            $mail->setFrom('sifion@b4t.go.id', "Sifion Sertifikasi");
 
             // Siapa yang akan menerima email
             $mail->addAddress($auditi->email,  $auditi->name);     // Add a recipient
