@@ -1,28 +1,23 @@
-# docker-compose-laravel
-A pretty simplified Docker Compose workflow that sets up a LEMP network of containers for local Laravel development. You can view the full article that inspired this repo [here](https://dev.to/aschmelyun/the-beauty-of-docker-for-local-laravel-development-13c0).
+# SIFION API 
+- Authentication via [JWT](https://jwt.io/)
+- Routes mapping via [dingo-api]()
+- Support for [mysql](https://www.mysql.com/)
+- Environments for `development` and `production`
+- Built with [composer](https://getcomposer.org/)
 
 
-## Usage
+SIFION is a web system for managing the proses about sertification programs. 
+Build up from Laravel 5.8.*
 
-To get started, make sure you have [Docker installed](https://docs.docker.com/docker-for-mac/install/) on your system, and then clone this repository.
+## Features
+- Data Management
+- Sertification Process Management
+- Payment Management
+- Export document as PDF File
+- Stakeholder Notification
+- Scheduling
 
-Next, navigate in your terminal to the directory you cloned this, and spin up the containers for the web server by running `docker-compose up -d --build site`.
+## Tech
+SIFION uses a [Laravel](https://laravel.com/) of open source project to deploy
 
-After that completes, follow the steps from the [src/README.md](src/README.md) file to get your Laravel project added in (or create a new blank one).
-
-Bringing up the Docker Compose network with `site` instead of just using `up`, ensures that only our site's containers are brought up at the start, instead of all of the command containers as well. The following are built for our web server, with their exposed ports detailed:
-
-- **nginx** - `:80`
-- **php** - `:9000`
-
-Three additional containers are included that handle Composer, NPM, and Artisan commands *without* having to have these platforms installed on your local computer. Use the following command examples from your project root, modifying them to fit your particular use case.
-
-for Dev
-- `docker-compose run --rm composer update`
-- `docker-compose run --rm npm run dev`
-- `docker-compose run --rm artisan migrate` 
-
-for Production
-- `docker-compose run --rm api_sifion_composer_prod update`
-- `docker-compose run --rm api_sifion_artisan_prod migrate` 
-- `docker-compose run --rm api_sifion_artisan_prod l5-swagger:generate`
+## Install and Use
